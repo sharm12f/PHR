@@ -7,11 +7,8 @@ import java.util.Set;
 public class Auth_Access {
 
     public static void main(String args[]){
-        Connection con = getConnection();
-        Hashtable hash = new Hashtable();
-        ResultSet rs = getUsersByHash(con, hash);
-        printResultSet(rs);
-        closeConnection(con);
+        boolean rs = isUser("app", "APPPASSWORD");
+        System.out.println(rs);
     }
 
     /*
@@ -188,6 +185,46 @@ public class Auth_Access {
             rs = que.executeQuery();
         }catch(Exception e){System.out.println("Could not create query user_has_attribute_set " + e);}
         return rs;
+    }
+
+    /*
+     * input: username and password
+     * output: true or false if they match the database
+     * Note: This tells if a person can log in
+     *
+     */
+    public static boolean isUser(String username, String password){
+        boolean is_user=false;
+        username = username.toUpperCase();
+        Connection con = getConnection();
+        ResultSet rs = null;
+        String q = "select password, user_name from users where user_name = ?";
+        try{
+            PreparedStatement que = con.prepareStatement(q);
+            que.setString(1, username);
+            String db_username = "";
+            String db_password= "";
+            rs = que.executeQuery();
+            int index = 0;
+            while (rs.next()){
+                if(index == 0) {
+                    db_password = rs.getString(1);
+                    db_username = rs.getString(2);
+                }
+                index++;
+            }
+            if(index == 1){
+                if(username.equals(db_username) && password.equals(db_password)){
+                    is_user=true;
+                }
+            }
+            else{
+                System.out.println("Too many users with that username?");
+                is_user=false;
+            }
+        }catch(Exception e){System.out.println("Could not create query is user " + e);}
+        closeConnection(con);
+        return is_user;
     }
 }
 
