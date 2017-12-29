@@ -2,6 +2,7 @@ package phr.lib;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Hashtable;
 
 /**
@@ -9,10 +10,11 @@ import java.util.Hashtable;
  */
 
 
-public class lib {
+public class Lib {
 
     public static void main(String args[]){
-        login("app","APPPASSWORD");
+        Users app = login("app","APPPASSWORD");
+        System.out.println(app.toString());
     }
 
     /*
@@ -29,6 +31,7 @@ public class lib {
         else {
             if(Auth_Access.isUser(username, password)){
                 String db_email, db_username, db_role;
+                Timestamp db_create;
                 int db_id;
                 try{
                     Connection conn = Auth_Access.getConnection();
@@ -39,8 +42,9 @@ public class lib {
                     db_id = rs.getInt(1);
                     db_username = rs.getString(2);
                     db_email = rs.getString(3);
-                    db_role = rs.getString(4);
-                    user = new Users(db_username, db_email, db_role, db_id);
+                    db_create = rs.getTimestamp(4);
+                    db_role = rs.getString(5);
+                    user = new Users(db_username, db_email, db_create, db_role, db_id);
                 }catch(Exception e){System.out.println("Could not log in, no DB Connection" + e);}
             }
         }

@@ -107,7 +107,7 @@ public class Auth_Access {
             PreparedStatement que = con.prepareStatement(q);
             que.setString(1, "%"+user_name+"%");
             rs = que.executeQuery();
-        }catch(Exception e){System.out.println("Could not create query health record " + e);}
+        }catch(Exception e){System.out.println("Could not create query health Record " + e);}
         return rs;
     }
 
