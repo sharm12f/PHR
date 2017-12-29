@@ -10,7 +10,7 @@ public class Users {
     private String role;
     private int id;
 
-    public void Users(String username, String email, String role, int id){
+    public Users(String username, String email, String role, int id){
         this.username = username;
         this.email = email;
         this.role = role;

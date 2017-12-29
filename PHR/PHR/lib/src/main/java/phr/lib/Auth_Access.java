@@ -37,7 +37,7 @@ public class Auth_Access {
         Connection con = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/phr_auth", "app", "password");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/phr_auth?autoReconnect=true&useSSL=false", "app", "password");
         }catch(Exception e){System.out.println("Could not connect to db " + e);}
         return con;
     }
