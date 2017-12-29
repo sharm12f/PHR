@@ -50,7 +50,7 @@ public class Auth_Access {
     public static void closeConnection (Connection con){
         try{
             con.close();
-        }catch(Exception e){System.out.println("Could not close connection");}
+        }catch(Exception e){System.out.println("Could not close connection " + e);}
 
     }
 
@@ -227,14 +227,10 @@ public class Auth_Access {
         return is_user;
     }
 }
-
-
-
-
 /*
 * APPENDIX 1:
 *       The hash table are used to generate the where clause for the table search.
 *       Keys represent the column name, and the values are to be used as search criteria.
 *       This does not allow the user to pick what columns are shown in the results, only used in where to search.
 *
- */
+*/
