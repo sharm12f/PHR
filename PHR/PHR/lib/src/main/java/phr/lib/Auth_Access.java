@@ -17,7 +17,7 @@ public class Auth_Access {
             while(rs.next()) {
                 for (int i = 1; i <= len; i++)
                     System.out.print(rs.getString(i) + ' ');
-                System.out.println("");
+                System.out.println("\n");
             }
         }catch (Exception e){System.out.println("Something wrong with the result set  ");}
     }
@@ -97,9 +97,21 @@ public class Auth_Access {
     protected static ResultSet getUserHealthRecordByUsername(Connection con, String user_name){
         ResultSet rs = null;
         try{
-            String q = "select H.id, H.user_id, H.cypertext_policy, H.cypertext_record, H.cypertext_record_ref from user_health_record as H, users as U where U.id = H.user_id and U.user_name = ?";
+            String q = "select H.id, H.user_id, H.cypertext_policy, H.cypertext_record, H.cypertext_record_ref, H.create_time from user_health_record as H, users as U where U.id = H.user_id and U.user_name = ?";
             PreparedStatement que = con.prepareStatement(q);
             que.setString(1, user_name);
+            rs = que.executeQuery();
+        }catch(Exception e){System.out.println("Could not create query health Record " + e);}
+        return rs;
+    }
+
+    protected static ResultSet getUserHealthRecordIDByUseridAndTimestamp(Connection con, int user_id, String rec_create){
+        ResultSet rs = null;
+        try{
+            String q = "select id from user_health_record where user_id = ? and create_time = ?";
+            PreparedStatement que = con.prepareStatement(q);
+            que.setInt(1, user_id);
+            que.setString(2, rec_create);
             rs = que.executeQuery();
         }catch(Exception e){System.out.println("Could not create query health Record " + e);}
         return rs;
@@ -261,6 +273,31 @@ public class Auth_Access {
                 return false;
         }catch (Exception e){System.out.println("Something went wrong, userExists " + e); return true;}
 
+    }
+
+    protected static boolean insertIntoRecord(String policy, String record, String record_ref, int user_id){
+        try{
+            Connection con = getConnection();
+            PreparedStatement que = con.prepareStatement("insert into user_health_record (cypertext_policy, cypertext_record, cypertext_record_ref, user_id) values (?,?,?,?)");
+            que.setString(1, policy);
+            que.setString(2, record);
+            que.setString(3, record_ref);
+            que.setInt(4, user_id);
+            que.executeUpdate();
+            closeConnection(con);
+            return true;
+        }catch (Exception e){System.out.println("Could not insert new record " + e); return false;}
+    }
+
+    protected static boolean deleteUserRecord(int id){
+        try{
+            Connection con = getConnection();
+            PreparedStatement que = con.prepareStatement("delete from user_health_record where id=?");
+            que.setInt(1, id);
+            que.executeUpdate();
+            closeConnection(con);
+            return true;
+        }catch (Exception e){System.out.println("Could not delete record " + e); return false;}
     }
 }
 /*

@@ -22,11 +22,10 @@ public class User {
     private LinkedList<Record> records;
     private Timestamp session;
 
-    public User(String username, String email, Timestamp create, String role, int id, Timestamp session){
+    public User(String username, String email, Timestamp create, String role, Timestamp session){
         this.username = username;
         this.email = email;
         this.role = role;
-        this.id = id;
         this.create = create;
         this.session = session;
         this.records = new LinkedList<Record>();

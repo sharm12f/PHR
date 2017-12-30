@@ -1,8 +1,11 @@
 package phr.lib;
 
+import java.security.spec.ECField;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
@@ -14,8 +17,28 @@ import java.util.LinkedList;
 public class Lib {
 
     public static void main(String args[]){
-        //System.out.println(register ("boss2","boss2_shit@boss.com","BOSS","BOSS","user"));
-        //System.out.println(deleteAccount("boss2", "BOSS"));
+        /*
+        try {
+            Connection conn = Auth_Access.getConnection();
+            Timestamp ts = Timestamp.valueOf("2017-12-30 12:57:45");
+            ResultSet rs = Auth_Access.getUserHealthRecordIDByUseridAndTimestamp(conn, 3, ts);
+            while (rs.next())
+                System.out.println(rs.getInt(1));
+            Auth_Access.closeConnection(conn);
+        }catch(Exception e){}
+
+        */
+        System.out.println("Start -- ");
+        System.out.println("Login");
+        User user = login("Anu","what");
+        if(user==null){System.out.println("No");}else{System.out.println("Yes");}
+        System.out.println(user.toString());
+        user.printRecords();
+        System.out.println("Adding Record");
+        Record rec = addRecord("user","painpills","pills",user.getId());
+        if(rec==null){System.out.println("No");}else{System.out.println("Yes");user.addRecord(rec);}
+        user.printRecords();
+        System.out.println("-- End ");
     }
 
     /*
@@ -45,11 +68,19 @@ public class Lib {
                     db_email = rs.getString(3);
                     db_create = rs.getTimestamp(4);
                     db_role = rs.getString(5);
-                    user = new User(db_username, db_email, db_create, db_role, db_id, getTimestampNow());
+                    user = new User(db_username, db_email, db_create, db_role, getTimestampNow());
+                    user.setId(db_id);
                     rs = Auth_Access.getUserHealthRecordByUsername(conn, user.getUsername());
                     LinkedList<Record> records = new LinkedList();
                     while(rs.next()){
-                       Record rec = new Record(rs.getInt(1), rs.getInt(2), rs.getString(3),rs.getString(4),rs.getString(5));
+                        int rec_id = rs.getInt(1);
+                        int rec_user_id = rs.getInt(2);
+                        String rec_policy = rs.getString(3);
+                        String rec_record = rs.getString(4);
+                        String rec_record_ref = rs.getString(5);
+                        Timestamp rec_create = rs.getTimestamp(6);
+                       Record rec = new Record(rec_policy, rec_record,rec_record_ref,rec_user_id,rec_create);
+                       rec.setId(rec_id);
                        records.addLast(rec);
                     }
                     user.setRecords(records);
@@ -90,7 +121,8 @@ public class Lib {
     * Note: Gives the current timestamp, is not avalible outside this class
     */
     private static Timestamp getTimestampNow(){
-        return new Timestamp(System.currentTimeMillis());
+        Date date = new Date();
+        return new Timestamp(date.getTime());
     }
 
     /*
@@ -99,7 +131,7 @@ public class Lib {
     * Note:
     */
     public static boolean register(String username, String email, String password, String re_password, String user_role){
-        boolean success = false;
+        boolean user = false;
         String error = "";
         try{
             boolean set = true;
@@ -112,8 +144,9 @@ public class Lib {
             boolean checkEmail = checkEmail(email);
             boolean checkUser_role = checkString(user_role);
             if(checkEmail && checkPassword && checkUser_role && checkUsername && set){
-                if(Auth_Access.insertIntoUsers(username.toUpperCase(), email.toUpperCase(), password,  user_role.toUpperCase()))
-                    success = true;
+                if(Auth_Access.insertIntoUsers(username.toUpperCase(), email.toUpperCase(), password,  user_role.toUpperCase())) {
+                    user = true;
+                }
                 else
                     error+="\tUser Insertion failed\n";
             }else{
@@ -130,7 +163,7 @@ public class Lib {
                 throw new Exception(error);
             }
         }catch(Exception e){System.out.println(e);}
-        return success;
+        return user;
     }
 
     public static boolean deleteAccount(String username, String password){
@@ -146,5 +179,43 @@ public class Lib {
         }
         else
             return false;
+    }
+
+    public static Record addRecord(String policy, String record, String record_ref, int user_id) {
+        Record result = null;
+        boolean checkPolicy = checkString(policy);
+        boolean checkRecord = checkString(record);
+        boolean checkRecordRef = checkString(record_ref);
+        String error = "";
+        try {
+            if (checkPolicy && checkRecord && checkRecordRef) {
+                if (Auth_Access.insertIntoRecord(policy, record, record_ref, user_id)) {
+                    Timestamp ts = getTimestampNow();
+                    result = new Record(policy, record, record_ref, user_id, ts);
+                    System.out.println("TS: " + ts);
+                    Connection conn = Auth_Access.getConnection();
+                    String t = ts.toString().substring(0,ts.toString().lastIndexOf("."));
+                    ResultSet rs = Auth_Access.getUserHealthRecordIDByUseridAndTimestamp(conn,user_id,t);
+                    while(rs.next())
+                        result.setId(rs.getInt(1));
+                    Auth_Access.closeConnection(conn);
+                }
+            }else {
+                if (!checkPolicy)
+                    error += "\tPolicy not valid\n";
+                if (!checkRecord)
+                    error += "\tRecord not valid\n";
+                if (!checkRecordRef)
+                    error += "\tRecord Ref not valid\n";
+            }
+            if (!error.equals("")) {
+                throw new Exception(error);
+            }
+        }catch (Exception e){System.out.println(e);}
+        return result;
+    }
+
+    public static boolean deleteRecord(int id){
+        return Auth_Access.deleteUserRecord(id);
     }
 }

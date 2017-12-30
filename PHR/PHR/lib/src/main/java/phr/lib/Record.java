@@ -1,5 +1,7 @@
 package phr.lib;
 
+import java.sql.Timestamp;
+
 /**
  * Created by Anupam on 29-Dec-17.
  */
@@ -7,12 +9,13 @@ package phr.lib;
 public class Record {
     private int id, user_id;
     private String policy, record, record_ref;
-    public Record(int id, int user_id, String policy, String record, String record_ref){
-        this.id = id;
+    private Timestamp create;
+    public Record(String policy, String record, String record_ref,int user_id, Timestamp create){
         this.user_id = user_id;
         this.policy = policy;
         this.record = record;
         this.record_ref = record_ref;
+        this.create = create;
     }
     public void setId(int id){
         this.id = id;
