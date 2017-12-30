@@ -5,18 +5,12 @@ import java.util.Hashtable;
 import java.util.Set;
 
 public class Auth_Access {
-
-    public static void main(String args[]){
-        boolean rs = isUser("app", "APPPASSWORD");
-        System.out.println(rs);
-    }
-
     /*
     * input: ResultSet (this is the result of the query from the DB)
     * output: Prints out all the rows and columns of the rest.
     * Note: none
      */
-    public static void printResultSet(ResultSet rs){
+    protected static void printResultSet(ResultSet rs){
         try{
             ResultSetMetaData rsmd = rs.getMetaData();
             int len=rsmd.getColumnCount();
@@ -33,7 +27,7 @@ public class Auth_Access {
      * output: connection to the auth database
      * Note: none
      */
-    public static Connection getConnection(){
+    protected static Connection getConnection(){
         Connection con = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -47,7 +41,7 @@ public class Auth_Access {
      * output: none
      * Note: This closes the connection to the auth database
      */
-    public static void closeConnection (Connection con){
+    protected static void closeConnection (Connection con){
         try{
             con.close();
         }catch(Exception e){System.out.println("Could not close connection " + e);}
@@ -60,7 +54,7 @@ public class Auth_Access {
      * Note: see appendix 1 at the end
      *       searches the users table, appendix 1 explains the where clause using hash table
      */
-    public static ResultSet getUsersByHash(Connection con, Hashtable hash){
+    protected static ResultSet getUsersByHash(Connection con, Hashtable hash){
         ResultSet rs = null;
         String q = "select id, user_name, email, create_time, user_role from users";
         String where = " where ";
@@ -100,12 +94,12 @@ public class Auth_Access {
      * output: ResultSet (This is the results of the database query)
      * Note: gets the user records for a particular username
      */
-    public static ResultSet getUserHealthRecordByUsername(Connection con, String user_name){
+    protected static ResultSet getUserHealthRecordByUsername(Connection con, String user_name){
         ResultSet rs = null;
         try{
-            String q = "select H.id from user_health_record as H, users as U where U.id = H.user_id and U.user_name LIKE ?";
+            String q = "select H.id, H.user_id, H.cypertext_policy, H.cypertext_record, H.cypertext_record_ref from user_health_record as H, users as U where U.id = H.user_id and U.user_name = ?";
             PreparedStatement que = con.prepareStatement(q);
-            que.setString(1, "%"+user_name+"%");
+            que.setString(1, user_name);
             rs = que.executeQuery();
         }catch(Exception e){System.out.println("Could not create query health Record " + e);}
         return rs;
@@ -117,7 +111,7 @@ public class Auth_Access {
      * Note: see appendix 1 at the end
      *       searches the attribute table, appendix 1 explains the where clause using hash table
      */
-    public static ResultSet getAttributesByHash(Connection con, Hashtable hash){
+    protected static ResultSet getAttributesByHash(Connection con, Hashtable hash){
         ResultSet rs = null;
         String q = "select * from attributes";
         String where = " where ";
@@ -155,7 +149,7 @@ public class Auth_Access {
      * Note: see appendix 1 at the end
      *       searches the user has attribute set table, appendix 1 explains the where clause using hash table
      */
-    public static ResultSet getUserHasAttributSetByHash(Connection con, Hashtable hash){
+    protected static ResultSet getUserHasAttributSetByHash(Connection con, Hashtable hash){
         ResultSet rs = null;
         String q = "select * from user_has_attribute_set";
         String where = " where ";
@@ -193,7 +187,7 @@ public class Auth_Access {
      * Note: This tells if a person can log in
      *
      */
-    public static boolean isUser(String username, String password){
+    protected static boolean isUser(String username, String password){
         boolean is_user=false;
         username = username.toUpperCase();
         Connection con = getConnection();
@@ -225,6 +219,48 @@ public class Auth_Access {
         }catch(Exception e){System.out.println("Could not create query is user " + e);}
         closeConnection(con);
         return is_user;
+    }
+
+    protected static boolean insertIntoUsers(String user_name, String email, String password, String user_role){
+        try{
+            Connection con = getConnection();
+            PreparedStatement que = con.prepareStatement("insert into users (user_name, email, password, user_role) values (?,?,?,?)");
+            que.setString(1, user_name);
+            que.setString(2, email);
+            que.setString(3, password);
+            que.setString(4, user_role);
+            que.executeUpdate();
+            closeConnection(con);
+            return true;
+        }catch (Exception e){System.out.println("Could not insert new user " + e); return false;}
+    }
+
+    protected static boolean deleteUser(String user_name){
+        try{
+            Connection con = getConnection();
+            PreparedStatement que = con.prepareStatement("delete from users where user_name=?");
+            que.setString(1, user_name);
+            que.executeUpdate();
+            closeConnection(con);
+            return true;
+        }catch (Exception e){System.out.println("Could not delete new user " + e); return false;}
+    }
+
+    protected static boolean userExists(String user_name) {
+        try{
+            Connection con = getConnection();
+            PreparedStatement que = con.prepareStatement("select count(user_name) from users where user_name=?");
+            que.setString(1, user_name);
+            ResultSet rs = que.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+            closeConnection(con);
+            if (count >= 1)
+                return true;
+            else
+                return false;
+        }catch (Exception e){System.out.println("Something went wrong, userExists " + e); return true;}
+
     }
 }
 /*

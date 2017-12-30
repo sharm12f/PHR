@@ -13,20 +13,22 @@ import javax.sound.sampled.ReverbType;
  * Created by Anupam on 28-Dec-17.
  */
 
-public class Users {
+public class User {
     private String username;
     private String email;
     private String role;
     private int id;
     private Timestamp create;
     private LinkedList<Record> records;
+    private Timestamp session;
 
-    public Users(String username, String email, Timestamp create, String role, int id){
+    public User(String username, String email, Timestamp create, String role, int id, Timestamp session){
         this.username = username;
         this.email = email;
         this.role = role;
         this.id = id;
         this.create = create;
+        this.session = session;
         this.records = new LinkedList<Record>();
     }
 
@@ -50,6 +52,9 @@ public class Users {
         }
     }
 
+    public Timestamp getSession(){
+        return this.session;
+    }
     public Timestamp getCreate(){
         return this.create;
     }
@@ -66,6 +71,9 @@ public class Users {
         return this.id;
     }
 
+    public void setSession(Timestamp session){
+        this.session = session;
+    }
     public void setCreate(Timestamp create){
         this.create = create;
     }
@@ -83,6 +91,6 @@ public class Users {
     }
 
     public String toString(){
-        return "Username: " + this.username + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " ID: " + this.id;
+        return "Username: " + this.username + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id;
     }
 }

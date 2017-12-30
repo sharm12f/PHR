@@ -14,7 +14,6 @@ public class Record {
         this.record = record;
         this.record_ref = record_ref;
     }
-
     public void setId(int id){
         this.id = id;
     }
@@ -30,7 +29,6 @@ public class Record {
     public void setRecord_ref(String record_ref){
         this.record_ref = record_ref;
     }
-
     public int getId(){
         return this.id;
     }
@@ -49,5 +47,4 @@ public class Record {
     public String toString(){
         return "user_id: " + this.user_id + " policy: " + this.policy + " record: " + this.record + " record_ref: " + this.record_ref + " ID: " + this.id;
     }
-
 }
