@@ -17,28 +17,7 @@ import java.util.LinkedList;
 public class Lib {
 
     public static void main(String args[]){
-        /*
-        try {
-            Connection conn = Auth_Access.getConnection();
-            Timestamp ts = Timestamp.valueOf("2017-12-30 12:57:45");
-            ResultSet rs = Auth_Access.getUserHealthRecordIDByUseridAndTimestamp(conn, 3, ts);
-            while (rs.next())
-                System.out.println(rs.getInt(1));
-            Auth_Access.closeConnection(conn);
-        }catch(Exception e){}
 
-        */
-        System.out.println("Start -- ");
-        System.out.println("Login");
-        User user = login("Anu","what");
-        if(user==null){System.out.println("No");}else{System.out.println("Yes");}
-        System.out.println(user.toString());
-        user.printRecords();
-        System.out.println("Adding Record");
-        Record rec = addRecord("user","painpills","pills",user.getId());
-        if(rec==null){System.out.println("No");}else{System.out.println("Yes");user.addRecord(rec);}
-        user.printRecords();
-        System.out.println("-- End ");
     }
 
     /*
