@@ -153,7 +153,7 @@
 
     <LinearLayout
         android:layout_width="367dp"
-        android:layout_height="252dp"
+        android:layout_height="249dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -240,6 +240,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_margin="3dp"
         android:text="Add Record"
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -258,6 +259,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_margin="3dp"
         android:text="View Permissions"
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"

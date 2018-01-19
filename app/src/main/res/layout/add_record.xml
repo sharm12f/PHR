@@ -6,8 +6,8 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:layout_width="349dp"
-        android:layout_height="417dp"
+        android:layout_width="350dp"
+        android:layout_height="488dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -15,7 +15,6 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -121,19 +120,40 @@
         </TableLayout>
 
         <EditText
-            android:layout_width="349dp"
+            android:layout_width="350dp"
             android:layout_height="150dp"
             android:background="@drawable/my_border"
             android:ems="10"
-            android:inputType="textMultiLine" />
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:text="Flu Vaccine - 05/11/2018"
+            android:textSize="16dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="New Record - Vaccination" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="116dp"
+            android:layout_height="42dp"
+            android:layout_gravity="right"
+            android:text="Browse..."
+            android:textSize="12dp"
+            android:theme="@style/myButtonTheme" />
 
         <Button
             android:id="@+id/button4"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="242dp"
+            android:layout_width="248dp"
             android:layout_height="64dp"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
+            android:layout_margin="22dp"
             android:text="Add Record"
             android:theme="@style/myButtonTheme" />
     </LinearLayout>

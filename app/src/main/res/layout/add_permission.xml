@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="350dp"
-        android:layout_height="367dp"
+        android:layout_height="384dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -27,7 +27,7 @@
             android:background="@drawable/my_border"
             android:gravity="center"
             android:padding="4dp"
-            android:text="Patient Registration"
+            android:text="Add Permission"
             android:textSize="20dp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="0dp"
@@ -131,7 +131,7 @@
             android:layout_width="242dp"
             android:layout_height="64dp"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
+            android:layout_margin="22dp"
             android:text="Add Permission"
             android:theme="@style/myButtonTheme" />
     </LinearLayout>
