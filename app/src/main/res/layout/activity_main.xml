@@ -7,7 +7,7 @@
     tools:context="phr.phr.MainActivity">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/email_input"
         android:layout_width="369dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -26,7 +26,7 @@
         app:layout_constraintVertical_bias="0.473" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/password_input"
         android:layout_width="369dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -44,7 +44,7 @@
         app:layout_constraintVertical_bias="0.603" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/login_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="320dp"
         android:layout_height="60dp"
@@ -64,7 +64,7 @@
 
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/reset_password_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="160dp"
         android:layout_height="60dp"
@@ -84,7 +84,7 @@
         app:layout_constraintVertical_bias="0.945" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/register_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="60dp"
@@ -111,7 +111,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintBottom_toBottomOf="@+id/reset_password_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
