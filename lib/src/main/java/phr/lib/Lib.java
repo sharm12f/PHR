@@ -17,42 +17,40 @@ public class Lib {
         System.out.println(login("app", "password"));
     }
 
-    public static User login(String username, String password){
-       User user = new User("app","app@app.com",getTimestampNow(),"USER",getTimestampNow());
+    public static User login(String email, String password){
+       /*
+        User user = new User("Application Test","app@app.com",getTimestampNow(),"USER",getTimestampNow());
        user.setId(1);
-       user.setName("Application Test");
        user.setProvince("ON");
        user.setPhone("999-999-9999");
        user.setRegion("Windsor");
-        /*
-        boolean checkUsername = checkString(username);
+        */
+        boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
         User user = null;
         if (!checkUsername || !checkPassword)
             System.out.println("Nope");
         else {
-            if(Auth_Access.isUser(username, password)) {
-                String db_email, db_username, db_role, db_create, db_name, db_phone, db_region, db_province;
+            if(Auth_Access.isUser(email, password)) {
+                String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
                 int db_id;
-                String responce = Auth_Access.getUsersByUsername(username);
+                String responce = Auth_Access.getUsersByUsername(email);
                 JSONObject obj = new JSONObject(responce);
                 db_id = obj.getInt("id");
                 db_create = obj.getString("create_time");
                 db_email = obj.getString("email");
-                db_username = obj.getString("username");
                 db_role = obj.getString("user_role");
                 db_name = obj.getString("name");
                 db_phone = obj.getString("phone");
                 db_region = obj.getString("region");
                 db_province = obj.getString("province");
                 Timestamp creattime = stringToTimestamp(db_create);
-                user = new User(db_username, db_email, creattime, db_role,getTimestampNow());
+                user = new User(db_name, db_email, creattime, db_role,getTimestampNow());
                 user.setId(db_id);
-                user.setName(db_name);
                 user.setPhone(db_phone);
                 user.setRegion(db_region);
                 user.setProvince(db_province);
-                String records = Auth_Access.getUserHealthRecordByUsername(db_username);
+                String records = Auth_Access.getUserHealthRecordByEmail(db_email);
                 JSONArray str = new JSONArray(records);
                 for (int i=0;i<str.length(); i++){
                     int rid, uid;
@@ -71,18 +69,17 @@ public class Lib {
                 }
             }
             else{
-                System.out.println("Wrong username or password");
+                System.out.println("Wrong email or password");
             }
         }
-
-        */
+        System.out.println(user.toString());
         return user;
     }
 
     private static boolean checkString(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
-        if(str.matches("[a-zA-Z0-9+=*/^()_-]+"))
+        if(str.matches("[a-z A-Z0-9+=*/^()_-]+"))
             return true;
         return false;
     }
@@ -112,21 +109,20 @@ public class Lib {
         return new Timestamp(date.getTime());
     }
 
-    public static boolean register(String username, String email, String password, String re_password, String user_role){
+    public static boolean register(String name, String email, String password, String re_password, String phone){
         boolean user = false;
         String error = "";
         try{
             boolean set = true;
-            if(Auth_Access.userExists(username)) {
+            if(Auth_Access.userExists(email)) {
                 set = false;
                 error += "\tUsername already taken\n";
             }
-            boolean checkUsername = checkString(username);
+            boolean checkUsername = checkString(name);
             boolean checkPassword = password.equals(re_password);
             boolean checkEmail = checkEmail(email);
-            boolean checkUser_role = checkString(user_role);
-            if(checkEmail && checkPassword && checkUser_role && checkUsername && set){
-                if(Auth_Access.insertIntoUsers(username.toUpperCase(), email.toUpperCase(), password,  user_role.toUpperCase())) {
+            if(checkEmail && checkPassword && checkUsername && set){
+                if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase())) {
                     user = true;
                 }
                 else
@@ -138,8 +134,6 @@ public class Lib {
                     error+="\tUsername is not valid\n";
                 if(!checkPassword)
                     error+="\tPassword's dont match\n";
-                if(!checkUser_role)
-                    error+="\tUser_role is not valid\n";
             }
             if(!error.equals("")){
                 throw new Exception(error);
@@ -172,15 +166,7 @@ public class Lib {
         try {
             if (checkPolicy && checkRecord && checkRecordRef) {
                 if (Auth_Access.insertIntoRecord(policy, record, record_ref, user_id)) {
-                    Timestamp ts = getTimestampNow();
-                    result = new Record(policy, record, record_ref, user_id, ts);
-                    System.out.println("TS: " + ts);
-                    Connection conn = Auth_Access.getConnection();
-                    String t = ts.toString().substring(0,ts.toString().lastIndexOf("."));
-                    ResultSet rs = Auth_Access.getUserHealthRecordIDByUseridAndTimestamp(conn,user_id,t);
-                    while(rs.next())
-                        result.setId(rs.getInt(1));
-                    Auth_Access.closeConnection(conn);
+
                 }
             }else {
                 if (!checkPolicy)

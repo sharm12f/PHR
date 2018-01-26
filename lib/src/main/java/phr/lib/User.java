@@ -15,7 +15,6 @@ import javax.sound.sampled.ReverbType;
  */
 
 public class User implements Serializable{
-    private String username;
     private String email;
     private String role;
     private String name;
@@ -27,8 +26,8 @@ public class User implements Serializable{
     private LinkedList<Record> records;
     private Timestamp session;
 
-    public User(String username, String email, Timestamp create, String role, Timestamp session){
-        this.username = username;
+    public User(String name, String email, Timestamp create, String role, Timestamp session){
+        this.name = name;
         this.email = email;
         this.role = role;
         this.create = create;
@@ -63,7 +62,7 @@ public class User implements Serializable{
         return this.create;
     }
     public String getUsername(){
-        return this.username;
+        return this.name;
     }
     public String getEmail(){
         return this.email;
@@ -86,7 +85,7 @@ public class User implements Serializable{
         this.create = create;
     }
     public void setUsername(String username){
-        this.username = username;
+        this.name = username;
     }
     public void setEmail(String email){
         this.email = email;
@@ -103,6 +102,6 @@ public class User implements Serializable{
     public void setProvince(String province){this.province=province;}
 
     public String toString(){
-        return "Username: " + this.username + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Name: "+ this.name + " Phone: "+ this.phone + " Region: " + this.region + " Province: "+ this.province;
+        return "Username: " + this.name + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Name: "+ this.name + " Phone: "+ this.phone + " Region: " + this.region + " Province: "+ this.province;
     }
 }

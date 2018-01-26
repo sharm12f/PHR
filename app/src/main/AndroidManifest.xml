@@ -18,6 +18,9 @@
         <activity android:name=".MyAccount">
 
         </activity>
+        <activity android:name=".PatientRegistration">
+
+        </activity>
     </application>
 
 </manifest>

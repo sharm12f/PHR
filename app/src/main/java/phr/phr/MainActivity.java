@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Button login_button = findViewById(R.id.login_button);
-        final Button reser_password_button = findViewById(R.id.reset_password_button);
-        final Button password_button = findViewById(R.id.reset_password_button);
+        final Button reset_password_button = findViewById(R.id.reset_password_button);
+        final Button register_button = findViewById(R.id.register_button);
         final EditText email_input = findViewById(R.id.email_input);
         final EditText password_input=  findViewById(R.id.password_input);
         login_button.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +41,15 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("USER",list);
                     startActivity(intent);
                 }catch (Exception e){e.printStackTrace();}
+            }
+        });
+        register_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    Intent intent = new Intent (getApplicationContext(), PatientRegistration.class);
+                    startActivity(intent);
+                }catch(Exception e){e.printStackTrace();}
             }
         });
     }

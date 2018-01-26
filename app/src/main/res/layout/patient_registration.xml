@@ -35,7 +35,7 @@
             tools:layout_editor_absoluteY="3dp" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/fname_input"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -54,7 +54,7 @@
             app:layout_constraintVertical_bias="0.131" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/lname_input"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -72,7 +72,7 @@
             app:layout_constraintVertical_bias="0.218" />
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/email_input"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -91,7 +91,7 @@
             app:layout_constraintVertical_bias="0.131" />
 
         <EditText
-            android:id="@+id/editText4"
+            android:id="@+id/phone_input"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -109,7 +109,7 @@
             app:layout_constraintVertical_bias="0.218" />
 
         <EditText
-            android:id="@+id/editTex5"
+            android:id="@+id/password_input"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -128,7 +128,7 @@
             app:layout_constraintVertical_bias="0.131" />
 
         <EditText
-            android:id="@+id/editText6"
+            android:id="@+id/re_pass_input"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -190,7 +190,7 @@
         </TableLayout>
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/create_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="242dp"
             android:layout_height="64dp"
