@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.io.Serializable;
 
 import javax.sound.sampled.ReverbType;
 
@@ -13,10 +14,14 @@ import javax.sound.sampled.ReverbType;
  * Created by Anupam on 28-Dec-17.
  */
 
-public class User {
+public class User implements Serializable{
     private String username;
     private String email;
     private String role;
+    private String name;
+    private String phone;
+    private String region;
+    private String province;
     private int id;
     private Timestamp create;
     private LinkedList<Record> records;
@@ -69,6 +74,10 @@ public class User {
     public int getId(){
         return this.id;
     }
+    public String getName(){return this.name;}
+    public String getPhone(){return this.phone;}
+    public String getRegion(){return this.region;}
+    public String getProvince(){return this.province;}
 
     public void setSession(Timestamp session){
         this.session = session;
@@ -88,8 +97,12 @@ public class User {
     public void setId(int id){
         this.id = id;
     }
+    public void setName(String name){this.name=name;}
+    public void setPhone(String phone){this.phone=phone;}
+    public void setRegion(String region){this.region = region;}
+    public void setProvince(String province){this.province=province;}
 
     public String toString(){
-        return "Username: " + this.username + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id;
+        return "Username: " + this.username + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Name: "+ this.name + " Phone: "+ this.phone + " Region: " + this.region + " Province: "+ this.province;
     }
 }

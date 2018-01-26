@@ -1,15 +1,20 @@
 package phr.lib;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.*;
 import java.util.Hashtable;
 import java.util.Set;
 
-public class Auth_Access {
-    /*
-    * input: ResultSet (this is the result of the query from the DB)
-    * output: Prints out all the rows and columns of the rest.
-    * Note: none
-     */
+
+public class Auth_Access{
+
+    private static final String IP = "http://10.0.2.2";
+
     protected static void printResultSet(ResultSet rs){
         try{
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -22,11 +27,6 @@ public class Auth_Access {
         }catch (Exception e){System.out.println("Something wrong with the result set  ");}
     }
 
-    /*
-     * input: none
-     * output: connection to the auth database
-     * Note: none
-     */
     protected static Connection getConnection(){
         Connection con = null;
         try {
@@ -36,11 +36,6 @@ public class Auth_Access {
         return con;
     }
 
-    /*
-     * input: an open connection
-     * output: none
-     * Note: This closes the connection to the auth database
-     */
     protected static void closeConnection (Connection con){
         try{
             con.close();
@@ -48,61 +43,13 @@ public class Auth_Access {
 
     }
 
-    /*
-     * input: Connection to the auth database and a hash table
-     * output: ResultSet (This is the results of the database query)
-     * Note: see appendix 1 at the end
-     *       searches the users table, appendix 1 explains the where clause using hash table
-     */
-    protected static ResultSet getUsersByHash(Connection con, Hashtable hash){
-        ResultSet rs = null;
-        String q = "select id, user_name, email, create_time, user_role from users";
-        String where = " where ";
-        int it = 0;
-        Set<String> keys = hash.keySet();
-        for (String key : keys){
-            if(!key.equals("password")) {
-                if (it == 0) {
-                    where += key + " LIKE ?";
-                    it++;
-                } else {
-                    where += "and " + key + " LIKE ?";
-                }
-            }
-        }
-        if(it>0){
-            q = q+where;
-        }
-        try{
-            int index = 1;
-            PreparedStatement que = con.prepareStatement(q);
-            if (it > 0){
-                for(String key : keys){
-                    if(!key.equals("password")) {
-                        que.setString(index, "%"+hash.get(key).toString()+"%");
-                        index++;
-                    }
-                }
-            }
-            rs = que.executeQuery();
-        }catch(Exception e){System.out.println("Could not create query users " + e);}
-        return rs;
+    protected static String getUsersByUsername(String username){
+       String responce = makeGet(IP+"/PHR_AUTH/get_user_by_username.php?username="+username);
+       return responce;
     }
 
-    /*
-     * input: Connection to the auth database, and the user name
-     * output: ResultSet (This is the results of the database query)
-     * Note: gets the user records for a particular username
-     */
-    protected static ResultSet getUserHealthRecordByUsername(Connection con, String user_name){
-        ResultSet rs = null;
-        try{
-            String q = "select H.id, H.user_id, H.cypertext_policy, H.cypertext_record, H.cypertext_record_ref, H.create_time from user_health_record as H, users as U where U.id = H.user_id and U.user_name = ?";
-            PreparedStatement que = con.prepareStatement(q);
-            que.setString(1, user_name);
-            rs = que.executeQuery();
-        }catch(Exception e){System.out.println("Could not create query health Record " + e);}
-        return rs;
+    protected static String getUserHealthRecordByUsername(String username){
+        return makeGet(IP+"/PHR_AUTH/get_user_health_record_by_username.php?username="+username);
     }
 
     protected static ResultSet getUserHealthRecordIDByUseridAndTimestamp(Connection con, int user_id, String rec_create){
@@ -117,12 +64,6 @@ public class Auth_Access {
         return rs;
     }
 
-    /*
-     * input: Connection to the auth database, and hash table
-     * output: ResultSet (This is the results of the database query)
-     * Note: see appendix 1 at the end
-     *       searches the attribute table, appendix 1 explains the where clause using hash table
-     */
     protected static ResultSet getAttributesByHash(Connection con, Hashtable hash){
         ResultSet rs = null;
         String q = "select * from attributes";
@@ -155,12 +96,6 @@ public class Auth_Access {
         return rs;
     }
 
-    /*
-     * input: Connection to the auth database, and hash table
-     * output: ResultSet (This is the results of the database query)
-     * Note: see appendix 1 at the end
-     *       searches the user has attribute set table, appendix 1 explains the where clause using hash table
-     */
     protected static ResultSet getUserHasAttributSetByHash(Connection con, Hashtable hash){
         ResultSet rs = null;
         String q = "select * from user_has_attribute_set";
@@ -193,43 +128,12 @@ public class Auth_Access {
         return rs;
     }
 
-    /*
-     * input: username and password
-     * output: true or false if they match the database
-     * Note: This tells if a person can log in
-     *
-     */
     protected static boolean isUser(String username, String password){
         boolean is_user=false;
         username = username.toUpperCase();
-        Connection con = getConnection();
-        ResultSet rs = null;
-        String q = "select password, user_name from users where user_name = ?";
-        try{
-            PreparedStatement que = con.prepareStatement(q);
-            que.setString(1, username);
-            String db_username = "";
-            String db_password= "";
-            rs = que.executeQuery();
-            int index = 0;
-            while (rs.next()){
-                if(index == 0) {
-                    db_password = rs.getString(1);
-                    db_username = rs.getString(2);
-                }
-                index++;
-            }
-            if(index == 1){
-                if(username.equals(db_username) && password.equals(db_password)){
-                    is_user=true;
-                }
-            }
-            else{
-                System.out.println("Too many users with that username?");
-                is_user=false;
-            }
-        }catch(Exception e){System.out.println("Could not create query is user " + e);}
-        closeConnection(con);
+        String responce = makeGet(IP+"/PHR_AUTH/is_user.php?username="+username+"&password="+password);
+        if (responce.equals("true"))
+            is_user=true;
         return is_user;
     }
 
@@ -299,11 +203,34 @@ public class Auth_Access {
             return true;
         }catch (Exception e){System.out.println("Could not delete record " + e); return false;}
     }
+
+    private static String makeGet(String getcall){
+        String string="Error";
+        URL url;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(getcall);
+            urlConnection = (HttpURLConnection) url
+                    .openConnection();
+            urlConnection.setConnectTimeout(2000);
+            InputStream in = urlConnection.getInputStream();
+            InputStreamReader isw = new InputStreamReader(in);
+            int data = isw.read();
+            String responce="";
+            while (data != -1) {
+                char current = (char) data;
+                data = isw.read();
+                responce+=current;
+                string = responce;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return string;
+    }
+
 }
-/*
-* APPENDIX 1:
-*       The hash table are used to generate the where clause for the table search.
-*       Keys represent the column name, and the values are to be used as search criteria.
-*       This does not allow the user to pick what columns are shown in the results, only used in where to search.
-*
-*/

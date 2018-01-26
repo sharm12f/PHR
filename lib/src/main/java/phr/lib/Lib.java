@@ -1,18 +1,15 @@
 package phr.lib;
 
-import java.security.spec.ECField;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Hashtable;
-import java.util.LinkedList;
+import java.util.Iterator;
 
-/**
- * Created by Anupam on 28-Dec-17.
- */
-
+import org.json.*;
 
 public class Lib {
 
@@ -20,61 +17,68 @@ public class Lib {
         System.out.println(login("app", "password"));
     }
 
-    /*
-    * input: Username and Password of the user loggin in
-    * output: a user object or null;
-    * Note: the user object contains the users information (including all records) and other session information
-    */
     public static User login(String username, String password){
+       User user = new User("app","app@app.com",getTimestampNow(),"USER",getTimestampNow());
+       user.setId(1);
+       user.setName("Application Test");
+       user.setProvince("ON");
+       user.setPhone("999-999-9999");
+       user.setRegion("Windsor");
+        /*
         boolean checkUsername = checkString(username);
         boolean checkPassword = checkString(password);
         User user = null;
         if (!checkUsername || !checkPassword)
             System.out.println("Nope");
         else {
-            if(Auth_Access.isUser(username, password)){
-                String db_email, db_username, db_role;
-                Timestamp db_create;
+            if(Auth_Access.isUser(username, password)) {
+                String db_email, db_username, db_role, db_create, db_name, db_phone, db_region, db_province;
                 int db_id;
-                try{
-                    Connection conn = Auth_Access.getConnection();
-                    Hashtable hash = new Hashtable();
-                    hash.put("user_name",username);
-                    ResultSet rs = Auth_Access.getUsersByHash(conn,hash);
-                    rs.next();
-                    db_id = rs.getInt(1);
-                    db_username = rs.getString(2);
-                    db_email = rs.getString(3);
-                    db_create = rs.getTimestamp(4);
-                    db_role = rs.getString(5);
-                    user = new User(db_username, db_email, db_create, db_role, getTimestampNow());
-                    user.setId(db_id);
-                    rs = Auth_Access.getUserHealthRecordByUsername(conn, user.getUsername());
-                    LinkedList<Record> records = new LinkedList();
-                    while(rs.next()){
-                        int rec_id = rs.getInt(1);
-                        int rec_user_id = rs.getInt(2);
-                        String rec_policy = rs.getString(3);
-                        String rec_record = rs.getString(4);
-                        String rec_record_ref = rs.getString(5);
-                        Timestamp rec_create = rs.getTimestamp(6);
-                       Record rec = new Record(rec_policy, rec_record,rec_record_ref,rec_user_id,rec_create);
-                       rec.setId(rec_id);
-                       records.addLast(rec);
-                    }
-                    user.setRecords(records);
-                    Auth_Access.closeConnection(conn);
-                }catch(Exception e){System.out.println("Could not log in, no DB Connection" + e);}
+                String responce = Auth_Access.getUsersByUsername(username);
+                JSONObject obj = new JSONObject(responce);
+                db_id = obj.getInt("id");
+                db_create = obj.getString("create_time");
+                db_email = obj.getString("email");
+                db_username = obj.getString("username");
+                db_role = obj.getString("user_role");
+                db_name = obj.getString("name");
+                db_phone = obj.getString("phone");
+                db_region = obj.getString("region");
+                db_province = obj.getString("province");
+                Timestamp creattime = stringToTimestamp(db_create);
+                user = new User(db_username, db_email, creattime, db_role,getTimestampNow());
+                user.setId(db_id);
+                user.setName(db_name);
+                user.setPhone(db_phone);
+                user.setRegion(db_region);
+                user.setProvince(db_province);
+                String records = Auth_Access.getUserHealthRecordByUsername(db_username);
+                JSONArray str = new JSONArray(records);
+                for (int i=0;i<str.length(); i++){
+                    int rid, uid;
+                    String cypertext_policy, cypertext_record, cypertext_record_ref;
+                    Timestamp create_time;
+                    JSONObject record = str.getJSONObject(i);
+                    create_time = stringToTimestamp(record.getString("create_time"));
+                    rid = record.getInt("rid");
+                    uid = record.getInt("uid");
+                    cypertext_policy = record.getString("cypertext_policy");
+                    cypertext_record = record.getString("cypertext_record");
+                    cypertext_record_ref = record.getString("cypertext_record_ref");
+                    Record r = new Record(cypertext_policy,cypertext_record,cypertext_record_ref,uid,create_time);
+                    r.setId(rid);
+                    user.addRecord(r);
+                }
+            }
+            else{
+                System.out.println("Wrong username or password");
             }
         }
+
+        */
         return user;
     }
 
-    /*
-    * input: String, this verifies if the string is valid, only contains specified chars, and ensure the string is not longer and 128 and not shorter than 1
-    * output: boolean answer indicating true or false, true for it being valid
-    * Note: is not avalible outside this class
-    */
     private static boolean checkString(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
@@ -83,32 +87,31 @@ public class Lib {
         return false;
     }
 
-    /*
-    * input:    string
-    * output:   true or false if the string is a valid email address
-    * Note: is not avalible outside this class
-    */
+    private static Timestamp stringToTimestamp(String string){
+        try {
+            DateFormat formatter;
+            formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date date = (Date) formatter.parse(string);
+            java.sql.Timestamp timeStampDate = new Timestamp(date.getTime());
+
+            return timeStampDate;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static boolean checkEmail(String str){
         if(str.matches("^[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9_-]{2,}.[A-Za-z.]{2,7}$"))
             return true;
         return false;
     }
 
-    /*
-    * input: none
-    * output: Timestamp
-    * Note: Gives the current timestamp, is not avalible outside this class
-    */
     private static Timestamp getTimestampNow(){
         Date date = new Date();
         return new Timestamp(date.getTime());
     }
 
-    /*
-    * input: Username, email, password, re-password (re-entered password), user role
-    * output: True if all the appropriate entries are made to the databases. False otherwise
-    * Note:
-    */
     public static boolean register(String username, String email, String password, String re_password, String user_role){
         boolean user = false;
         String error = "";

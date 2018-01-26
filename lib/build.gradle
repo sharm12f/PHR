@@ -3,6 +3,7 @@ apply plugin: 'java-library'
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':mysql-connector-java-5.1.45-bin')
+    compile 'org.json:json:20160212'
 }
 
 sourceCompatibility = "1.7"

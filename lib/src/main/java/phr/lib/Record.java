@@ -1,12 +1,13 @@
 package phr.lib;
 
 import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * Created by Anupam on 29-Dec-17.
  */
 
-public class Record {
+public class Record implements Serializable{
     private int id, user_id;
     private String policy, record, record_ref;
     private Timestamp create;
