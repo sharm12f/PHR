@@ -15,7 +15,7 @@ public class Auth_Access{
 
     private static final String IP = "http://10.0.2.2";
 
-    protected static String getUsersByUsername(String email){
+    protected static String getUsersByEmail(String email){
        String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
        return responce;
     }
@@ -33,12 +33,15 @@ public class Auth_Access{
         return is_user;
     }
 
-    protected static boolean insertIntoUsers(String name, String email, String password, String phone, String region, String province){
+    protected static boolean insertIntoUsers(String fname, String lname,  String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
+        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&fname="+fname+"&lname="+lname+"&region="+region+"&province="+province);
         if (responce.equals("true"))
             success=true;
+        else{
+            System.out.println(responce);
+        }
         return success;
     }
 

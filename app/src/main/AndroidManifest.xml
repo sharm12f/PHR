@@ -21,6 +21,9 @@
         <activity android:name=".PatientRegistration">
 
         </activity>
+        <activity android:name=".UpdateUserInfo">
+
+        </activity>
     </application>
 
 </manifest>

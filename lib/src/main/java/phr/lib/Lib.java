@@ -1,14 +1,10 @@
 package phr.lib;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 
 import org.json.*;
 
@@ -19,13 +15,12 @@ public class Lib {
     }
 
     public static User login(String email, String password){
-       /*
         User user = new User("Application Test","app@app.com",getTimestampNow(),"USER",getTimestampNow());
-       user.setId(1);
-       user.setProvince("ON");
-       user.setPhone("999-999-9999");
-       user.setRegion("Windsor");
-        */
+        user.setId(1);
+        user.setProvince("ON");
+        user.setPhone("999-999-9999");
+        user.setRegion("Windsor");
+       /*
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
         User user = null;
@@ -35,7 +30,7 @@ public class Lib {
             if(Auth_Access.isUser(email, password)) {
                 String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
                 int db_id;
-                String responce = Auth_Access.getUsersByUsername(email);
+                String responce = Auth_Access.getUsersByEmail(email);
                 JSONObject obj = new JSONObject(responce);
                 db_id = obj.getInt("id");
                 db_create = obj.getString("create_time");
@@ -73,7 +68,7 @@ public class Lib {
                 System.out.println("Wrong email or password");
             }
         }
-        System.out.println(user.toString());
+        */
         return user;
     }
 
@@ -110,7 +105,7 @@ public class Lib {
         return new Timestamp(date.getTime());
     }
 
-    public static boolean register(String name, String email, String password, String re_password, String phone, String region, String province){
+    public static boolean register(String fname, String lname, String email, String password, String re_password, String phone, String region, String province){
         boolean user = false;
         String error = "";
         try{
@@ -119,11 +114,12 @@ public class Lib {
                 set = false;
                 error += "\tUsername already taken\n";
             }
-            boolean checkUsername = checkString(name);
+            boolean checkFname = checkString(fname);
+            boolean checkLname = checkString(lname);
             boolean checkPassword = password.equals(re_password);
             boolean checkEmail = checkEmail(email);
-            if(checkEmail && checkPassword && checkUsername && set){
-                if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
+            if(checkEmail && checkPassword && checkFname && set && checkLname){
+                if(Auth_Access.insertIntoUsers(fname.toUpperCase(), lname.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
                     user = true;
                 }
                 else
@@ -131,8 +127,10 @@ public class Lib {
             }else{
                 if(!checkEmail)
                     error+="\tEmail is not valid\n";
-                if(!checkUsername)
-                    error+="\tUsername is not valid\n";
+                if(!checkFname)
+                    error+="\tFirst name is not valid\n";
+                if(!checkLname)
+                    error+="\tLast name is not valid\n";
                 if(!checkPassword)
                     error+="\tPassword's dont match\n";
             }

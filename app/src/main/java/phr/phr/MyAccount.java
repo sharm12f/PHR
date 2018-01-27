@@ -1,7 +1,10 @@
 package phr.phr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class MyAccount extends AppCompatActivity {
         final TextView phone = findViewById(R.id.phone);
         final TextView region = findViewById(R.id.region);
         final TextView province = findViewById(R.id.province);
+        final Button edit_user = findViewById(R.id.edit_user_button);
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
         User user = list.get(0);
         name.setText(user.getName());
@@ -30,5 +34,13 @@ public class MyAccount extends AppCompatActivity {
         phone.setText(user.getPhone());
         region.setText(user.getRegion());
         province.setText(user.getProvince());
+
+        edit_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateUserInfo.class);
+                startActivity(intent);
+            }
+        });
     }
 }

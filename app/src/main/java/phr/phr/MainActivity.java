@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 try {
+
+                    if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
+                        return;
+
                     User user = new AsyncTask<Void, Void, User>() {
                         protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");

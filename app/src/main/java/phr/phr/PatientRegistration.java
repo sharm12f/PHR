@@ -47,9 +47,8 @@ public class PatientRegistration extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fname = Efname.getText().toString();
-                String lname = Elname.getText().toString();
-                final String name = fname + " " + lname;
+                final String fname = Efname.getText().toString();
+                final String lname = Elname.getText().toString();
                 final String email = Eemail.getText().toString();
                 final String phone = Ephone.getText().toString();
                 final String password = Epassword.getText().toString();
@@ -60,7 +59,7 @@ public class PatientRegistration extends AppCompatActivity {
                     Boolean success = new AsyncTask<Void, Void, Boolean>() {
                         protected Boolean doInBackground(Void... progress) {
                             System.out.println("Start Registration");
-                            return Lib.register(name, email, password, re_password, phone, region, province);
+                            return Lib.register(fname, lname , email, password, re_password, phone, region, province);
                         }
                     }.execute().get();
                     if(success == true) {
