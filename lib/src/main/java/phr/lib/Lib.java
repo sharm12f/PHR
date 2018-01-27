@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -109,7 +110,7 @@ public class Lib {
         return new Timestamp(date.getTime());
     }
 
-    public static boolean register(String name, String email, String password, String re_password, String phone){
+    public static boolean register(String name, String email, String password, String re_password, String phone, String region, String province){
         boolean user = false;
         String error = "";
         try{
@@ -122,7 +123,7 @@ public class Lib {
             boolean checkPassword = password.equals(re_password);
             boolean checkEmail = checkEmail(email);
             if(checkEmail && checkPassword && checkUsername && set){
-                if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase())) {
+                if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
                     user = true;
                 }
                 else
@@ -185,5 +186,26 @@ public class Lib {
 
     public static boolean deleteRecord(int id){
         return Auth_Access.deleteUserRecord(id);
+    }
+
+    public static ArrayList<String> getRegions(){
+        ArrayList<String> list = new ArrayList<String>();
+        String responce = Auth_Access.getRegions();
+        JSONArray array = new JSONArray(responce);
+        for(int i=0;i<array.length();i++){
+            JSONObject obj = array.getJSONObject(i);
+            list.add(obj.getString("name"));
+        }
+        return list;
+    }
+    public static ArrayList<String> getProvinces(){
+        ArrayList<String> list = new ArrayList<String>();
+        String responce = Auth_Access.getProvinces();
+        JSONArray array = new JSONArray(responce);
+        for(int i=0;i<array.length();i++){
+            JSONObject obj = array.getJSONObject(i);
+            list.add(obj.getString("name"));
+        }
+        return list;
     }
 }

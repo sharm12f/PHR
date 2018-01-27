@@ -33,10 +33,10 @@ public class Auth_Access{
         return is_user;
     }
 
-    protected static boolean insertIntoUsers(String name, String email, String password, String phone){
+    protected static boolean insertIntoUsers(String name, String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name);
+        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
         if (responce.equals("true"))
             success=true;
         return success;
@@ -94,6 +94,18 @@ public class Auth_Access{
             }
         }
         return string;
+    }
+
+    protected static String getRegions(){
+        String responce = makeGet(IP+"/PHR_AUTH/get_regions.php");
+        System.out.println(responce);
+        return responce;
+    }
+
+    protected static String getProvinces(){
+        String responce = makeGet(IP+"/PHR_AUTH/get_provinces.php");
+        System.out.println(responce);
+        return responce;
     }
 
 }

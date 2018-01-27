@@ -176,11 +176,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Organization(Optional):"
+                    android:text="Province:"
                     android:textSize="16sp" />
 
                 <Spinner
-                    android:id="@+id/organization_spinner"
+                    android:id="@+id/province_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
