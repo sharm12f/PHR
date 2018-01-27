@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="349dp"
-        android:layout_height="376dp"
+        android:layout_height="449dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -49,14 +49,12 @@
                     android:text="Name:"
                     android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButton1"
+                <EditText
+                    android:id="@+id/textButton1"
                     android:layout_width="246dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layoutDirection="rtl"
                     android:text="John Smith "
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textSize="16sp" />
 
             </TableRow>
@@ -72,14 +70,12 @@
                     android:text="Email:"
                     android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButton2"
+                <EditText
+                    android:id="@+id/textButton2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layoutDirection="rtl"
                     android:text="john.smith@gmail.com "
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textSize="16sp" />
 
             </TableRow>
@@ -94,14 +90,12 @@
                     android:text="Phone:"
                     android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButton3"
+                <EditText
+                    android:id="@+id/textButton3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layoutDirection="rtl"
                     android:text="519-225-2266"
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textSize="16sp" />
 
             </TableRow>
@@ -116,14 +110,12 @@
                     android:text="Region:"
                     android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButton4"
+                <EditText
+                    android:id="@+id/textButton4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layoutDirection="rtl"
                     android:text="Windsor"
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textSize="16sp" />
 
             </TableRow>
@@ -138,14 +130,12 @@
                     android:text="Province:"
                     android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButton5"
+                <EditText
+                    android:id="@+id/textButton5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layoutDirection="rtl"
                     android:text="Ontario"
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textSize="16sp" />
 
             </TableRow>

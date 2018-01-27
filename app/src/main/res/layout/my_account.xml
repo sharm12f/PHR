@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="349dp"
-        android:layout_height="255dp"
+        android:layout_height="240dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -144,30 +144,28 @@
             android:id="@+id/button4"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="242dp"
-            android:layout_height="64dp"
+            android:layout_height="54dp"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
             android:text="Edit User Details"
             android:theme="@style/myButtonTheme" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="367dp"
-        android:layout_height="249dp"
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="214dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.846">
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="349dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/my_border"
@@ -179,68 +177,31 @@
             tools:layout_editor_absoluteX="99sp"
             tools:layout_editor_absoluteY="264sp" />
 
-
-        <RadioGroup
+        <ListView
+            android:id="@+id/records_list_view"
             android:layout_width="350dp"
-            android:layout_height="153dp"
-            android:layout_gravity="center"
-            android:background="@drawable/my_border">
+            android:layout_height="160dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView3"
+            android:background="@drawable/my_border"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="39dp">
 
-            <RadioButton
-                android:id="@+id/radioButton1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="40dp"
-                android:layoutDirection="rtl"
-                android:text="Record 1 - Dietetic "
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
 
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="40dp"
-                android:layoutDirection="rtl"
-                android:text="Record 2 - Cardiac "
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
+        </ListView>
 
-            <RadioButton
-                android:id="@+id/radioButton3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="40dp"
-                android:layoutDirection="rtl"
-                android:text="Record 3 - Lab Test "
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-
-            <RadioButton
-                android:id="@+id/radioButton4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="40dp"
-                android:layoutDirection="rtl"
-                android:text="Record 4 - Physiotherapy "
-                android:textAlignment="textStart"
-                android:textSize="18sp" />
-        </RadioGroup>
-    </LinearLayout>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/button5"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="155dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
+        android:layout_margin="1dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:layout_margin="3dp"
         android:text="Add Record"
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -254,17 +215,17 @@
         android:id="@+id/button6"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="168dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
+        android:layout_margin="1dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_margin="3dp"
         android:text="View Permissions"
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintHorizontal_bias="0.915"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
