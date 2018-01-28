@@ -111,4 +111,12 @@ public class Auth_Access{
         return responce;
     }
 
+    protected static boolean updateUser(String fname, String lname, String email, String phone, String region, String province){
+        boolean result = false;
+        String responce = makeGet(IP+"/PHR_AUTH/update_user.php?email="+email+"&phone="+phone+"&fname="+fname+"&lname="+lname+"&region="+region+"&province="+province);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
 }
