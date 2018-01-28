@@ -1,6 +1,7 @@
 package phr.phr;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
+import phr.lib.Lib;
 import phr.lib.Record;
 import phr.lib.User;
 
@@ -20,28 +23,28 @@ import phr.lib.User;
  */
 
 public class MyAccount extends AppCompatActivity {
-
+    TextView name;
+    TextView email;
+    TextView phone;
+    TextView region;
+    TextView province;
+    Button edit_user ;
+    ListView record_list_view;
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_account);
-        final TextView name = findViewById(R.id.name);
-        final TextView email = findViewById(R.id.email);
-        final TextView phone = findViewById(R.id.phone);
-        final TextView region = findViewById(R.id.region);
-        final TextView province = findViewById(R.id.province);
-        final Button edit_user = findViewById(R.id.edit_user_button);
-        final ListView record_list_view = findViewById(R.id.records_list_view);
+        name = findViewById(R.id.name);
+        email = findViewById(R.id.email);
+        phone = findViewById(R.id.phone);
+        region = findViewById(R.id.region);
+        province = findViewById(R.id.province);
+        edit_user = findViewById(R.id.edit_user_button);
+        record_list_view = findViewById(R.id.records_list_view);
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
-        final User user = list.get(0);
-        name.setText(user.getName());
-        email.setText(user.getEmail());
-        phone.setText(user.getPhone());
-        region.setText(user.getRegion());
-        province.setText(user.getProvince());
-
-        setRecords(record_list_view, user.getRecords());
-
+        user = list.get(0);
+        setFields();
         edit_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +56,41 @@ public class MyAccount extends AppCompatActivity {
             }
         });
     }
-    private void setRecords(ListView records_list_view, LinkedList<Record> records){
+    @Override
+    protected void onResume(){
+        super.onResume();
+        try{
+            user = new AsyncTask<Void, Void, User>() {
+                protected User doInBackground(Void... progress) {
+                    User result = null;
+                    result = Lib.makeUser(user.getEmail());
+                    return result;
+                }
+            }.execute().get();
 
+        }catch(Exception e){e.printStackTrace();}
+
+        setFields();
+    }
+
+    private void setFields(){
+        name.setText(user.getName());
+        email.setText(user.getEmail());
+        phone.setText(user.getPhone());
+        region.setText(user.getRegion());
+        province.setText(user.getProvince());
+        setRecords();
+    }
+    private void setRecords(){
+        ArrayList<String> l = new ArrayList<>();
+        LinkedList<Record> list = user.getRecords();
+        Iterator<Record> itr = list.iterator();
+        while(itr.hasNext()){
+            Record r = itr.next();
+            System.out.println(r.toString());
+            l.add(r.getRecord());
+        }
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.activity_listview, list);
+        record_list_view.setAdapter(adapter);
     }
 }

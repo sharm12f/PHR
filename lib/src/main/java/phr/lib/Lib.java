@@ -15,12 +15,13 @@ public class Lib {
     }
 
     public static User login(String email, String password){
+        /*
         User user = new User("Application Test","app@app.com",getTimestampNow(),"USER",getTimestampNow());
         user.setId(1);
         user.setProvince("ON");
         user.setPhone("999-999-9999");
         user.setRegion("Windsor");
-       /*
+       */
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
         User user = null;
@@ -28,47 +29,53 @@ public class Lib {
             System.out.println("Nope");
         else {
             if(Auth_Access.isUser(email, password)) {
-                String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
-                int db_id;
-                String responce = Auth_Access.getUsersByEmail(email);
-                JSONObject obj = new JSONObject(responce);
-                db_id = obj.getInt("id");
-                db_create = obj.getString("create_time");
-                db_email = obj.getString("email");
-                db_role = obj.getString("user_role");
-                db_name = obj.getString("name");
-                db_phone = obj.getString("phone");
-                db_region = obj.getString("region");
-                db_province = obj.getString("province");
-                Timestamp creattime = stringToTimestamp(db_create);
-                user = new User(db_name, db_email, creattime, db_role,getTimestampNow());
-                user.setId(db_id);
-                user.setPhone(db_phone);
-                user.setRegion(db_region);
-                user.setProvince(db_province);
-                String records = Auth_Access.getUserHealthRecordByEmail(db_email);
-                JSONArray str = new JSONArray(records);
-                for (int i=0;i<str.length(); i++){
-                    int rid, uid;
-                    String cypertext_policy, cypertext_record, cypertext_record_ref;
-                    Timestamp create_time;
-                    JSONObject record = str.getJSONObject(i);
-                    create_time = stringToTimestamp(record.getString("create_time"));
-                    rid = record.getInt("rid");
-                    uid = record.getInt("uid");
-                    cypertext_policy = record.getString("cypertext_policy");
-                    cypertext_record = record.getString("cypertext_record");
-                    cypertext_record_ref = record.getString("cypertext_record_ref");
-                    Record r = new Record(cypertext_policy,cypertext_record,cypertext_record_ref,uid,create_time);
-                    r.setId(rid);
-                    user.addRecord(r);
-                }
+                user = makeUser(email);
             }
             else{
                 System.out.println("Wrong email or password");
             }
         }
-        */
+        return user;
+    }
+
+    public static User makeUser (String email){
+        User user = null;
+        String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
+        int db_id;
+        String responce = Auth_Access.getUsersByEmail(email);
+        JSONObject obj = new JSONObject(responce);
+        db_id = obj.getInt("id");
+        db_create = obj.getString("create_time");
+        db_email = obj.getString("email");
+        db_role = obj.getString("user_role");
+        db_name = obj.getString("name");
+        db_phone = obj.getString("phone");
+        db_region = obj.getString("region");
+        db_province = obj.getString("province");
+        Timestamp creattime = stringToTimestamp(db_create);
+        user = new User(db_name, db_email, creattime, db_role,getTimestampNow());
+        user.setId(db_id);
+        user.setPhone(db_phone);
+        user.setRegion(db_region);
+        user.setProvince(db_province);
+        String records = Auth_Access.getUserHealthRecordByEmail(db_email);
+        System.out.println(records);
+        JSONArray str = new JSONArray(records);
+        for (int i=0;i<str.length(); i++) {
+            int rid, uid;
+            String cypertext_policy, cypertext_record, cypertext_record_ref;
+            Timestamp create_time;
+            JSONObject record = str.getJSONObject(i);
+            create_time = stringToTimestamp(record.getString("create_time"));
+            rid = record.getInt("rid");
+            uid = record.getInt("uid");
+            cypertext_policy = record.getString("cypertext_policy");
+            cypertext_record = record.getString("cypertext_record");
+            cypertext_record_ref = record.getString("cypertext_record_ref");
+            Record r = new Record(cypertext_policy, cypertext_record, cypertext_record_ref, uid, create_time);
+            r.setId(rid);
+            user.addRecord(r);
+        }
         return user;
     }
 
