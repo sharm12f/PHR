@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }.execute().get();
 
-                    Intent intent = new Intent(getApplicationContext(), MyAccount.class);
+                    Intent intent = new Intent(getApplicationContext(), PatientView.class);
                     ArrayList<User> list = new ArrayList<User>();
                     list.add(user);
                     intent.putExtra("USER",list);

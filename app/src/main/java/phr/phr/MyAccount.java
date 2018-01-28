@@ -28,7 +28,7 @@ public class MyAccount extends AppCompatActivity {
         final TextView province = findViewById(R.id.province);
         final Button edit_user = findViewById(R.id.edit_user_button);
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
-        User user = list.get(0);
+        final User user = list.get(0);
         name.setText(user.getName());
         email.setText(user.getEmail());
         phone.setText(user.getPhone());
@@ -39,6 +39,10 @@ public class MyAccount extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UpdateUserInfo.class);
+                ArrayList<User> list = new ArrayList<User>();
+                list.add(user);
+                intent.putExtra("USER",list);
+                startActivity(intent);
                 startActivity(intent);
             }
         });

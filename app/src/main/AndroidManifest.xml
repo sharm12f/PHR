@@ -24,6 +24,9 @@
         <activity android:name=".UpdateUserInfo">
 
         </activity>
+        <activity android:name=".PatientView">
+
+        </activity>
     </application>
 
 </manifest>

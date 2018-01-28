@@ -50,7 +50,7 @@
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/textButton1"
+                    android:id="@+id/name_input"
                     android:layout_width="246dp"
                     android:layout_height="wrap_content"
                     android:text="John Smith "
@@ -71,7 +71,7 @@
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/textButton2"
+                    android:id="@+id/email_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="john.smith@gmail.com "
@@ -91,7 +91,7 @@
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/textButton3"
+                    android:id="@+id/phone_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="519-225-2266"
@@ -139,7 +139,7 @@
         </TableLayout>
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/update_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="242dp"
             android:layout_height="64dp"
