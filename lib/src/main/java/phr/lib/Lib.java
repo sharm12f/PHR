@@ -80,6 +80,28 @@ public class Lib {
         return false;
     }
 
+    public ArrayList<Record> getRecordByEmail(String email){
+        ArrayList<Record> list = new ArrayList<Record>();
+        String records = Auth_Access.getUserHealthRecordByEmail(email);
+        JSONArray str = new JSONArray(records);
+        for (int i=0;i<str.length(); i++) {
+            int rid, uid;
+            String cypertext_policy, cypertext_record, cypertext_record_ref;
+            Timestamp create_time;
+            JSONObject record = str.getJSONObject(i);
+            create_time = stringToTimestamp(record.getString("create_time"));
+            rid = record.getInt("rid");
+            uid = record.getInt("uid");
+            cypertext_policy = record.getString("cypertext_policy");
+            cypertext_record = record.getString("cypertext_record");
+            cypertext_record_ref = record.getString("cypertext_record_ref");
+            Record r = new Record(cypertext_policy, cypertext_record, cypertext_record_ref, uid, create_time);
+            r.setId(rid);
+            list.add(r);
+        }
+        return list;
+    }
+
     private static Timestamp stringToTimestamp(String string){
         try {
             DateFormat formatter;
@@ -184,6 +206,14 @@ public class Lib {
 
     public static boolean deleteRecord(int id){
         return Auth_Access.deleteUserRecord(id);
+    }
+
+    public static boolean updateUser(String name, String email, String phone, String region, String province){
+        boolean result = false;
+        String fname = name.split(" ")[0];
+        String lname = name.split(" ")[1];
+        result = Auth_Access.updateUser(fname,lname,email,phone,region,province);
+        return result;
     }
 
     public static ArrayList<String> getRegions(){

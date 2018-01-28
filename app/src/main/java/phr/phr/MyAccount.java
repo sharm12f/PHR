@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import phr.lib.Record;
 import phr.lib.User;
 
 /**
@@ -27,6 +31,7 @@ public class MyAccount extends AppCompatActivity {
         final TextView region = findViewById(R.id.region);
         final TextView province = findViewById(R.id.province);
         final Button edit_user = findViewById(R.id.edit_user_button);
+        final ListView record_list_view = findViewById(R.id.records_list_view);
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
         final User user = list.get(0);
         name.setText(user.getName());
@@ -34,6 +39,8 @@ public class MyAccount extends AppCompatActivity {
         phone.setText(user.getPhone());
         region.setText(user.getRegion());
         province.setText(user.getProvince());
+
+        setRecords(record_list_view, user.getRecords());
 
         edit_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,8 +50,10 @@ public class MyAccount extends AppCompatActivity {
                 list.add(user);
                 intent.putExtra("USER",list);
                 startActivity(intent);
-                startActivity(intent);
             }
         });
+    }
+    private void setRecords(ListView records_list_view, LinkedList<Record> records){
+
     }
 }
