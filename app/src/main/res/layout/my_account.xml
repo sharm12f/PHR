@@ -178,13 +178,18 @@
 
             <TableRow
                 android:background="@drawable/my_border"
-                android:padding="8dp">
+                android:padding="4dp">
+
+                <SearchView
+                    android:layout_width="190dp"
+                    android:layout_height="match_parent"
+                    android:showAsAction="collapseActionView|ifRoom" />
 
                 <TextView
                     android:id="@+id/textView3"
-                    android:layout_width="290dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="right"
                     android:background="@drawable/my_border"
                     android:padding="2dp"
                     android:text="My Records"
@@ -192,10 +197,6 @@
                     android:textStyle="bold"
                     tools:layout_editor_absoluteX="99sp"
                     tools:layout_editor_absoluteY="264sp" />
-
-                <SearchView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
 
             </TableRow>
         </TableLayout>
