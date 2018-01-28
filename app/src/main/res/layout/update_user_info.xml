@@ -110,13 +110,12 @@
                     android:text="Region:"
                     android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/textButton4"
-                    android:layout_width="match_parent"
+                <Spinner
+                    android:id="@+id/region_spinner"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Windsor"
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
+                    android:layout_weight="1"
+                    android:drawSelectorOnTop="true"/>
 
             </TableRow>
 
@@ -130,14 +129,11 @@
                     android:text="Province:"
                     android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/textButton5"
-                    android:layout_width="match_parent"
+                <Spinner
+                    android:id="@+id/province_spinner"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ontario"
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
-
+                    android:layout_weight="1" />
             </TableRow>
 
         </TableLayout>
