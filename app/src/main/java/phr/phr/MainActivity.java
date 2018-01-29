@@ -1,7 +1,9 @@
 package phr.phr;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,8 +31,15 @@ public class MainActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                try {
 
+                try {
+                    User user = new AsyncTask<Void, Void, User>() {
+                        protected User doInBackground(Void... progress) {
+                            System.out.println("Start Login");
+                            return Lib.login("app@app.com", "password");
+                        }
+                    }.execute().get();
+                    /*
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
 
@@ -40,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                             return Lib.login(email_input.getText().toString(), password_input.getText().toString());
                         }
                     }.execute().get();
-
+                    */
                     Intent intent = new Intent(getApplicationContext(), PatientView.class);
                     ArrayList<User> list = new ArrayList<User>();
                     list.add(user);
@@ -53,8 +62,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    Intent intent = new Intent (getApplicationContext(), PatientRegistration.class);
-                    startActivity(intent);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Are you a Patient of a Physician")
+                            .setPositiveButton("Patient", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent (getApplicationContext(), PatientRegistration.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton("Physician", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent (getApplicationContext(), PatientRegistration.class);
+                                    startActivity(intent);
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }catch(Exception e){e.printStackTrace();}
             }
         });

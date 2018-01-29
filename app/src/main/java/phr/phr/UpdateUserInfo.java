@@ -5,8 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -22,6 +24,8 @@ public class UpdateUserInfo extends AppCompatActivity {
     EditText email_input;
     EditText phone_input;
     Button update_button;
+    Spinner regions;
+    Spinner provinces;
     Boolean Success = false;
     User user=null;
     @Override
@@ -32,6 +36,8 @@ public class UpdateUserInfo extends AppCompatActivity {
         email_input = findViewById(R.id.email_input);
         phone_input = findViewById(R.id.phone_input);
         update_button = findViewById(R.id.update_button);
+        regions = findViewById(R.id.region_spinner);
+        provinces = findViewById(R.id.province_spinner);
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
         user = list.get(0);
         setFields();
@@ -41,8 +47,8 @@ public class UpdateUserInfo extends AppCompatActivity {
                 final String name = name_input.getText().toString();
                 final String email = email_input.getText().toString();
                 final String phone = phone_input.getText().toString();
-                final String region = "Windsor";
-                final String province = "Ontaio";
+                final String region = regions.getSelectedItem().toString();
+                final String province = provinces.getSelectedItem().toString();
                 try{
                     Success = new AsyncTask<Void, Void, Boolean>() {
                         protected Boolean doInBackground(Void... progress) {
@@ -56,9 +62,6 @@ public class UpdateUserInfo extends AppCompatActivity {
                             return result;
                         }
                     }.execute().get();
-                    if(Success){
-                        setFields();
-                    }
                 }catch (Exception e){e.printStackTrace();}
             }
         });
@@ -68,5 +71,29 @@ public class UpdateUserInfo extends AppCompatActivity {
         name_input.setText(user.getName());
         email_input.setText(user.getEmail());
         phone_input.setText(user.getPhone());
+        new AsyncTask<Void, Void, Void>(){
+            protected Void doInBackground(Void... progress){
+                loadSpinners();
+                return null;
+            }
+        }.execute();
+    }
+
+    private void loadSpinners(){
+        ArrayList<String> list = Lib.getRegions();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regions.setAdapter(dataAdapter);
+        int s = dataAdapter.getPosition(user.getRegion());
+        regions.setSelection(s);
+
+        ArrayList<String> list2 = Lib.getProvinces();
+        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list2);
+        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        provinces.setAdapter(dataAdapter2);
+        int p = dataAdapter2.getPosition(user.getProvince());
+        provinces.setSelection(p);
     }
 }
