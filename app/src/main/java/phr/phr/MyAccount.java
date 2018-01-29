@@ -87,7 +87,6 @@ public class MyAccount extends AppCompatActivity {
         Iterator<Record> itr = list.iterator();
         while(itr.hasNext()){
             Record r = itr.next();
-            System.out.println(r.toString());
             l.add(r.getRecord());
         }
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.activity_listview, list);
