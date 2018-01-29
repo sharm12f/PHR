@@ -54,7 +54,8 @@ public class UpdateUserInfo extends AppCompatActivity {
                         protected Boolean doInBackground(Void... progress) {
                             boolean result = false;
                             result = Lib.updateUser(name,email,phone,region,province);
-                            user.setName(name);
+                            user.setfName(name.split(" ")[0]);
+                            user.setlName(name.split(" ")[1]);
                             user.setEmail(email);
                             user.setPhone(phone);
                             user.setRegion(region);
@@ -68,7 +69,7 @@ public class UpdateUserInfo extends AppCompatActivity {
     }
 
     private void setFields(){
-        name_input.setText(user.getName());
+        name_input.setText(user.getfName()+" "+user.getlName());
         email_input.setText(user.getEmail());
         phone_input.setText(user.getPhone());
         new AsyncTask<Void, Void, Void>(){

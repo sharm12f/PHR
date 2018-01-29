@@ -17,7 +17,8 @@ import javax.sound.sampled.ReverbType;
 public class User implements Serializable{
     private String email;
     private String role;
-    private String name;
+    private String fname;
+    private String lname;
     private String phone;
     private String region;
     private String province;
@@ -26,8 +27,9 @@ public class User implements Serializable{
     private LinkedList<Record> records;
     private Timestamp session;
 
-    public User(String name, String email, Timestamp create, String role, Timestamp session){
-        this.name = name;
+    public User(String fname,String lname, String email, Timestamp create, String role, Timestamp session){
+        this.fname = fname;
+        this.lname = lname;
         this.email = email;
         this.role = role;
         this.create = create;
@@ -61,9 +63,6 @@ public class User implements Serializable{
     public Timestamp getCreate(){
         return this.create;
     }
-    public String getUsername(){
-        return this.name;
-    }
     public String getEmail(){
         return this.email;
     }
@@ -73,7 +72,8 @@ public class User implements Serializable{
     public int getId(){
         return this.id;
     }
-    public String getName(){return this.name;}
+    public String getfName(){return this.fname;}
+    public String getlName(){return this.lname;}
     public String getPhone(){return this.phone;}
     public String getRegion(){return this.region;}
     public String getProvince(){return this.province;}
@@ -84,9 +84,6 @@ public class User implements Serializable{
     public void setCreate(Timestamp create){
         this.create = create;
     }
-    public void setUsername(String username){
-        this.name = username;
-    }
     public void setEmail(String email){
         this.email = email;
     }
@@ -96,12 +93,13 @@ public class User implements Serializable{
     public void setId(int id){
         this.id = id;
     }
-    public void setName(String name){this.name=name;}
+    public void setfName(String fname){this.fname=fname;}
+    public void setlName(String lname){this.lname=lname;}
     public void setPhone(String phone){this.phone=phone;}
     public void setRegion(String region){this.region = region;}
     public void setProvince(String province){this.province=province;}
 
     public String toString(){
-        return "Username: " + this.name + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Name: "+ this.name + " Phone: "+ this.phone + " Region: " + this.region + " Province: "+ this.province;
+        return "Fname: " + this.fname + "Lname: " + this.lname + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region + " Province: "+ this.province;
     }
 }

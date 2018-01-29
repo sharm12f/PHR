@@ -5,10 +5,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,7 +46,9 @@ public class MyAccount extends AppCompatActivity {
         record_list_view = findViewById(R.id.records_list_view);
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
         user = list.get(0);
-        setFields();
+        RecordListViewAdapter adapter = new RecordListViewAdapter(this, user.getRecords());
+        record_list_view.setAdapter(adapter);
+
         edit_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +57,18 @@ public class MyAccount extends AppCompatActivity {
                 list.add(user);
                 intent.putExtra("USER",list);
                 startActivity(intent);
+            }
+        });
+
+        record_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                String Slecteditem= user.getRecords().get(+position).toString();
+                Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -74,22 +90,13 @@ public class MyAccount extends AppCompatActivity {
     }
 
     private void setFields(){
-        name.setText(user.getName());
+        name.setText(user.getfName()+" "+user.getlName());
         email.setText(user.getEmail());
         phone.setText(user.getPhone());
         region.setText(user.getRegion());
         province.setText(user.getProvince());
-        setRecords();
     }
     private void setRecords(){
-        ArrayList<String> l = new ArrayList<>();
-        LinkedList<Record> list = user.getRecords();
-        Iterator<Record> itr = list.iterator();
-        while(itr.hasNext()){
-            Record r = itr.next();
-            l.add(r.getRecord());
-        }
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.activity_listview, list);
-        record_list_view.setAdapter(adapter);
+
     }
 }

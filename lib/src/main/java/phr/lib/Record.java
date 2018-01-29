@@ -9,14 +9,15 @@ import java.io.Serializable;
 
 public class Record implements Serializable{
     private int id, user_id;
-    private String policy, record, record_ref;
+    private String policy, record, record_ref, name;
     private Timestamp create;
-    public Record(String policy, String record, String record_ref,int user_id, Timestamp create){
+    public Record(String name, String policy, String record, String record_ref,int user_id, Timestamp create){
         this.user_id = user_id;
         this.policy = policy;
         this.record = record;
         this.record_ref = record_ref;
         this.create = create;
+        this.name= name;
     }
     public void setId(int id){
         this.id = id;
@@ -27,6 +28,7 @@ public class Record implements Serializable{
     public void setPolicy(String policy){
         this.policy = policy;
     }
+    public void setName(String name){this.name=name;}
     public void setRecord(String record){
         this.record = record;
     }
@@ -45,10 +47,11 @@ public class Record implements Serializable{
     public String getRecord(){
         return this.record;
     }
+    public String getName(){return this.name;}
     public String getRecord_ref(){
         return this.record_ref;
     }
     public String toString(){
-        return "user_id: " + this.user_id + " policy: " + this.policy + " record: " + this.record + " record_ref: " + this.record_ref + " ID: " + this.id;
+        return "name: "+this.name+"user_id: " + this.user_id + " policy: " + this.policy + " record: " + this.record + " record_ref: " + this.record_ref + " ID: " + this.id;
     }
 }
