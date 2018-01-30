@@ -94,9 +94,20 @@ public class Auth_Access{
         return success;
     }
 
-    protected static boolean insertIntoRecord(String policy, String record, String record_ref, int user_id){
-        //("insert into user_health_record (cypertext_policy, cypertext_record, cypertext_record_ref, user_id) values (?,?,?,?)")
-        return false;
+    protected static boolean updateRecord(String name, String description, int rid){
+        boolean result = false;
+        String responce = makeGet(IP+"/PHR_AUTH/update_record.php?name="+name+"&description="+description+"&rid="+rid);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
+    protected static boolean insertIntoRecord(String name, String description, int uid){
+        boolean result = false;
+        String responce = makeGet(IP+"/PHR_AUTH/insert_into_record.php?name="+name+"&description="+description+"&uid="+uid);
+        if(responce.equals("true"))
+            result=true;
+        return result;
     }
 
     protected static boolean deleteUserRecord(int id){

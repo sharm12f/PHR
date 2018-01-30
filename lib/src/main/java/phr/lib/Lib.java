@@ -72,17 +72,15 @@ public class Lib {
         JSONArray str = new JSONArray(records);
         for (int i=0;i<str.length(); i++) {
             int rid, uid;
-            String cypertext_policy, cypertext_record, cypertext_record_ref, name;
+            String record, name;
             Timestamp create_time;
-            JSONObject record = str.getJSONObject(i);
-            create_time = stringToTimestamp(record.getString("create_time"));
-            rid = record.getInt("rid");
-            uid = record.getInt("uid");
-            name = record.getString("name");
-            cypertext_policy = record.getString("cypertext_policy");
-            cypertext_record = record.getString("cypertext_record");
-            cypertext_record_ref = record.getString("cypertext_record_ref");
-            Record r = new Record(name, cypertext_policy, cypertext_record, cypertext_record_ref, uid, create_time);
+            JSONObject result = str.getJSONObject(i);
+            create_time = stringToTimestamp(result.getString("create_time"));
+            rid = result.getInt("rid");
+            uid = result.getInt("uid");
+            name = result.getString("name");
+            record = result.getString("record");
+            Record r = new Record(name, record, uid, create_time);
             r.setId(rid);
             patient.addRecord(r);
         }
@@ -125,27 +123,16 @@ public class Lib {
         return false;
     }
 
-    public ArrayList<Record> getRecordByEmail(String email){
-        ArrayList<Record> list = new ArrayList<Record>();
-        String records = Auth_Access.getUserHealthRecordByEmail(email);
-        JSONArray str = new JSONArray(records);
-        for (int i=0;i<str.length(); i++) {
-            int rid, uid;
-            String cypertext_policy, cypertext_record, cypertext_record_ref, name;
-            Timestamp create_time;
-            JSONObject record = str.getJSONObject(i);
-            create_time = stringToTimestamp(record.getString("create_time"));
-            rid = record.getInt("rid");
-            uid = record.getInt("uid");
-            name = record.getString("name");
-            cypertext_policy = record.getString("cypertext_policy");
-            cypertext_record = record.getString("cypertext_record");
-            cypertext_record_ref = record.getString("cypertext_record_ref");
-            Record r = new Record(name, cypertext_policy, cypertext_record, cypertext_record_ref, uid, create_time);
-            r.setId(rid);
-            list.add(r);
-        }
-        return list;
+    public static boolean updateUserRecord(String name, String description, int rid){
+        boolean result = false;
+        result = Auth_Access.updateRecord(name, description, rid);
+        return result;
+    }
+
+    public static boolean insertIntoRecord(String name, String description, int uid){
+        boolean result = false;
+        result = Auth_Access.insertIntoRecord(name, description, uid);
+        return result;
     }
 
     private static Timestamp stringToTimestamp(String string){
@@ -243,51 +230,6 @@ public class Lib {
             }
         }catch(Exception e){System.out.println(e);}
         return user;
-    }
-
-    public static boolean deleteAccount(String username, String password){
-        if(Auth_Access.userExists(username)) {
-            if (Auth_Access.isUser(username, password)) {
-                if (Auth_Access.deleteUser(username))
-                    return true;
-                else
-                    return false;
-            } else {
-                return false;
-            }
-        }
-        else
-            return false;
-    }
-
-    public static Record addRecord(String policy, String record, String record_ref, int user_id) {
-        Record result = null;
-        boolean checkPolicy = checkString(policy);
-        boolean checkRecord = checkString(record);
-        boolean checkRecordRef = checkString(record_ref);
-        String error = "";
-        try {
-            if (checkPolicy && checkRecord && checkRecordRef) {
-                if (Auth_Access.insertIntoRecord(policy, record, record_ref, user_id)) {
-
-                }
-            }else {
-                if (!checkPolicy)
-                    error += "\tPolicy not valid\n";
-                if (!checkRecord)
-                    error += "\tRecord not valid\n";
-                if (!checkRecordRef)
-                    error += "\tRecord Ref not valid\n";
-            }
-            if (!error.equals("")) {
-                throw new Exception(error);
-            }
-        }catch (Exception e){System.out.println(e);}
-        return result;
-    }
-
-    public static boolean deleteRecord(int id){
-        return Auth_Access.deleteUserRecord(id);
     }
 
     public static boolean updateUser(String name, String email, String phone, String region, String province){

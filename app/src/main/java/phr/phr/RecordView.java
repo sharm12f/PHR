@@ -1,12 +1,15 @@
 package phr.phr;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
 
+import phr.lib.Lib;
 import phr.lib.Record;
 
 /**
@@ -17,7 +20,9 @@ public class RecordView extends AppCompatActivity {
     EditText name_input, description_input;
     Button add_update_button;
     Record record;
+    boolean update=false;
     int id;
+    Boolean Success = false;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -35,12 +40,43 @@ public class RecordView extends AppCompatActivity {
                 edit_record(record);
             }
         }
-        
+        add_update_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(update){
+                    final String name = name_input.getText().toString();
+                    final String description = description_input.getText().toString();
+                    try{
+                        Success = new AsyncTask<Void, Void, Boolean>() {
+                            protected Boolean doInBackground(Void... progress) {
+                                boolean result = false;
+                                result = Lib.updateUserRecord(name, description, record.getId());
+                                return result;
+                            }
+                        }.execute().get();
+                    }catch (Exception e){e.printStackTrace();}
+                }
+                else{
+                    final String name = name_input.getText().toString();
+                    final String description = description_input.getText().toString();
+                    try{
+                        Success = new AsyncTask<Void, Void, Boolean>() {
+                            protected Boolean doInBackground(Void... progress) {
+                                boolean result = false;
+                                result = Lib.insertIntoRecord(name, description, id);
+                                return result;
+                            }
+                        }.execute().get();
+                    }catch (Exception e){e.printStackTrace();}
+                }
+            }
+        });
     }
 
     private void edit_record(Record r){
             name_input.setText(r.getName());
             description_input.setText(r.getRecord());
             add_update_button.setText("Update Record");
+            update=true;
     }
 }

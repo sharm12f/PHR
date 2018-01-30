@@ -63,7 +63,7 @@ public class MyAccount extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), RecordView.class);
-                intent.putExtra("id",patient.getId());
+                intent.putExtra("ID",patient.getId());
                 startActivity(intent);
             }
         });
@@ -107,5 +107,7 @@ public class MyAccount extends AppCompatActivity {
         phone.setText(patient.getPhone());
         region.setText(patient.getRegion());
         province.setText(patient.getProvince());
+        RecordListViewAdapter adapter = new RecordListViewAdapter(this, patient.getRecords());
+        record_list_view.setAdapter(adapter);
     }
 }
