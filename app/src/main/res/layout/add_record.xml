@@ -50,6 +50,7 @@
                     android:textSize="16sp" />
 
                 <EditText
+                    android:id="@+id/name_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10" />
@@ -73,6 +74,7 @@
         </TableLayout>
 
         <EditText
+            android:id="@+id/description_input"
             android:layout_width="350dp"
             android:layout_height="150dp"
             android:background="@drawable/my_border"
@@ -89,7 +91,7 @@
             android:ems="10" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/browse_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="116dp"
             android:layout_height="42dp"
@@ -99,7 +101,7 @@
             android:theme="@style/myButtonTheme" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/add_update_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="248dp"
             android:layout_height="64dp"

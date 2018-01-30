@@ -36,6 +36,9 @@
         <activity android:name=".HealthProfessionalAccount">
 
         </activity>
+        <activity android:name=".RecordView">
+
+        </activity>
     </application>
 
 </manifest>

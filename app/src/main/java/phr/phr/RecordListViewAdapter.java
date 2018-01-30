@@ -16,26 +16,28 @@ import phr.lib.Record;
  * Created by Anupam on 28-Jan-18.
  */
 
-public class RecordListViewAdapter extends ArrayAdapter<String>{
+public class RecordListViewAdapter extends ArrayAdapter<Record>{
     private final Activity context;
-    LinkedList<Record> records;
+    ArrayList<Record> records;
 
-    public RecordListViewAdapter(Activity context, LinkedList<Record> records) {
+    public RecordListViewAdapter(Activity context, ArrayList<Record> records) {
         super(context, R.layout.activity_listview);
         // TODO Auto-generated constructor stub
         this.context=context;
         this.records=records;
     }
 
+    public int getCount(){
+        return records.size();
+    }
+
     public View getView(int position, View view, ViewGroup parent){
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.activity_listview, null,true);
+        View rowView=LayoutInflater.from(getContext()).inflate(R.layout.activity_listview, parent, false);
 
         TextView name = (TextView) rowView.findViewById(R.id.name);
-        TextView id = (TextView) rowView.findViewById(R.id.hidden_text);
         Record r = records.get(position);
         name.setText(r.getName());
-        id.setText(r.getId());
         return rowView;
     }
 }
