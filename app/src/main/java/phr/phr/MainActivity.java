@@ -36,14 +36,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 try {
-                    /*
-                    Patient patient = new AsyncTask<Void, Void, Patient>() {
-                        protected Patient doInBackground(Void... progress) {
+                    User user = new AsyncTask<Void, Void, User>() {
+                        protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");
                             return Lib.login("app@app.com", "password");
                         }
                     }.execute().get();
-                    */
+                    /*
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
 
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                             return test;
                         }
                     }.execute().get();
-
+                    */
                     String role = user.getRole();
                     if(role.equals("USER")){
                         Intent intent = new Intent(getApplicationContext(), PatientView.class);

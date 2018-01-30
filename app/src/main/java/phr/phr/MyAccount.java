@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import phr.lib.Lib;
 import phr.lib.Patient;
+import phr.lib.Record;
 
 /**
  * Created by Anupam on 25-Jan-18.
@@ -27,6 +28,7 @@ public class MyAccount extends AppCompatActivity {
     TextView region;
     TextView province;
     Button edit_user ;
+    Button add_record;
     ListView record_list_view;
     Patient patient;
     @Override
@@ -39,6 +41,7 @@ public class MyAccount extends AppCompatActivity {
         region = findViewById(R.id.region);
         province = findViewById(R.id.province);
         edit_user = findViewById(R.id.edit_user_button);
+        add_record = findViewById(R.id.add_record_button);
         record_list_view = findViewById(R.id.records_list_view);
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         patient = list.get(0);
@@ -56,14 +59,27 @@ public class MyAccount extends AppCompatActivity {
             }
         });
 
+        add_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RecordView.class);
+                intent.putExtra("id",patient.getId());
+                startActivity(intent);
+            }
+        });
+
         record_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-                String Slecteditem= patient.getRecords().get(+position).toString();
-                Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
+                Record Slecteditem= patient.getRecords().get(+position);
+                Intent intent = new Intent(getApplicationContext(), RecordView.class);
+                ArrayList<Record> list = new ArrayList<Record>();
+                list.add(Slecteditem);
+                intent.putExtra("RECORD",list);
+                startActivity(intent);
 
             }
         });
@@ -91,8 +107,5 @@ public class MyAccount extends AppCompatActivity {
         phone.setText(patient.getPhone());
         region.setText(patient.getRegion());
         province.setText(patient.getProvince());
-    }
-    private void setRecords(){
-
     }
 }
