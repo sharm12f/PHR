@@ -46,7 +46,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/all_records_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="240dp"
         android:layout_height="68dp"
@@ -63,7 +63,7 @@
         app:layout_constraintVertical_bias="0.709" />
 
     <Button
-        android:id="@+id/button6"
+        android:id="@+id/myaccount_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="240dp"
         android:layout_height="68dp"

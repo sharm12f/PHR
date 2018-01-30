@@ -16,14 +16,15 @@ import java.util.ArrayList;
 import phr.lib.Lib;
 
 /**
- * Created by Anupam on 26-Jan-18.
+ * Created by Anupam on 28-Jan-18.
  */
 
-public class PatientRegistration extends AppCompatActivity {
+public class HealthProfessionalRegistration extends AppCompatActivity {
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.patient_registration);
+    protected void onCreate(Bundle savedInstance){
+        super.onCreate(savedInstance);
+        setContentView(R.layout.healthprofessional_registration);
         final EditText Efname = findViewById(R.id.fname_input);
         final EditText Elname = findViewById(R.id.lname_input);
         final EditText Eemail = findViewById(R.id.email_input);
@@ -32,12 +33,15 @@ public class PatientRegistration extends AppCompatActivity {
         final EditText Ere_password = findViewById(R.id.re_pass_input);
         final Button create = findViewById(R.id.create_button);
         final Spinner Sregion = findViewById(R.id.region_spinner);
-        final Spinner Sprovinces = findViewById(R.id.province_spinner);
+        final Spinner Sorganization = findViewById(R.id.organization_spinner);
+        final Spinner Sdepartment = findViewById(R.id.department_spinner);
+        final Spinner Shealthprofessional = findViewById(R.id.healthprofessional_spinner);
+
 
 
         new AsyncTask<Void, Void, Void>(){
             protected Void doInBackground(Void... progress){
-                loadSpinners(Sregion, Sprovinces);
+                loadSpinners(Sregion,Sorganization,Sdepartment,Shealthprofessional);
                 return null;
             }
         }.execute();
@@ -52,12 +56,14 @@ public class PatientRegistration extends AppCompatActivity {
                 final String password = Epassword.getText().toString();
                 final String re_password = Ere_password.getText().toString();
                 final String region = Sregion.getSelectedItem().toString();
-                final String province = Sprovinces.getSelectedItem().toString();
+                final String organization = Sorganization.getSelectedItem().toString();
+                final String department = Sdepartment.getSelectedItem().toString();
+                final String healthprofessional = Shealthprofessional.getSelectedItem().toString();
                 try{
                     Boolean success = new AsyncTask<Void, Void, Boolean>() {
                         protected Boolean doInBackground(Void... progress) {
                             System.out.println("Start Registration");
-                            return Lib.register(fname, lname , email, password, re_password, phone, region, province);
+                            return Lib.healthProfessionalRegister(fname, lname , email, password, re_password, phone, region, organization, department, healthprofessional);
                         }
                     }.execute().get();
                     if(success == true) {
@@ -78,18 +84,30 @@ public class PatientRegistration extends AppCompatActivity {
         });
     }
 
-    private void loadSpinners(Spinner regions, Spinner provinces){
-        ArrayList<String> list = Lib.getRegions();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        regions.setAdapter(dataAdapter);
+    private void loadSpinners(Spinner regions, Spinner organization, Spinner department, Spinner healthprofessional){
+        ArrayList<String> r = Lib.getRegions();
+        ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, r);
+        adr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regions.setAdapter(adr);
 
-        ArrayList<String> list2 = Lib.getProvinces();
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list2);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        provinces.setAdapter(dataAdapter2);
+        ArrayList<String> o = Lib.getOrganization();
+        ArrayAdapter<String> ado = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, o);
+        ado.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        organization.setAdapter(ado);
+
+        ArrayList<String> d = Lib.getDepartment();
+        ArrayAdapter<String> add = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, d);
+        add.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        department.setAdapter(add);
+
+        ArrayList<String> h = Lib.getHealthProfessional();
+        ArrayAdapter<String> adh = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, h);
+        adh.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        healthprofessional.setAdapter(adh);
 
     }
 }

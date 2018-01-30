@@ -1,17 +1,12 @@
 package phr.lib;
 
-import com.sun.org.apache.regexp.internal.RE;
-
-import java.sql.Time;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.io.Serializable;
-
-import javax.sound.sampled.ReverbType;
 
 /**
- * Created by Anupam on 28-Dec-17.
+ * Created by Anupam on 29-Jan-18.
  */
 
 public class User implements Serializable{
@@ -21,40 +16,17 @@ public class User implements Serializable{
     private String lname;
     private String phone;
     private String region;
-    private String province;
     private int id;
     private Timestamp create;
-    private LinkedList<Record> records;
     private Timestamp session;
 
-    public User(String fname,String lname, String email, Timestamp create, String role, Timestamp session){
+    public User(String fname, String lname, String email, Timestamp create, String role, Timestamp session){
         this.fname = fname;
         this.lname = lname;
         this.email = email;
         this.role = role;
         this.create = create;
         this.session = session;
-        this.records = new LinkedList<Record>();
-    }
-
-
-    public void addRecord(Record record){
-        this.records.addLast(record);
-    }
-    public void removeRecord(int i){
-        this.records.remove(i);
-    }
-    public LinkedList<Record> getRecords(){
-        return this.records;
-    }
-    public void setRecords(LinkedList<Record> records){
-        this.records = records;
-    }
-    public void printRecords(){
-        Iterator<Record> itr = records.iterator();
-        while(itr.hasNext()){
-            System.out.println(itr.next().toString());
-        }
     }
 
     public Timestamp getSession(){
@@ -76,7 +48,6 @@ public class User implements Serializable{
     public String getlName(){return this.lname;}
     public String getPhone(){return this.phone;}
     public String getRegion(){return this.region;}
-    public String getProvince(){return this.province;}
 
     public void setSession(Timestamp session){
         this.session = session;
@@ -97,9 +68,8 @@ public class User implements Serializable{
     public void setlName(String lname){this.lname=lname;}
     public void setPhone(String phone){this.phone=phone;}
     public void setRegion(String region){this.region = region;}
-    public void setProvince(String province){this.province=province;}
 
     public String toString(){
-        return "Fname: " + this.fname + "Lname: " + this.lname + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region + " Province: "+ this.province;
+        return "Fname: " + this.fname + "Lname: " + this.lname + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region;
     }
 }

@@ -10,10 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.Patient;
 import phr.lib.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,28 +34,41 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 try {
-                    User user = new AsyncTask<Void, Void, User>() {
-                        protected User doInBackground(Void... progress) {
+                    /*
+                    Patient patient = new AsyncTask<Void, Void, Patient>() {
+                        protected Patient doInBackground(Void... progress) {
                             System.out.println("Start Login");
                             return Lib.login("app@app.com", "password");
                         }
                     }.execute().get();
-                    /*
+                    */
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
 
                     User user = new AsyncTask<Void, Void, User>() {
                         protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");
-                            return Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            User test = Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            return test;
                         }
                     }.execute().get();
-                    */
-                    Intent intent = new Intent(getApplicationContext(), PatientView.class);
-                    ArrayList<User> list = new ArrayList<User>();
-                    list.add(user);
-                    intent.putExtra("USER",list);
-                    startActivity(intent);
+
+                    String role = user.getRole();
+                    if(role.equals("USER")){
+                        Intent intent = new Intent(getApplicationContext(), PatientView.class);
+                        ArrayList<User> list = new ArrayList<User>();
+                        list.add(user);
+                        intent.putExtra("USER",list);
+                        startActivity(intent);
+                    }
+                    else if(role.equals("HP")){
+                        Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+                        ArrayList<User> list = new ArrayList<User>();
+                        list.add(user);
+                        intent.putExtra("USER",list);
+                        startActivity(intent);
+                    }
+
                 }catch (Exception e){e.printStackTrace();}
             }
         });
@@ -73,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                             })
                             .setNegativeButton("Physician", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Intent intent = new Intent (getApplicationContext(), PatientRegistration.class);
+                                    Intent intent = new Intent (getApplicationContext(), HealthProfessionalRegistration.class);
                                     startActivity(intent);
                                 }
                             });

@@ -1,6 +1,5 @@
 package phr.phr;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,7 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 
 import phr.lib.Lib;
-import phr.lib.User;
+import phr.lib.Patient;
 
 /**
  * Created by Anupam on 26-Jan-18.
@@ -27,7 +26,7 @@ public class UpdateUserInfo extends AppCompatActivity {
     Spinner regions;
     Spinner provinces;
     Boolean Success = false;
-    User user=null;
+    Patient patient =null;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -38,8 +37,8 @@ public class UpdateUserInfo extends AppCompatActivity {
         update_button = findViewById(R.id.update_button);
         regions = findViewById(R.id.region_spinner);
         provinces = findViewById(R.id.province_spinner);
-        ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
-        user = list.get(0);
+        ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
+        patient = list.get(0);
         setFields();
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,12 +53,12 @@ public class UpdateUserInfo extends AppCompatActivity {
                         protected Boolean doInBackground(Void... progress) {
                             boolean result = false;
                             result = Lib.updateUser(name,email,phone,region,province);
-                            user.setfName(name.split(" ")[0]);
-                            user.setlName(name.split(" ")[1]);
-                            user.setEmail(email);
-                            user.setPhone(phone);
-                            user.setRegion(region);
-                            user.setProvince(province);
+                            patient.setfName(name.split(" ")[0]);
+                            patient.setlName(name.split(" ")[1]);
+                            patient.setEmail(email);
+                            patient.setPhone(phone);
+                            patient.setRegion(region);
+                            patient.setProvince(province);
                             return result;
                         }
                     }.execute().get();
@@ -69,9 +68,9 @@ public class UpdateUserInfo extends AppCompatActivity {
     }
 
     private void setFields(){
-        name_input.setText(user.getfName()+" "+user.getlName());
-        email_input.setText(user.getEmail());
-        phone_input.setText(user.getPhone());
+        name_input.setText(patient.getfName()+" "+ patient.getlName());
+        email_input.setText(patient.getEmail());
+        phone_input.setText(patient.getPhone());
         new AsyncTask<Void, Void, Void>(){
             protected Void doInBackground(Void... progress){
                 loadSpinners();
@@ -86,7 +85,7 @@ public class UpdateUserInfo extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         regions.setAdapter(dataAdapter);
-        int s = dataAdapter.getPosition(user.getRegion());
+        int s = dataAdapter.getPosition(patient.getRegion());
         regions.setSelection(s);
 
         ArrayList<String> list2 = Lib.getProvinces();
@@ -94,7 +93,7 @@ public class UpdateUserInfo extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, list2);
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         provinces.setAdapter(dataAdapter2);
-        int p = dataAdapter2.getPosition(user.getProvince());
+        int p = dataAdapter2.getPosition(patient.getProvince());
         provinces.setSelection(p);
     }
 }

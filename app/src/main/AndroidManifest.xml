@@ -27,6 +27,15 @@
         <activity android:name=".PatientView">
 
         </activity>
+        <activity android:name=".HealthProfessionalRegistration">
+
+        </activity>
+        <activity android:name=".HealthProfessionalView">
+
+        </activity>
+        <activity android:name=".HealthProfessionalAccount">
+
+        </activity>
     </application>
 
 </manifest>

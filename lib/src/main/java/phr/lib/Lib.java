@@ -10,36 +10,45 @@ import org.json.*;
 
 public class Lib {
 
-    public static void main(String args[]){
-        System.out.println(login("app", "password"));
-    }
-
     public static User login(String email, String password){
-        /*
-        User user = new User("Application Test","app@app.com",getTimestampNow(),"USER",getTimestampNow());
-        user.setId(1);
-        user.setProvince("ON");
-        user.setPhone("999-999-9999");
-        user.setRegion("Windsor");
-       */
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
-        User user = null;
-        if (!checkUsername || !checkPassword)
-            System.out.println("Nope");
-        else {
-            if(Auth_Access.isUser(email, password)) {
-                user = makeUser(email);
+
+        boolean isPatient = Auth_Access.userExists(email);
+        boolean isPhysician = Auth_Access.healthUserExists(email);
+        if(isPatient){
+            Patient patient = null;
+            if (!checkUsername || !checkPassword)
+                System.out.println("Nope");
+            else {
+                if(Auth_Access.isUser(email, password)) {
+                    patient = makeUser(email);
+                }
+                else{
+                    System.out.println("Wrong email or password");
+                }
             }
-            else{
-                System.out.println("Wrong email or password");
-            }
+            return patient;
         }
-        return user;
+        else if(isPhysician){
+            HealthProfessional healthProfessional = null;
+            if (!checkUsername || !checkPassword)
+                System.out.println("Nope");
+            else {
+                if(Auth_Access.isHealthProfessional(email, password)) {
+                    healthProfessional = makeHealthProfessional(email);
+                }
+                else{
+                    System.out.println("Wrong email or password");
+                }
+            }
+            return healthProfessional;
+        }
+        return null;
     }
 
-    public static User makeUser (String email){
-        User user = null;
+    public static Patient makeUser (String email){
+        Patient patient = null;
         String db_email, db_role, db_create, db_fname, db_lname, db_phone, db_region, db_province;
         int db_id;
         String responce = Auth_Access.getUsersByEmail(email);
@@ -54,11 +63,11 @@ public class Lib {
         db_region = obj.getString("region");
         db_province = obj.getString("province");
         Timestamp creattime = stringToTimestamp(db_create);
-        user = new User(db_fname, db_lname, db_email, creattime, db_role,getTimestampNow());
-        user.setId(db_id);
-        user.setPhone(db_phone);
-        user.setRegion(db_region);
-        user.setProvince(db_province);
+        patient = new Patient(db_fname, db_lname, db_email, creattime, db_role,getTimestampNow());
+        patient.setId(db_id);
+        patient.setPhone(db_phone);
+        patient.setRegion(db_region);
+        patient.setProvince(db_province);
         String records = Auth_Access.getUserHealthRecordByEmail(db_email);
         JSONArray str = new JSONArray(records);
         for (int i=0;i<str.length(); i++) {
@@ -75,9 +84,37 @@ public class Lib {
             cypertext_record_ref = record.getString("cypertext_record_ref");
             Record r = new Record(name, cypertext_policy, cypertext_record, cypertext_record_ref, uid, create_time);
             r.setId(rid);
-            user.addRecord(r);
+            patient.addRecord(r);
         }
-        return user;
+        return patient;
+    }
+
+    public static HealthProfessional makeHealthProfessional (String email){
+        HealthProfessional healthProfessional = null;
+        String db_email, db_role, db_create, db_fname, db_lname, db_phone, db_region, db_organization, db_department, db_health;
+        int db_id;
+        String responce = Auth_Access.getHealthProfessionalUsersByEmail(email);
+        JSONObject obj = new JSONObject(responce);
+        db_id = obj.getInt("id");
+        db_create = obj.getString("create_time");
+        db_email = obj.getString("email");
+        db_role = obj.getString("user_role");
+        db_fname = obj.getString("fname");
+        db_lname = obj.getString("lname");
+        db_phone = obj.getString("phone");
+        db_region = obj.getString("region");
+        db_organization = obj.getString("organization");
+        db_department = obj.getString("department");
+        db_health = obj.getString("health_professional");
+        Timestamp creattime = stringToTimestamp(db_create);
+        healthProfessional = new HealthProfessional(db_fname, db_lname, db_email, creattime, db_role,getTimestampNow());
+        healthProfessional.setId(db_id);
+        healthProfessional.setPhone(db_phone);
+        healthProfessional.setRegion(db_region);
+        healthProfessional.setOrganization(db_organization);
+        healthProfessional.setDepartment(db_department);
+        healthProfessional.setHealthProfessional(db_health);
+        return healthProfessional;
     }
 
     private static boolean checkString(String str){
@@ -154,7 +191,43 @@ public class Lib {
                     user = true;
                 }
                 else
-                    error+="\tUser Insertion failed\n";
+                    error+="\tPatient Insertion failed\n";
+            }else{
+                if(!checkEmail)
+                    error+="\tEmail is not valid\n";
+                if(!checkFname)
+                    error+="\tFirst name is not valid\n";
+                if(!checkLname)
+                    error+="\tLast name is not valid\n";
+                if(!checkPassword)
+                    error+="\tPassword's dont match\n";
+            }
+            if(!error.equals("")){
+                throw new Exception(error);
+            }
+        }catch(Exception e){System.out.println(e);}
+        return user;
+    }
+
+    public static boolean healthProfessionalRegister(String fname, String lname, String email, String password, String re_password, String phone, String region, String organization, String department, String health_professional){
+        boolean user = false;
+        String error = "";
+        try{
+            boolean set = true;
+            if(Auth_Access.healthUserExists(email)) {
+                set = false;
+                error += "\tUse already taken\n";
+            }
+            boolean checkFname = checkString(fname);
+            boolean checkLname = checkString(lname);
+            boolean checkPassword = password.equals(re_password);
+            boolean checkEmail = checkEmail(email);
+            if(checkEmail && checkPassword && checkFname && set && checkLname){
+                if(Auth_Access.insertIntoHealthProfessional(fname.toUpperCase(), lname.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, organization, department, health_professional)) {
+                    user = true;
+                }
+                else
+                    error+="\tPatient Insertion failed\n";
             }else{
                 if(!checkEmail)
                     error+="\tEmail is not valid\n";
@@ -238,6 +311,36 @@ public class Lib {
     public static ArrayList<String> getProvinces(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getProvinces();
+        JSONArray array = new JSONArray(responce);
+        for(int i=0;i<array.length();i++){
+            JSONObject obj = array.getJSONObject(i);
+            list.add(obj.getString("name"));
+        }
+        return list;
+    }
+    public static ArrayList<String> getOrganization(){
+        ArrayList<String> list = new ArrayList<String>();
+        String responce = Auth_Access.getOrganization();
+        JSONArray array = new JSONArray(responce);
+        for(int i=0;i<array.length();i++){
+            JSONObject obj = array.getJSONObject(i);
+            list.add(obj.getString("name"));
+        }
+        return list;
+    }
+    public static ArrayList<String> getDepartment(){
+        ArrayList<String> list = new ArrayList<String>();
+        String responce = Auth_Access.getDepartment();
+        JSONArray array = new JSONArray(responce);
+        for(int i=0;i<array.length();i++){
+            JSONObject obj = array.getJSONObject(i);
+            list.add(obj.getString("name"));
+        }
+        return list;
+    }
+    public static ArrayList<String> getHealthProfessional(){
+        ArrayList<String> list = new ArrayList<String>();
+        String responce = Auth_Access.getHealthProfessional();
         JSONArray array = new JSONArray(responce);
         for(int i=0;i<array.length();i++){
             JSONObject obj = array.getJSONObject(i);
