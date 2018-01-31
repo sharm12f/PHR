@@ -2,6 +2,7 @@ package phr.phr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,9 @@ public class PatientView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
+        ActionBar actionbar = getSupportActionBar();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.patient_view);
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         final Patient patient = list.get(0);

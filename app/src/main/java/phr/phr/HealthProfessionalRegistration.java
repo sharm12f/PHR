@@ -3,6 +3,7 @@ package phr.phr;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,6 +25,9 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
+        ActionBar actionbar = getSupportActionBar();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.healthprofessional_registration);
         final EditText Efname = findViewById(R.id.fname_input);
         final EditText Elname = findViewById(R.id.lname_input);

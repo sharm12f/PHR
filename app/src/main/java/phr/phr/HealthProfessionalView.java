@@ -2,6 +2,7 @@ package phr.phr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,9 @@ public class HealthProfessionalView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
+        ActionBar actionbar = getSupportActionBar();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.healthprofessional_view);
         account_button = findViewById(R.id.myaccount_button);
 
