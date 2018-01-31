@@ -30,7 +30,7 @@ public class UpdateUserInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-        setContentView(R.layout.update_patient_info);
+        setContentView(R.layout.patient_update_info);
         name_input = findViewById(R.id.name_input);
         email_input = findViewById(R.id.email_input);
         phone_input = findViewById(R.id.phone_input);
