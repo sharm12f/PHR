@@ -26,7 +26,7 @@ public class RecordView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-        setContentView(R.layout.add_record);
+        setContentView(R.layout.patient_add_record);
         name_input = findViewById(R.id.name_input);
         description_input = findViewById(R.id.description_input);
         add_update_button = findViewById(R.id.add_update_button);
