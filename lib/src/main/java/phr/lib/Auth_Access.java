@@ -13,7 +13,8 @@ import java.util.Set;
 
 public class Auth_Access{
 
-    private static final String IP = "http://10.0.2.2";
+    private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
+    //private static final String IP = "http://10.0.2.2";
 
     protected static String getUsersByEmail(String email){
        String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
