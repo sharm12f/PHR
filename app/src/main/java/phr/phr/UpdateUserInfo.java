@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.security.spec.ECField;
 import java.util.ArrayList;
 
 import phr.lib.Lib;
@@ -63,9 +64,14 @@ public class UpdateUserInfo extends AppCompatActivity {
                             patient.setPhone(phone);
                             patient.setRegion(region);
                             patient.setProvince(province);
+                            System.out.println("Update: " +  result);
                             return result;
                         }
                     }.execute().get();
+                    if(Success){
+                        System.out.println("Finish");
+                        finish();
+                    }
                 }catch (Exception e){e.printStackTrace();}
             }
         });
@@ -75,29 +81,40 @@ public class UpdateUserInfo extends AppCompatActivity {
         name_input.setText(patient.getfName()+" "+ patient.getlName());
         email_input.setText(patient.getEmail());
         phone_input.setText(patient.getPhone());
-        new AsyncTask<Void, Void, Void>(){
-            protected Void doInBackground(Void... progress){
-                loadSpinners();
-                return null;
-            }
-        }.execute();
+        try {
+            ArrayList<String> list = new AsyncTask<Void, Void, ArrayList<String>>() {
+                protected ArrayList<String> doInBackground(Void... progress) {
+                    ArrayList<String> list = Lib.getRegions();
+                    return list;
+                }
+            }.execute().get();
+            ArrayList<String> list2 = new AsyncTask<Void, Void, ArrayList<String>>() {
+                protected ArrayList<String> doInBackground(Void... progress) {
+                    ArrayList<String> list = Lib.getProvinces();
+                    return list;
+                }
+            }.execute().get();
+
+            loadSpinners(list,list2);
+        }catch (Exception e){e.printStackTrace();}
     }
 
-    private void loadSpinners(){
-        ArrayList<String> list = Lib.getRegions();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        regions.setAdapter(dataAdapter);
-        int s = dataAdapter.getPosition(patient.getRegion());
-        regions.setSelection(s);
+    private void loadSpinners(ArrayList<String> list, ArrayList<String> list2){
+        try {
 
-        ArrayList<String> list2 = Lib.getProvinces();
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list2);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        provinces.setAdapter(dataAdapter2);
-        int p = dataAdapter2.getPosition(patient.getProvince());
-        provinces.setSelection(p);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, list);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            regions.setAdapter(dataAdapter);
+            int s = dataAdapter.getPosition(patient.getRegion());
+            regions.setSelection(s);
+
+            ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, list2);
+            dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            provinces.setAdapter(dataAdapter2);
+            int p = dataAdapter2.getPosition(patient.getProvince());
+            provinces.setSelection(p);
+        }catch (Exception e){e.printStackTrace();}
     }
 }
