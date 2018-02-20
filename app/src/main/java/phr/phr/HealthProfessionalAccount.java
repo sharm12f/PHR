@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import phr.lib.HealthProfessional;
-import phr.lib.Patient;
 
 /**
  * Created by Anupam on 29-Jan-18.
@@ -43,7 +42,11 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         edit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccountUpdate.class);
+                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
+                list.add(healthProfessional);
+                intent.putExtra("USER",list);
+                startActivity(intent);
             }
         });
     }

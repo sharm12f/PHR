@@ -61,11 +61,11 @@ public class PatientRegistration extends AppCompatActivity {
                     Boolean success = new AsyncTask<Void, Void, Boolean>() {
                         protected Boolean doInBackground(Void... progress) {
                             System.out.println("Start Registration");
-                            return Lib.register(fname, lname , email, password, re_password, phone, region, province);
+                            return Lib.PatientRegister(fname, lname , email, password, re_password, phone, region, province);
                         }
                     }.execute().get();
                     if(success == true) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
                         startActivity(intent);
                     }
                     else{

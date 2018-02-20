@@ -123,7 +123,7 @@ public class Lib {
         return false;
     }
 
-    public static boolean updateUserRecord(String name, String description, int rid){
+    public static boolean PatientUpdateRecord(String name, String description, int rid){
         boolean result = false;
         result = Auth_Access.updateRecord(name, description, rid);
         return result;
@@ -160,7 +160,7 @@ public class Lib {
         return new Timestamp(date.getTime());
     }
 
-    public static boolean register(String fname, String lname, String email, String password, String re_password, String phone, String region, String province){
+    public static boolean PatientRegister(String fname, String lname, String email, String password, String re_password, String phone, String region, String province){
         boolean user = false;
         String error = "";
         try{
@@ -232,11 +232,18 @@ public class Lib {
         return user;
     }
 
-    public static boolean updateUser(String name, String email, String phone, String region, String province){
+    public static boolean PatientUpdate(String name, String email, String phone, String region, String province){
         boolean result = false;
         String fname = name.split(" ")[0];
         String lname = name.split(" ")[1];
-        result = Auth_Access.updateUser(fname,lname,email,phone,region,province);
+        result = Auth_Access.PatientUpdate(fname,lname,email,phone,region,province);
+        return result;
+    }
+    public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region){
+        boolean result = false;
+        String fname = name.split(" ")[0];
+        String lname = name.split(" ")[1];
+        result = Auth_Access.HealthProfessionalUpdate(fname,lname,email,phone,region);
         return result;
     }
 

@@ -17,7 +17,7 @@ import phr.lib.Record;
  * Created by Anupam on 30-Jan-18.
  */
 
-public class RecordView extends AppCompatActivity {
+public class PatientRecordView extends AppCompatActivity {
     EditText name_input, description_input;
     Button add_update_button;
     Record record;
@@ -54,7 +54,7 @@ public class RecordView extends AppCompatActivity {
                         Success = new AsyncTask<Void, Void, Boolean>() {
                             protected Boolean doInBackground(Void... progress) {
                                 boolean result = false;
-                                result = Lib.updateUserRecord(name, description, record.getId());
+                                result = Lib.PatientUpdateRecord(name, description, record.getId());
                                 return result;
                             }
                         }.execute().get();

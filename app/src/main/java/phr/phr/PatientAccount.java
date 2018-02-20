@@ -21,7 +21,7 @@ import phr.lib.Record;
  * Created by Anupam on 25-Jan-18.
  */
 
-public class MyAccount extends AppCompatActivity {
+public class PatientAccount extends AppCompatActivity {
     TextView name;
     TextView email;
     TextView phone;
@@ -54,7 +54,7 @@ public class MyAccount extends AppCompatActivity {
         edit_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), UpdateUserInfo.class);
+                Intent intent = new Intent(getApplicationContext(), PatientAccountUpdate.class);
                 ArrayList<Patient> list = new ArrayList<Patient>();
                 list.add(patient);
                 intent.putExtra("USER",list);
@@ -65,7 +65,7 @@ public class MyAccount extends AppCompatActivity {
         add_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RecordView.class);
+                Intent intent = new Intent(getApplicationContext(), PatientRecordView.class);
                 intent.putExtra("ID",patient.getId());
                 startActivity(intent);
             }
@@ -78,7 +78,7 @@ public class MyAccount extends AppCompatActivity {
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 Record Slecteditem= patient.getRecords().get(+position);
-                Intent intent = new Intent(getApplicationContext(), RecordView.class);
+                Intent intent = new Intent(getApplicationContext(), PatientRecordView.class);
                 ArrayList<Record> list = new ArrayList<Record>();
                 list.add(Slecteditem);
                 intent.putExtra("RECORD",list);

@@ -71,7 +71,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                         }
                     }.execute().get();
                     if(success == true) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
                         startActivity(intent);
                     }
                     else{

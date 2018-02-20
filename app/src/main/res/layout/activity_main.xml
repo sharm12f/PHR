@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="phr.phr.MainActivity">
+    tools:context="phr.phr.LogIn">
 
     <EditText
         android:id="@+id/email_input"

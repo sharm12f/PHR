@@ -29,7 +29,7 @@ public class PatientView extends AppCompatActivity {
         account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MyAccount.class);
+                Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
                 ArrayList<Patient> list = new ArrayList<Patient>();
                 list.add(patient);
                 intent.putExtra("USER",list);

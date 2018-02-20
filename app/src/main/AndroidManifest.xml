@@ -9,36 +9,21 @@
         android:roundIcon="@mipmap/p3hr_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyAccount">
-
-        </activity>
-        <activity android:name=".PatientRegistration">
-
-        </activity>
-        <activity android:name=".UpdateUserInfo">
-
-        </activity>
-        <activity android:name=".PatientView">
-
-        </activity>
-        <activity android:name=".HealthProfessionalRegistration">
-
-        </activity>
-        <activity android:name=".HealthProfessionalView">
-
-        </activity>
-        <activity android:name=".HealthProfessionalAccount">
-
-        </activity>
-        <activity android:name=".RecordView">
-
-        </activity>
+        <activity android:name=".PatientRegistration"></activity>
+        <activity android:name=".PatientView"></activity>
+        <activity android:name=".PatientAccount"></activity>
+        <activity android:name=".PatientAccountUpdate"></activity>
+        <activity android:name=".PatientRecordView"></activity>
+        <activity android:name=".HealthProfessionalRegistration"></activity>
+        <activity android:name=".HealthProfessionalView"></activity>
+        <activity android:name=".HealthProfessionalAccount"></activity>
+        <activity android:name=".HealthProfessionalAccountUpdate"></activity>
     </application>
 
 </manifest>

@@ -13,12 +13,10 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import phr.lib.HealthProfessional;
 import phr.lib.Lib;
-import phr.lib.Patient;
 import phr.lib.User;
 
-public class MainActivity extends AppCompatActivity {
+public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +34,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 try {
-                    /*
+
                     User user = new AsyncTask<Void, Void, User>() {
                         protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");
-                            return Lib.login("app@app.com", "password");
+                            //return Lib.login("app@app.com", "password");
+                            return Lib.login("hp@hp.com", "password");
                         }
                     }.execute().get();
-                    */
+                    /*
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
                     User user = new AsyncTask<Void, Void, User>() {
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                             return test;
                         }
                     }.execute().get();
-
+                    */
                     String role = user.getRole();
                     if(role.equals("USER")){
                         Intent intent = new Intent(getApplicationContext(), PatientView.class);
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try{
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
                     builder.setMessage("Are you a Patient of a Physician")
                             .setPositiveButton("Patient", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
