@@ -9,17 +9,18 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import phr.lib.Patient;
 import phr.lib.Record;
 
 /**
  * Created by Anupam on 28-Jan-18.
  */
 
-public class RecordListViewAdapter extends ArrayAdapter<Record>{
+public class HealthProfessionalRecordListViewAdapter extends ArrayAdapter<String[]>{
     private final Activity context;
-    ArrayList<Record> records;
+    ArrayList<String[]> records;
 
-    public RecordListViewAdapter(Activity context, ArrayList<Record> records) {
+    public HealthProfessionalRecordListViewAdapter(Activity context, ArrayList<String[]> records) {
         super(context, R.layout.patient_record_listview);
         // TODO Auto-generated constructor stub
         this.context=context;
@@ -32,11 +33,12 @@ public class RecordListViewAdapter extends ArrayAdapter<Record>{
 
     public View getView(int position, View view, ViewGroup parent){
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=LayoutInflater.from(getContext()).inflate(R.layout.patient_record_listview, parent, false);
-
-        TextView name = (TextView) rowView.findViewById(R.id.name);
-        Record r = records.get(position);
-        name.setText(r.getName());
+        View rowView=LayoutInflater.from(getContext()).inflate(R.layout.health_professional_records_listview, parent, false);
+        TextView patient_name = (TextView) rowView.findViewById(R.id.patient_name_text);
+        TextView record_name = (TextView) rowView.findViewById(R.id.record_name_text);
+        String[] r = records.get(position);
+        patient_name.setText(r[0]);
+        record_name.setText(r[1]);
         return rowView;
     }
 }

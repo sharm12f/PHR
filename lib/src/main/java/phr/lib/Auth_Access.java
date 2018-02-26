@@ -1,14 +1,9 @@
 package phr.lib;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.*;
-import java.util.Hashtable;
-import java.util.Set;
 
 
 public class Auth_Access{
@@ -17,8 +12,13 @@ public class Auth_Access{
     //private static final String IP = "http://10.0.2.2";
 
     protected static String getUsersByEmail(String email){
-       String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
-       return responce;
+        String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
+        return responce;
+    }
+
+    protected static String getUsersById(int id){
+        String responce = makeGet(IP+"/PHR_AUTH/get_user_by_id.php?id="+id);
+        return responce;
     }
 
     protected static String getHealthProfessionalUsersByEmail(String email){
@@ -28,6 +28,14 @@ public class Auth_Access{
 
     protected static String getUserHealthRecordByEmail(String email){
         return makeGet(IP+"/PHR_AUTH/get_user_health_record_by_email.php?email="+email);
+    }
+
+    protected static String getUserHealthRecordById(int id){
+        return makeGet(IP+"/PHR_AUTH/get_user_health_record_by_id.php?id="+id);
+    }
+
+    protected static String getHealthProfessionalRecordsById(int id){
+        return makeGet(IP+"/PHR_AUTH/get_health_professional_records_by_id.php?id="+id);
     }
 
     protected static boolean isUser(String email, String password){
@@ -86,6 +94,7 @@ public class Auth_Access{
             success=true;
         return success;
     }
+
     protected static boolean healthUserExists(String email) {
         boolean success=false;
         email = email.toUpperCase();

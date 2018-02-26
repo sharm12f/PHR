@@ -35,14 +35,19 @@ public class LogIn extends AppCompatActivity {
 
                 try {
 
+
+                    /*
                     User user = new AsyncTask<Void, Void, User>() {
                         protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");
                             //return Lib.login("app@app.com", "password");
-                            return Lib.login("hp@hp.com", "password");
+                            return Lib.login("doc@hp.com", "password");
                         }
                     }.execute().get();
-                    /*
+                    */
+
+
+
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
                     User user = new AsyncTask<Void, Void, User>() {
@@ -52,7 +57,6 @@ public class LogIn extends AppCompatActivity {
                             return test;
                         }
                     }.execute().get();
-                    */
                     String role = user.getRole();
                     if(role.equals("USER")){
                         Intent intent = new Intent(getApplicationContext(), PatientView.class);
@@ -76,7 +80,30 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-
+                    /*
+                    User user = new AsyncTask<Void, Void, User>() {
+                        protected User doInBackground(Void... progress) {
+                            System.out.println("Start Login");
+                            return Lib.login("app@app.com", "password");
+                            //return Lib.login("hp@hp.com", "password");
+                        }
+                    }.execute().get();
+                    String role = user.getRole();
+                    if(role.equals("USER")){
+                        Intent intent = new Intent(getApplicationContext(), PatientView.class);
+                        ArrayList<User> list = new ArrayList<User>();
+                        list.add(user);
+                        intent.putExtra("USER",list);
+                        startActivity(intent);
+                    }
+                    else if(role.equals("HP")){
+                        Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+                        ArrayList<User> list = new ArrayList<User>();
+                        list.add(user);
+                        intent.putExtra("USER",list);
+                        startActivity(intent);
+                    }
+                    */
                     AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
                     builder.setMessage("Are you a Patient of a Physician")
                             .setPositiveButton("Patient", new DialogInterface.OnClickListener() {
