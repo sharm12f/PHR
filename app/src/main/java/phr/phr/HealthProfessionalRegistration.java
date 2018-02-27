@@ -29,8 +29,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.healthprofessional_registration);
-        final EditText Efname = findViewById(R.id.fname_input);
-        final EditText Elname = findViewById(R.id.lname_input);
+        final EditText Ename = findViewById(R.id.name_input);
         final EditText Eemail = findViewById(R.id.email_input);
         final EditText Ephone = findViewById(R.id.phone_input);
         final EditText Epassword = findViewById(R.id.password_input);
@@ -53,8 +52,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String fname = Efname.getText().toString();
-                final String lname = Elname.getText().toString();
+                final String name = Ename.getText().toString();
                 final String email = Eemail.getText().toString();
                 final String phone = Ephone.getText().toString();
                 final String password = Epassword.getText().toString();
@@ -67,7 +65,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                     Boolean success = new AsyncTask<Void, Void, Boolean>() {
                         protected Boolean doInBackground(Void... progress) {
                             System.out.println("Start Registration");
-                            return Lib.healthProfessionalRegister(fname, lname , email, password, re_password, phone, region, organization, department, healthprofessional);
+                            return Lib.healthProfessionalRegister(name , email, password, re_password, phone, region, organization, department, healthprofessional);
                         }
                     }.execute().get();
                     if(success == true) {
@@ -76,8 +74,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "Could not create patient", Toast.LENGTH_LONG).show();
-                        Efname.setText("");
-                        Elname.setText("");
+                        Ename.setText("");
                         Eemail.setText("");
                         Ephone.setText("");
                         Epassword.setText("");

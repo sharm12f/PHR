@@ -154,33 +154,33 @@
             android:layout_height="wrap_content"
             android:background="@drawable/my_border">
 
-        <TableRow
-            android:background="@drawable/my_border"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="290dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+            <TableRow
                 android:background="@drawable/my_border"
-                android:padding="2dp"
-                android:text="Patients"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                tools:layout_editor_absoluteX="99sp"
-                tools:layout_editor_absoluteY="264sp" />
+                android:padding="8dp">
 
-            <SearchView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/my_border"
+                    android:padding="2dp"
+                    android:text="Patients"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="99sp"
+                    tools:layout_editor_absoluteY="264sp" />
 
-        </TableRow>
+                <SearchView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </TableRow>
         </TableLayout>
 
 
         <ListView
-            android:id="@+id/records_list_view"
+            android:id="@+id/patients_list_view"
             android:layout_width="350dp"
             android:layout_height="160dp"
             android:layout_alignParentBottom="true"
@@ -193,7 +193,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/view_all_records_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="242dp"
         android:layout_height="54dp"

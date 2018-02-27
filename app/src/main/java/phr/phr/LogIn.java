@@ -35,8 +35,6 @@ public class LogIn extends AppCompatActivity {
 
                 try {
 
-
-                    /*
                     User user = new AsyncTask<Void, Void, User>() {
                         protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");
@@ -44,10 +42,7 @@ public class LogIn extends AppCompatActivity {
                             return Lib.login("doc@hp.com", "password");
                         }
                     }.execute().get();
-                    */
-
-
-
+                    /*
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
                     User user = new AsyncTask<Void, Void, User>() {
@@ -57,6 +52,7 @@ public class LogIn extends AppCompatActivity {
                             return test;
                         }
                     }.execute().get();
+                    */
                     String role = user.getRole();
                     if(role.equals("USER")){
                         Intent intent = new Intent(getApplicationContext(), PatientView.class);
@@ -80,7 +76,6 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    /*
                     User user = new AsyncTask<Void, Void, User>() {
                         protected User doInBackground(Void... progress) {
                             System.out.println("Start Login");
@@ -103,7 +98,7 @@ public class LogIn extends AppCompatActivity {
                         intent.putExtra("USER",list);
                         startActivity(intent);
                     }
-                    */
+                    /*
                     AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
                     builder.setMessage("Are you a Patient of a Physician")
                             .setPositiveButton("Patient", new DialogInterface.OnClickListener() {
@@ -120,6 +115,7 @@ public class LogIn extends AppCompatActivity {
                             });
                     AlertDialog dialog = builder.create();
                     dialog.show();
+                    */
                 }catch(Exception e){e.printStackTrace();}
             }
         });

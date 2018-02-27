@@ -14,8 +14,8 @@ public class HealthProfessional extends User implements Serializable{
     private String health_professional;
     private ArrayList<Patient> patients;
 
-    public HealthProfessional(String fname, String lname, String email, Timestamp create, String role, Timestamp session){
-        super(fname,lname,email,create,role,session);
+    public HealthProfessional(String name, String email, Timestamp create, String role, Timestamp session){
+        super(name,email,create,role,session);
         this.patients = new ArrayList<Patient>();
     }
 

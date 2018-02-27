@@ -34,7 +34,7 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
             ArrayList<Record> r = p.getRecords();
             for(int j = 0; j<r.size();j++){
                 String[] l = new String[4];
-                l[0] = p.getfName() + " " + p.getlName();
+                l[0] = p.getName();
                 l[1] = r.get(j).getName();
                 l[2] = ""+i;
                 l[3] = ""+j;

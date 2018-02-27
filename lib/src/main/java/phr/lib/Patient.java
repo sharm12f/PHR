@@ -19,8 +19,8 @@ public class Patient extends User implements Serializable{
     private String province;
     private ArrayList<Record> records;
 
-    public Patient(String fname, String lname, String email, Timestamp create, String role, Timestamp session){
-        super(fname,lname,email,create,role,session);
+    public Patient(String name, String email, Timestamp create, String role, Timestamp session){
+        super(name,email,create,role,session);
         this.records = new ArrayList<Record>();
     }
 

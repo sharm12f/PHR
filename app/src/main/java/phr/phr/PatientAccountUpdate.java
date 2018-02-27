@@ -57,8 +57,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
                         protected Boolean doInBackground(Void... progress) {
                             boolean result = false;
                             result = Lib.PatientUpdate(name,email,phone,region,province);
-                            patient.setfName(name.split(" ")[0]);
-                            patient.setlName(name.split(" ")[1]);
+                            patient.setName(name);
                             patient.setEmail(email);
                             patient.setPhone(phone);
                             patient.setRegion(region);
@@ -77,7 +76,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
     }
 
     private void setFields(){
-        name_input.setText(patient.getfName()+" "+ patient.getlName());
+        name_input.setText(patient.getName());
         email_input.setText(patient.getEmail());
         phone_input.setText(patient.getPhone());
         try {

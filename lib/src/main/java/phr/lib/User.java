@@ -12,17 +12,15 @@ import java.util.LinkedList;
 public class User implements Serializable{
     private String email;
     private String role;
-    private String fname;
-    private String lname;
+    private String name;
     private String phone;
     private String region;
     private int id;
     private Timestamp create;
     private Timestamp session;
 
-    public User(String fname, String lname, String email, Timestamp create, String role, Timestamp session){
-        this.fname = fname;
-        this.lname = lname;
+    public User(String name, String email, Timestamp create, String role, Timestamp session){
+        this.name = name;
         this.email = email;
         this.role = role;
         this.create = create;
@@ -44,8 +42,7 @@ public class User implements Serializable{
     public int getId(){
         return this.id;
     }
-    public String getfName(){return this.fname;}
-    public String getlName(){return this.lname;}
+    public String getName(){return this.name;}
     public String getPhone(){return this.phone;}
     public String getRegion(){return this.region;}
 
@@ -64,12 +61,11 @@ public class User implements Serializable{
     public void setId(int id){
         this.id = id;
     }
-    public void setfName(String fname){this.fname=fname;}
-    public void setlName(String lname){this.lname=lname;}
+    public void setName(String name){this.name=name;}
     public void setPhone(String phone){this.phone=phone;}
     public void setRegion(String region){this.region = region;}
 
     public String toString(){
-        return "Fname: " + this.fname + "Lname: " + this.lname + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region;
+        return "Name: " + this.name + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region;
     }
 }

@@ -53,9 +53,9 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                     Success = new AsyncTask<Void, Void, Boolean>() {
                         protected Boolean doInBackground(Void... progress) {
                             boolean result = false;
-                            result = Lib.HealthProfessionalUpdate(name,email,phone,region);
-                            healthProfessional.setfName(name.split(" ")[0]);
-                            healthProfessional.setlName(name.split(" ")[1]);
+                            int id = healthProfessional.getId();
+                            result = Lib.HealthProfessionalUpdate(name,email,phone,region,id);
+                            healthProfessional.setName(name);
                             healthProfessional.setEmail(email);
                             healthProfessional.setPhone(phone);
                             healthProfessional.setRegion(region);
@@ -72,7 +72,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
     }
 
     private void setFields(){
-        name_input.setText(healthProfessional.getfName()+" "+ healthProfessional.getlName());
+        name_input.setText(healthProfessional.getName());
         email_input.setText(healthProfessional.getEmail());
         phone_input.setText(healthProfessional.getPhone());
         try {

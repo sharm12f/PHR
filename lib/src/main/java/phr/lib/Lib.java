@@ -53,7 +53,7 @@ public class Lib {
 
     public static Patient makeUser (String email){
         Patient patient = null;
-        String db_email, db_role, db_create, db_fname, db_lname, db_phone, db_region, db_province;
+        String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
         int db_id;
         String responce = Auth_Access.getUsersByEmail(email);
         JSONObject obj = new JSONObject(responce);
@@ -61,13 +61,12 @@ public class Lib {
         db_create = obj.getString("create_time");
         db_email = obj.getString("email");
         db_role = obj.getString("user_role");
-        db_fname = obj.getString("fname");
-        db_lname = obj.getString("lname");
+        db_name = obj.getString("name");
         db_phone = obj.getString("phone");
         db_region = obj.getString("region");
         db_province = obj.getString("province");
         Timestamp creattime = stringToTimestamp(db_create);
-        patient = new Patient(db_fname, db_lname, db_email, creattime, db_role,getTimestampNow());
+        patient = new Patient(db_name, db_email, creattime, db_role,getTimestampNow());
         patient.setId(db_id);
         patient.setPhone(db_phone);
         patient.setRegion(db_region);
@@ -94,7 +93,7 @@ public class Lib {
 
     public static HealthProfessional makeHealthProfessional (String email){
         HealthProfessional healthProfessional = null;
-        String db_email, db_role, db_create, db_fname, db_lname, db_phone, db_region, db_organization, db_department, db_health;
+        String db_email, db_role, db_create, db_name, db_phone, db_region, db_organization, db_department, db_health;
         int db_id;
         String responce = Auth_Access.getHealthProfessionalUsersByEmail(email);
         JSONObject obj = new JSONObject(responce);
@@ -102,15 +101,14 @@ public class Lib {
         db_create = obj.getString("create_time");
         db_email = obj.getString("email");
         db_role = obj.getString("user_role");
-        db_fname = obj.getString("fname");
-        db_lname = obj.getString("lname");
+        db_name = obj.getString("name");
         db_phone = obj.getString("phone");
         db_region = obj.getString("region");
         db_organization = obj.getString("organization");
         db_department = obj.getString("department");
         db_health = obj.getString("health_professional");
         Timestamp creattime = stringToTimestamp(db_create);
-        healthProfessional = new HealthProfessional(db_fname, db_lname, db_email, creattime, db_role,getTimestampNow());
+        healthProfessional = new HealthProfessional(db_name, db_email, creattime, db_role,getTimestampNow());
         healthProfessional.setId(db_id);
         healthProfessional.setPhone(db_phone);
         healthProfessional.setRegion(db_region);
@@ -151,7 +149,7 @@ public class Lib {
 
     public static Patient makeHealthProfessionalPatient (int id){
         Patient patient = null;
-        String db_email, db_role, db_create, db_fname, db_lname, db_phone, db_region, db_province;
+        String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
         int db_id;
         String responce = Auth_Access.getUsersById(id);
         JSONObject obj = new JSONObject(responce);
@@ -159,13 +157,12 @@ public class Lib {
         db_create = obj.getString("create_time");
         db_email = obj.getString("email");
         db_role = obj.getString("user_role");
-        db_fname = obj.getString("fname");
-        db_lname = obj.getString("lname");
+        db_name = obj.getString("name");
         db_phone = obj.getString("phone");
         db_region = obj.getString("region");
         db_province = obj.getString("province");
         Timestamp creattime = stringToTimestamp(db_create);
-        patient = new Patient(db_fname, db_lname, db_email, creattime, db_role,getTimestampNow());
+        patient = new Patient(db_name, db_email, creattime, db_role,getTimestampNow());
         patient.setId(db_id);
         patient.setPhone(db_phone);
         patient.setRegion(db_region);
@@ -241,7 +238,7 @@ public class Lib {
 
 
 
-    public static boolean PatientRegister(String fname, String lname, String email, String password, String re_password, String phone, String region, String province){
+    public static boolean PatientRegister(String name, String email, String password, String re_password, String phone, String region, String province){
         boolean user = false;
         String error = "";
         try{
@@ -250,12 +247,11 @@ public class Lib {
                 set = false;
                 error += "\tUsername already taken\n";
             }
-            boolean checkFname = checkString(fname);
-            boolean checkLname = checkString(lname);
+            boolean checkname = checkString(name);
             boolean checkPassword = password.equals(re_password);
             boolean checkEmail = checkEmail(email);
-            if(checkEmail && checkPassword && checkFname && set && checkLname){
-                if(Auth_Access.insertIntoUsers(fname.toUpperCase(), lname.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
+            if(checkEmail && checkPassword && checkname && set){
+                if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
                     user = true;
                 }
                 else
@@ -263,10 +259,8 @@ public class Lib {
             }else{
                 if(!checkEmail)
                     error+="\tEmail is not valid\n";
-                if(!checkFname)
+                if(!checkname)
                     error+="\tFirst name is not valid\n";
-                if(!checkLname)
-                    error+="\tLast name is not valid\n";
                 if(!checkPassword)
                     error+="\tPassword's dont match\n";
             }
@@ -277,7 +271,7 @@ public class Lib {
         return user;
     }
 
-    public static boolean healthProfessionalRegister(String fname, String lname, String email, String password, String re_password, String phone, String region, String organization, String department, String health_professional){
+    public static boolean healthProfessionalRegister(String name, String email, String password, String re_password, String phone, String region, String organization, String department, String health_professional){
         boolean user = false;
         String error = "";
         try{
@@ -286,12 +280,11 @@ public class Lib {
                 set = false;
                 error += "\tUse already taken\n";
             }
-            boolean checkFname = checkString(fname);
-            boolean checkLname = checkString(lname);
+            boolean checkname = checkString(name);
             boolean checkPassword = password.equals(re_password);
             boolean checkEmail = checkEmail(email);
-            if(checkEmail && checkPassword && checkFname && set && checkLname){
-                if(Auth_Access.insertIntoHealthProfessional(fname.toUpperCase(), lname.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, organization, department, health_professional)) {
+            if(checkEmail && checkPassword && checkname && set){
+                if(Auth_Access.insertIntoHealthProfessional(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, organization, department, health_professional)) {
                     user = true;
                 }
                 else
@@ -299,10 +292,8 @@ public class Lib {
             }else{
                 if(!checkEmail)
                     error+="\tEmail is not valid\n";
-                if(!checkFname)
+                if(!checkname)
                     error+="\tFirst name is not valid\n";
-                if(!checkLname)
-                    error+="\tLast name is not valid\n";
                 if(!checkPassword)
                     error+="\tPassword's dont match\n";
             }
@@ -315,17 +306,13 @@ public class Lib {
 
     public static boolean PatientUpdate(String name, String email, String phone, String region, String province){
         boolean result = false;
-        String fname = name.split(" ")[0];
-        String lname = name.split(" ")[1];
-        result = Auth_Access.PatientUpdate(fname,lname,email,phone,region,province);
+        result = Auth_Access.PatientUpdate(name,email,phone,region,province);
         return result;
     }
 
-    public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region){
+    public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
         boolean result = false;
-        String fname = name.split(" ")[0];
-        String lname = name.split(" ")[1];
-        result = Auth_Access.HealthProfessionalUpdate(fname,lname,email,phone,region);
+        result = Auth_Access.HealthProfessionalUpdate(name,email,phone,region,id);
         return result;
     }
 

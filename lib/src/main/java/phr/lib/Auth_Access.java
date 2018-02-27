@@ -8,8 +8,8 @@ import java.net.URL;
 
 public class Auth_Access{
 
-    private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
-    //private static final String IP = "http://10.0.2.2";
+    //private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
+    private static final String IP = "http://10.0.2.2";
 
     protected static String getUsersByEmail(String email){
         String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
@@ -56,10 +56,10 @@ public class Auth_Access{
         return is_user;
     }
 
-    protected static boolean insertIntoUsers(String fname, String lname,  String email, String password, String phone, String region, String province){
+    protected static boolean insertIntoUsers(String name,  String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&fname="+fname+"&lname="+lname+"&region="+region+"&province="+province);
+        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
         if (responce.equals("true"))
             success=true;
         else{
@@ -68,10 +68,10 @@ public class Auth_Access{
         return success;
     }
 
-    protected static boolean insertIntoHealthProfessional(String fname, String lname,  String email, String password, String phone, String region, String organization, String department, String health_professional){
+    protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String organization, String department, String health_professional){
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/health_professional_registration.php?email="+email+"&password="+password+"&phone="+phone+"&fname="+fname+"&lname="+lname+"&region="+region+"&organization="+organization+"&department="+department+"&health_professional="+health_professional);
+        String responce = makeGet(IP+"/PHR_AUTH/health_professional_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&organization="+organization+"&department="+department+"&health_professional="+health_professional);
         if (responce.equals("true"))
             success=true;
         else{
@@ -184,17 +184,17 @@ public class Auth_Access{
         return responce;
     }
 
-    protected static boolean PatientUpdate(String fname, String lname, String email, String phone, String region, String province){
+    protected static boolean PatientUpdate(String name, String email, String phone, String region, String province){
         boolean result = false;
-        String responce = makeGet(IP+"/PHR_AUTH/update_user.php?email="+email+"&phone="+phone+"&fname="+fname+"&lname="+lname+"&region="+region+"&province="+province);
+        String responce = makeGet(IP+"/PHR_AUTH/update_user.php?email="+email+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
         if(responce.equals("true"))
             result=true;
         return result;
     }
 
-    protected static boolean HealthProfessionalUpdate(String fname, String lname, String email, String phone, String region){
+    protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
         boolean result = false;
-        String responce = makeGet(IP+"/PHR_AUTH/health_professional_update.php?email="+email+"&phone="+phone+"&fname="+fname+"&lname="+lname+"&region="+region);
+        String responce = makeGet(IP+"/PHR_AUTH/health_professional_update.php?email="+email+"&phone="+phone+"&name="+name+"&region="+region+"&id="+id);
         if(responce.equals("true"))
             result=true;
         return result;

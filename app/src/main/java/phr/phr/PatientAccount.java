@@ -105,7 +105,7 @@ public class PatientAccount extends AppCompatActivity {
     }
 
     private void setFields(){
-        name.setText(patient.getfName()+" "+ patient.getlName());
+        name.setText(patient.getName());
         email.setText(patient.getEmail());
         phone.setText(patient.getPhone());
         region.setText(patient.getRegion());
