@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="349dp"
-        android:layout_height="240dp"
+        android:layout_height="62dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -21,19 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/my_border"
-            android:gravity="center"
-            android:padding="2dp"
-            android:text="Patient Information"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="99sp"
-            tools:layout_editor_absoluteY="264sp" />
-
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,13 +29,6 @@
             <TableRow
                 android:background="@drawable/my_border"
                 android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Name:"
-                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/name"
@@ -66,13 +46,6 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Email:"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,84 +55,15 @@
 
             </TableRow>
 
-            <TableRow
-                android:background="@drawable/my_border"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Phone:"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="519-226-2266"
-                    android:textSize="16sp" />
-
-            </TableRow>
-
-            <TableRow
-                android:background="@drawable/my_border"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Region:"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/region"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Windsor"
-                    android:textSize="16sp" />
-
-            </TableRow>
-
-            <TableRow
-                android:background="@drawable/my_border"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Province:"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/province"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Ontario"
-                    android:textSize="16sp" />
-
-            </TableRow>
         </TableLayout>
 
-        <Button
-            android:id="@+id/edit_user_button"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="242dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:text="Edit User Details"
-            android:theme="@style/myButtonTheme" />
+
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="350dp"
-        android:layout_height="214dp"
+        android:layout_height="304dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -168,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.846">
+        app:layout_constraintVertical_bias="0.35">
 
         <TableLayout
             android:id="@+id/textView2"
@@ -178,18 +82,13 @@
 
             <TableRow
                 android:background="@drawable/my_border"
-                android:padding="4dp">
-
-                <SearchView
-                    android:layout_width="190dp"
-                    android:layout_height="match_parent"
-                    android:showAsAction="collapseActionView|ifRoom" />
+                android:padding="8dp">
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:background="@drawable/my_border"
                     android:padding="2dp"
                     android:text="My Records"
@@ -205,9 +104,12 @@
             android:id="@+id/records_list_view"
             android:layout_width="350dp"
             android:layout_height="160dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/textView2"
             android:background="@drawable/my_border"
-            />
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="39dp"></ListView>
 
     </RelativeLayout>
 
@@ -215,7 +117,7 @@
         android:id="@+id/add_record_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="242dp"
-        android:layout_height="50dp"
+        android:layout_height="54dp"
         android:layout_gravity="center"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -226,6 +128,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.841" />
+
+    <Button
+        android:id="@+id/edit_user_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="242dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:text="Edit User Details"
+        android:theme="@style/myButtonTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_record_button"
+        app:layout_constraintVertical_bias="0.333" />
 
 </android.support.constraint.ConstraintLayout>

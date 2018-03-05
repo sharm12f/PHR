@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="350dp"
-        android:layout_height="243dp"
+        android:layout_height="65dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -21,19 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/my_border"
-            android:gravity="center"
-            android:padding="2dp"
-            android:text="Health Professional Information"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="99sp"
-            tools:layout_editor_absoluteY="264sp" />
-
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,13 +29,6 @@
             <TableRow
                 android:background="@drawable/my_border"
                 android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Name:"
-                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/name_text"
@@ -66,13 +46,6 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Email:"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/email_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,62 +55,47 @@
 
             </TableRow>
 
-            <TableRow
-                android:background="@drawable/my_border"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Phone:"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/phone_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="519-556-3366"
-                    android:textSize="16sp" />
-
-            </TableRow>
-
-            <TableRow
-                android:background="@drawable/my_border"
-                android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="Region:"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/region_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Windsor"
-                    android:textSize="16sp" />
-
-            </TableRow>
         </TableLayout>
 
-        <Button
-            android:id="@+id/edit_button"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="242dp"
-            android:layout_height="54dp"
-            android:layout_gravity="center"
-            android:text="Edit User Details"
-            android:theme="@style/myButtonTheme" />
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/view_all_records_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="242dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:layout_margin="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="View All Records"
+        android:theme="@style/myButtonTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.848" />
+
+    <Button
+        android:id="@+id/edit_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="242dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:text="Edit User Details"
+        android:theme="@style/myButtonTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_all_records_button" />
 
     <RelativeLayout
         android:layout_width="350dp"
-        android:layout_height="209dp"
+        android:layout_height="301dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -146,7 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.837">
+        app:layout_constraintVertical_bias="0.335">
 
         <TableLayout
             android:id="@+id/textView2"
@@ -171,10 +129,6 @@
                     tools:layout_editor_absoluteX="99sp"
                     tools:layout_editor_absoluteY="264sp" />
 
-                <SearchView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
             </TableRow>
         </TableLayout>
 
@@ -191,24 +145,5 @@
             tools:layout_editor_absoluteY="39dp"></ListView>
 
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/view_all_records_button"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="242dp"
-        android:layout_height="54dp"
-        android:layout_margin="1dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="View All Records"
-        android:theme="@style/myButtonTheme"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>

@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="350dp"
-        android:layout_height="489dp"
+        android:layout_height="500dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -27,7 +27,7 @@
 
             <TableRow
                 android:background="@drawable/my_border"
-                android:padding="8dp">
+                android:padding="6dp">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -36,7 +36,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/my_border"
                     android:padding="2dp"
-                    android:text="All Records"
+                    android:text="All Patients"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     tools:layout_editor_absoluteX="99sp"
@@ -48,8 +48,8 @@
         <ListView
             android:id="@+id/records_list_view"
             android:layout_width="350dp"
-            android:layout_height="160dp"
-            android:layout_alignParentBottom="true"
+            android:layout_height="380dp"
+
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView2"
             android:background="@drawable/my_border"
@@ -58,6 +58,24 @@
 
 
         </ListView>
+
+        <Button
+            android:id="@+id/all_records_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="240dp"
+            android:layout_height="54dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="11dp"
+            android:text="View All Records"
+            android:theme="@style/myButtonTheme"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.529"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.83" />
+
 
     </RelativeLayout>
 

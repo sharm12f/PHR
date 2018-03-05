@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="350dp"
-        android:layout_height="283dp"
+        android:layout_height="348dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -49,24 +49,24 @@
         android:id="@+id/all_records_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="240dp"
-        android:layout_height="68dp"
+        android:layout_height="58dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="View All Records"
+        android:text="View Patients"
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.709" />
+        app:layout_constraintVertical_bias="0.83" />
 
     <Button
         android:id="@+id/myaccount_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="240dp"
-        android:layout_height="68dp"
+        android:layout_height="58dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -77,6 +77,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.903" />
+        app:layout_constraintVertical_bias="0.981" />
 
 </android.support.constraint.ConstraintLayout>
