@@ -25,7 +25,7 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
         super.onCreate(savedInstance);
         setContentView(R.layout.healthprofessional_view_all_records);
         record_list_view = findViewById(R.id.records_list_view);
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
+        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
         healthProfessional = list.get(0);
         rcs = new ArrayList<String[]>();
         ArrayList<Patient> temp = healthProfessional.getPatient();

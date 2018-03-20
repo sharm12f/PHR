@@ -27,7 +27,7 @@ public class HealthProfessionalView extends AppCompatActivity {
         my_account_button = findViewById(R.id.myaccount_button);
         view_all_record_button = findViewById(R.id.all_records_button);
 
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
+        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
         final HealthProfessional physician = list.get(0);
 
         my_account_button.setOnClickListener(new View.OnClickListener() {
@@ -36,7 +36,7 @@ public class HealthProfessionalView extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                 list.add(physician);
-                intent.putExtra("USER",list);
+                intent.putExtra("HP",list);
                 startActivity(intent);
             }
         });
@@ -47,7 +47,7 @@ public class HealthProfessionalView extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                 list.add(physician);
-                intent.putExtra("USER",list);
+                intent.putExtra("HP",list);
                 startActivity(intent);
             }
         });

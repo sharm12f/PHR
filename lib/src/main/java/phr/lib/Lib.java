@@ -2,6 +2,7 @@ package phr.lib;
 
 import com.sun.org.apache.regexp.internal.RE;
 
+import java.security.spec.ECField;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,7 +18,6 @@ public class Lib {
     public static User login(String email, String password){
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
-
         boolean isPatient = Auth_Access.userExists(email);
         boolean isPhysician = Auth_Access.healthUserExists(email);
         if(isPatient){
@@ -56,6 +56,9 @@ public class Lib {
         String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
         int db_id;
         String responce = Auth_Access.getUsersByEmail(email);
+        if(responce=="error"){
+            return null;
+        }
         JSONObject obj = new JSONObject(responce);
         db_id = obj.getInt("id");
         db_create = obj.getString("create_time");
@@ -73,6 +76,10 @@ public class Lib {
         patient.setProvince(db_province);
 
         String records = Auth_Access.getUserHealthRecordByEmail(db_email);
+        if(records=="error"){
+            return null;
+        }
+
         JSONArray str = new JSONArray(records);
         for (int i=0;i<str.length(); i++) {
             int rid, uid;
@@ -96,6 +103,9 @@ public class Lib {
         String db_email, db_role, db_create, db_name, db_phone, db_region, db_organization, db_department, db_health;
         int db_id;
         String responce = Auth_Access.getHealthProfessionalUsersByEmail(email);
+        if(responce=="error"){
+            return null;
+        }
         JSONObject obj = new JSONObject(responce);
         db_id = obj.getInt("id");
         db_create = obj.getString("create_time");
@@ -118,6 +128,9 @@ public class Lib {
 
         HashMap<Integer, ArrayList<Record>> healthProfessionalPatientRecordOnly = new HashMap<Integer, ArrayList<Record>>();
         String records = Auth_Access.getHealthProfessionalRecordsById(db_id);
+        if(records=="error"){
+            return null;
+        }
         JSONArray str = new JSONArray(records);
         for (int i=0;i<str.length(); i++) {
             int rid;
@@ -152,6 +165,9 @@ public class Lib {
         String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
         int db_id;
         String responce = Auth_Access.getUsersById(id);
+        if(responce=="error"){
+            return null;
+        }
         JSONObject obj = new JSONObject(responce);
         db_id = obj.getInt("id");
         db_create = obj.getString("create_time");
@@ -173,6 +189,9 @@ public class Lib {
     public static Record makeRecord (int id){
         Record r = null;
         String records = Auth_Access.getUserHealthRecordById(id);
+        if(records=="error") {
+            return null;
+        }
         JSONArray str = new JSONArray(records);
         for (int i=0;i<str.length(); i++) {
             int rid, uid;
@@ -319,6 +338,9 @@ public class Lib {
     public static ArrayList<String> getRegions(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getRegions();
+        if(responce=="error"){
+            return null;
+        }
         JSONArray array = new JSONArray(responce);
         for(int i=0;i<array.length();i++){
             JSONObject obj = array.getJSONObject(i);
@@ -329,6 +351,9 @@ public class Lib {
     public static ArrayList<String> getProvinces(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getProvinces();
+        if(responce=="error"){
+            return null;
+        }
         JSONArray array = new JSONArray(responce);
         for(int i=0;i<array.length();i++){
             JSONObject obj = array.getJSONObject(i);
@@ -339,6 +364,9 @@ public class Lib {
     public static ArrayList<String> getOrganization(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getOrganization();
+        if(responce=="error"){
+            return null;
+        }
         JSONArray array = new JSONArray(responce);
         for(int i=0;i<array.length();i++){
             JSONObject obj = array.getJSONObject(i);
@@ -349,6 +377,9 @@ public class Lib {
     public static ArrayList<String> getDepartment(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getDepartment();
+        if(responce=="error"){
+            return null;
+        }
         JSONArray array = new JSONArray(responce);
         for(int i=0;i<array.length();i++){
             JSONObject obj = array.getJSONObject(i);
@@ -359,6 +390,9 @@ public class Lib {
     public static ArrayList<String> getHealthProfessional(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getHealthProfessional();
+        if(responce=="error"){
+            return null;
+        }
         JSONArray array = new JSONArray(responce);
         for(int i=0;i<array.length();i++){
             JSONObject obj = array.getJSONObject(i);

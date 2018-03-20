@@ -8,8 +8,8 @@ import java.net.URL;
 
 public class Auth_Access{
 
-    private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
-    //private static final String IP = "http://10.0.2.2";
+    //private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
+    private static final String IP = "http://10.0.2.2";
 
     protected static String getUsersByEmail(String email){
         String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
@@ -62,9 +62,6 @@ public class Auth_Access{
         String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
         if (responce.equals("true"))
             success=true;
-        else{
-            System.out.println(responce);
-        }
         return success;
     }
 
@@ -78,12 +75,6 @@ public class Auth_Access{
             System.out.println(responce);
         }
         return success;
-    }
-
-    protected static boolean deleteUser(String user_name){
-        //("delete from users where user_name=?");
-        return false;
-
     }
 
     protected static boolean userExists(String email) {
@@ -115,14 +106,10 @@ public class Auth_Access{
     protected static boolean insertIntoRecord(String name, String description, int uid){
         boolean result = false;
         String responce = makeGet(IP+"/PHR_AUTH/insert_into_record.php?name="+name+"&description="+description+"&uid="+uid);
+        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;
-    }
-
-    protected static boolean deleteUserRecord(int id){
-        //("delete from user_health_record where id=?");
-        return false;
     }
 
     private static String makeGet(String getcall){
@@ -187,6 +174,7 @@ public class Auth_Access{
     protected static boolean PatientUpdate(String name, String email, String phone, String region, String province){
         boolean result = false;
         String responce = makeGet(IP+"/PHR_AUTH/update_user.php?email="+email+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
+        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;

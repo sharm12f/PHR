@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ import phr.lib.Patient;
  */
 
 public class HealthProfessionalAccount extends AppCompatActivity {
-    TextView name_text, email_text, phone_text, region_text;
+    TextView name_text, email_text;
     Button edit_button, view_all_records;
     HealthProfessional healthProfessional;
     ListView patients_listview;
@@ -35,14 +37,18 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         setContentView(R.layout.healthprofessional_account);
         name_text = findViewById(R.id.name_text);
         email_text = findViewById(R.id.email_text);
-        phone_text = findViewById(R.id.phone_text);
-        region_text = findViewById(R.id.region_text);
         edit_button = findViewById(R.id.edit_button);
         view_all_records = findViewById(R.id.view_all_records_button);
         patients_listview = findViewById(R.id.patients_list_view);
 
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional= list.get(0);
+        if(healthProfessional==null){
+            Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
+            toast.show();
+            Intent intent = new Intent(getApplicationContext(), LogIn.class);
+            startActivity(intent);
+        }
 
         HealthProfessionalPatientListViewAdapter adapter = new HealthProfessionalPatientListViewAdapter(this, healthProfessional.getPatient());
         patients_listview.setAdapter(adapter);
@@ -73,23 +79,39 @@ public class HealthProfessionalAccount extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         try{
-            healthProfessional = new AsyncTask<Void, Void, HealthProfessional>() {
-                protected HealthProfessional doInBackground(Void... progress) {
-                    HealthProfessional result = null;
-                    result = Lib.makeHealthProfessional(healthProfessional.getEmail());
-                    return result;
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
                 }
-            }.execute().get();
+                protected Void doInBackground(Void... progress) {
+                    HealthProfessional result = null;
+                    healthProfessional = Lib.makeHealthProfessional(healthProfessional.getEmail());
+                    setFields();
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                    if(healthProfessional==null) {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
+                        toast.show();
+                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+                        startActivity(intent);
+                    }
+                }
 
+            };
+            asyncTask.execute();
         }catch(Exception e){e.printStackTrace();}
-
-        setFields();
     }
 
     private void setFields(){
         name_text.setText(healthProfessional.getName());
         email_text.setText(healthProfessional.getEmail());
-        phone_text.setText(healthProfessional.getPhone());
-        region_text.setText(healthProfessional.getRegion());
     }
 }

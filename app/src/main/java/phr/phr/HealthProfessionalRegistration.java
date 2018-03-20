@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,14 +15,16 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 28-Jan-18.
  */
 
 public class HealthProfessionalRegistration extends AppCompatActivity {
-
+    Boolean Success = false;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -41,11 +44,22 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         final Spinner Shealthprofessional = findViewById(R.id.healthprofessional_spinner);
 
 
-
         new AsyncTask<Void, Void, Void>(){
+            private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);
+            protected void onPreExecute(){
+                super.onPreExecute();
+                p.setMessage("Loading");
+                p.setIndeterminate(false);
+                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                p.show();
+            }
             protected Void doInBackground(Void... progress){
                 loadSpinners(Sregion,Sorganization,Sdepartment,Shealthprofessional);
                 return null;
+            }
+            protected void onPostExecute(Void Void) {
+                super.onPostExecute(Void);
+                p.dismiss();
             }
         }.execute();
 
@@ -62,24 +76,37 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                 final String department = Sdepartment.getSelectedItem().toString();
                 final String healthprofessional = Shealthprofessional.getSelectedItem().toString();
                 try{
-                    Boolean success = new AsyncTask<Void, Void, Boolean>() {
+                    AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
+                        private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);
+                        protected void onPreExecute(){
+                            super.onPreExecute();
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
+                        }
                         protected Boolean doInBackground(Void... progress) {
-                            System.out.println("Start Registration");
                             return Lib.healthProfessionalRegister(name , email, password, re_password, phone, region, organization, department, healthprofessional);
                         }
-                    }.execute().get();
-                    if(success == true) {
-                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
-                        startActivity(intent);
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "Could not create patient", Toast.LENGTH_LONG).show();
-                        Ename.setText("");
-                        Eemail.setText("");
-                        Ephone.setText("");
-                        Epassword.setText("");
-                        Ere_password.setText("");
-                    }
+                        protected void onPostExecute(Boolean result){
+                            super.onPostExecute(result);
+                            p.dismiss();
+                            if(result){
+                                HealthProfessional healthProfessional = Lib.makeHealthProfessional(email);
+                                Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+                                ArrayList<User> list = new ArrayList<User>();
+                                list.add(healthProfessional);
+                                intent.putExtra("HP", list);
+                                startActivity(intent);
+                            }
+                            else{
+                                Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+
+                        }
+                    };
+                    asyncTask.execute();
                 }catch (Exception e){e.printStackTrace();}
             }
         });

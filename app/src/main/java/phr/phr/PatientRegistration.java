@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import phr.lib.Lib;
  */
 
 public class PatientRegistration extends AppCompatActivity {
+    Boolean Success = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,23 +58,26 @@ public class PatientRegistration extends AppCompatActivity {
                 final String region = Sregion.getSelectedItem().toString();
                 final String province = Sprovinces.getSelectedItem().toString();
                 try{
-                    Boolean success = new AsyncTask<Void, Void, Boolean>() {
+                    Success = new AsyncTask<Void, Void, Boolean>() {
+                        private ProgressDialog p = new ProgressDialog(PatientRegistration.this);
+                        protected void onPreExecute(){
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
+                            super.onPreExecute();
+                        }
                         protected Boolean doInBackground(Void... progress) {
                             System.out.println("Start Registration");
                             return Lib.PatientRegister(name , email, password, re_password, phone, region, province);
                         }
                     }.execute().get();
-                    if(success == true) {
-                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
-                        startActivity(intent);
+                    if(Success){
+                        finish();
                     }
                     else{
-                        Toast.makeText(getApplicationContext(), "Could not create patient", Toast.LENGTH_LONG).show();
-                        Ename.setText("");
-                        Eemail.setText("");
-                        Ephone.setText("");
-                        Epassword.setText("");
-                        Ere_password.setText("");
+                        Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 }catch (Exception e){e.printStackTrace();}
             }

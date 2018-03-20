@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -24,9 +26,6 @@ import phr.lib.Record;
 public class PatientAccount extends AppCompatActivity {
     TextView name;
     TextView email;
-    TextView phone;
-    TextView region;
-    TextView province;
     Button edit_user ;
     Button add_record;
     ListView record_list_view;
@@ -40,14 +39,18 @@ public class PatientAccount extends AppCompatActivity {
         setContentView(R.layout.patient_account);
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
-        phone = findViewById(R.id.phone);
-        region = findViewById(R.id.region);
-        province = findViewById(R.id.province);
         edit_user = findViewById(R.id.edit_user_button);
         add_record = findViewById(R.id.add_record_button);
         record_list_view = findViewById(R.id.records_list_view);
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         patient = list.get(0);
+        if(patient==null){
+            Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
+            toast.show();
+            Intent intent = new Intent(getApplicationContext(), LogIn.class);
+            startActivity(intent);
+        }
+
         RecordListViewAdapter adapter = new RecordListViewAdapter(this, patient.getRecords());
         record_list_view.setAdapter(adapter);
 
@@ -91,25 +94,39 @@ public class PatientAccount extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         try{
-            patient = new AsyncTask<Void, Void, Patient>() {
-                protected Patient doInBackground(Void... progress) {
-                    Patient result = null;
-                    result = Lib.makeUser(patient.getEmail());
-                    return result;
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(PatientAccount.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
                 }
-            }.execute().get();
+                protected Void doInBackground(Void... progress) {
+                    patient = Lib.makeUser(patient.getEmail());
+                    setFields();
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                    if(patient==null){
+                        Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
+                        toast.show();
+                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+                        startActivity(intent);
+                    }
+                }
+            };
+            asyncTask.execute();
 
         }catch(Exception e){e.printStackTrace();}
-
-        setFields();
     }
 
     private void setFields(){
         name.setText(patient.getName());
         email.setText(patient.getEmail());
-        phone.setText(patient.getPhone());
-        region.setText(patient.getRegion());
-        province.setText(patient.getProvince());
         RecordListViewAdapter adapter = new RecordListViewAdapter(this, patient.getRecords());
         record_list_view.setAdapter(adapter);
     }

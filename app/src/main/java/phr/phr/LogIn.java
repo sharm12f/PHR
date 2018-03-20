@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,6 +19,7 @@ import phr.lib.Lib;
 import phr.lib.User;
 
 public class LogIn extends AppCompatActivity {
+    Boolean test = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,16 +35,47 @@ public class LogIn extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
                 try {
-
-                    User user = new AsyncTask<Void, Void, User>() {
-                        protected User doInBackground(Void... progress) {
-                            System.out.println("Start Login");
-                            //return Lib.login("app@app.com", "password");
-                            return Lib.login("doc@hp.com", "password");
+                    AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                        private ProgressDialog p = new ProgressDialog(LogIn.this);
+                        protected void onPreExecute(){
+                            super.onPreExecute();
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
                         }
-                    }.execute().get();
+                        protected Void doInBackground(Void... progress) {
+                            System.out.println("Start Login");
+                            User user = Lib.login("doc@hp.com", "password");
+                            if(user!=null) {
+                                String role = user.getRole();
+                                if (role.equals("USER")) {
+                                    Intent intent = new Intent(getApplicationContext(), PatientView.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(user);
+                                    intent.putExtra("USER", list);
+                                    startActivity(intent);
+                                } else if (role.equals("HP")) {
+                                    Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(user);
+                                    intent.putExtra("HP", list);
+                                    startActivity(intent);
+                                }
+                            }
+                            else{
+                                Toast toast = Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                            return null;
+                        }
+                        protected void onPostExecute(Void Void){
+                            super.onPostExecute(Void);
+                            p.dismiss();
+                        }
+                    };
+                    asyncTask.execute();
                     /*
                     if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                         return;
@@ -53,21 +87,6 @@ public class LogIn extends AppCompatActivity {
                         }
                     }.execute().get();
                     */
-                    String role = user.getRole();
-                    if(role.equals("USER")){
-                        Intent intent = new Intent(getApplicationContext(), PatientView.class);
-                        ArrayList<User> list = new ArrayList<User>();
-                        list.add(user);
-                        intent.putExtra("USER",list);
-                        startActivity(intent);
-                    }
-                    else if(role.equals("HP")){
-                        Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
-                        ArrayList<User> list = new ArrayList<User>();
-                        list.add(user);
-                        intent.putExtra("USER",list);
-                        startActivity(intent);
-                    }
 
                 }catch (Exception e){e.printStackTrace();}
             }
@@ -76,29 +95,6 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    User user = new AsyncTask<Void, Void, User>() {
-                        protected User doInBackground(Void... progress) {
-                            System.out.println("Start Login");
-                            return Lib.login("app@app.com", "password");
-                            //return Lib.login("hp@hp.com", "password");
-                        }
-                    }.execute().get();
-                    String role = user.getRole();
-                    if(role.equals("USER")){
-                        Intent intent = new Intent(getApplicationContext(), PatientView.class);
-                        ArrayList<User> list = new ArrayList<User>();
-                        list.add(user);
-                        intent.putExtra("USER",list);
-                        startActivity(intent);
-                    }
-                    else if(role.equals("HP")){
-                        Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
-                        ArrayList<User> list = new ArrayList<User>();
-                        list.add(user);
-                        intent.putExtra("USER",list);
-                        startActivity(intent);
-                    }
-                    /*
                     AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
                     builder.setMessage("Are you a Patient of a Physician")
                             .setPositiveButton("Patient", new DialogInterface.OnClickListener() {
@@ -115,8 +111,56 @@ public class LogIn extends AppCompatActivity {
                             });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                    */
                 }catch(Exception e){e.printStackTrace();}
+            }
+        });
+
+
+        reset_password_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                        private ProgressDialog p = new ProgressDialog(LogIn.this);
+                        protected void onPreExecute(){
+                            super.onPreExecute();
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
+
+                        }
+                        protected Void doInBackground(Void... progress) {
+                            System.out.println("Start Login");
+                            User user = Lib.login("app@app.com", "password");
+                            if (user != null) {
+                                String role = user.getRole();
+                                if (role.equals("USER")) {
+                                    Intent intent = new Intent(getApplicationContext(), PatientView.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(user);
+                                    intent.putExtra("USER", list);
+                                    startActivity(intent);
+                                } else if (role.equals("HP")) {
+                                    Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(user);
+                                    intent.putExtra("HP", list);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                            return null;
+                        }
+                        protected void onPostExecute(Void Void){
+                            super.onPostExecute(Void);
+                            p.dismiss();
+                        }
+                    };
+                    asyncTask.execute();
+                }catch (Exception e){e.printStackTrace();}
             }
         });
     }

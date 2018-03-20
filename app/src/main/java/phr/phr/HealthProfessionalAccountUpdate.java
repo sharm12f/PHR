@@ -1,5 +1,7 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -41,7 +44,27 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional = list.get(0);
         update = findViewById(R.id.update_button);
-        setFields();
+
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
+            protected void onPreExecute(){
+                super.onPreExecute();
+                p.setMessage("Loading");
+                p.setIndeterminate(false);
+                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                p.show();
+            }
+            protected Void doInBackground(Void... progress) {
+                setFields();
+                return null;
+            }
+            protected void onPostExecute(Void Void){
+                super.onPostExecute(Void);
+                p.dismiss();
+            }
+        };
+        asyncTask.execute();
+
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,22 +73,44 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 final String phone = phone_input.getText().toString();
                 final String region = regions.getSelectedItem().toString();
                 try{
-                    Success = new AsyncTask<Void, Void, Boolean>() {
+
+
+                    AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
+                        private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
+                        protected void onPreExecute(){
+                            super.onPreExecute();
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
+
+                        }
                         protected Boolean doInBackground(Void... progress) {
-                            boolean result = false;
                             int id = healthProfessional.getId();
-                            result = Lib.HealthProfessionalUpdate(name,email,phone,region,id);
+                            Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,id);
                             healthProfessional.setName(name);
                             healthProfessional.setEmail(email);
                             healthProfessional.setPhone(phone);
                             healthProfessional.setRegion(region);
-                            System.out.println("Update: " +  result);
                             return result;
                         }
-                    }.execute().get();
-                    if(Success){
-                        finish();
-                    }
+                        protected void onPostExecute(Boolean result){
+                            super.onPostExecute(result);
+                            p.dismiss();
+                            if(result){
+                                Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
+                                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
+                                list.add(healthProfessional);
+                                intent.putExtra("USER",list);
+                                startActivity(intent);
+                            }
+                            else{
+                                Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        }
+                    };
+                    asyncTask.execute();
                 }catch (Exception e){e.printStackTrace();}
             }
         });
@@ -76,19 +121,8 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         email_input.setText(healthProfessional.getEmail());
         phone_input.setText(healthProfessional.getPhone());
         try {
-            ArrayList<String> list = new AsyncTask<Void, Void, ArrayList<String>>() {
-                protected ArrayList<String> doInBackground(Void... progress) {
-                    ArrayList<String> list = Lib.getRegions();
-                    return list;
-                }
-            }.execute().get();
-            ArrayList<String> list2 = new AsyncTask<Void, Void, ArrayList<String>>() {
-                protected ArrayList<String> doInBackground(Void... progress) {
-                    ArrayList<String> list = Lib.getProvinces();
-                    return list;
-                }
-            }.execute().get();
-
+            ArrayList<String> list = Lib.getRegions();
+            ArrayList<String> list2 = Lib.getProvinces();
             loadSpinners(list,list2);
         }catch (Exception e){e.printStackTrace();}
     }

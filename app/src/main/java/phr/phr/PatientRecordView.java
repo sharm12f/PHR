@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -52,12 +54,27 @@ public class PatientRecordView extends AppCompatActivity {
                     final String description = description_input.getText().toString();
                     try{
                         Success = new AsyncTask<Void, Void, Boolean>() {
+                            private ProgressDialog p = new ProgressDialog(PatientRecordView.this);
+                            protected void onPreExecute(){
+                                p.setMessage("Loading");
+                                p.setIndeterminate(false);
+                                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                p.show();
+                                super.onPreExecute();
+                            }
                             protected Boolean doInBackground(Void... progress) {
                                 boolean result = false;
                                 result = Lib.PatientUpdateRecord(name, description, record.getId());
                                 return result;
                             }
                         }.execute().get();
+                        if(Success){
+                            finish();
+                        }
+                        else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                     }catch (Exception e){e.printStackTrace();}
                 }
                 else{
@@ -65,12 +82,27 @@ public class PatientRecordView extends AppCompatActivity {
                     final String description = description_input.getText().toString();
                     try{
                         Success = new AsyncTask<Void, Void, Boolean>() {
+                            private ProgressDialog p = new ProgressDialog(PatientRecordView.this);
+                            protected void onPreExecute(){
+                                p.setMessage("Loading");
+                                p.setIndeterminate(false);
+                                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                p.show();
+                                super.onPreExecute();
+                            }
                             protected Boolean doInBackground(Void... progress) {
                                 boolean result = false;
                                 result = Lib.insertIntoRecord(name, description, id);
                                 return result;
                             }
                         }.execute().get();
+                        if(Success){
+                            finish();
+                        }
+                        else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Add Error", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                     }catch (Exception e){e.printStackTrace();}
                 }
             }

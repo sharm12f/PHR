@@ -1,5 +1,6 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -54,6 +56,14 @@ public class PatientAccountUpdate extends AppCompatActivity {
                 final String province = provinces.getSelectedItem().toString();
                 try{
                     Success = new AsyncTask<Void, Void, Boolean>() {
+                        private ProgressDialog p = new ProgressDialog(PatientAccountUpdate.this);
+                        protected void onPreExecute(){
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
+                            super.onPreExecute();
+                        }
                         protected Boolean doInBackground(Void... progress) {
                             boolean result = false;
                             result = Lib.PatientUpdate(name,email,phone,region,province);
@@ -67,8 +77,11 @@ public class PatientAccountUpdate extends AppCompatActivity {
                         }
                     }.execute().get();
                     if(Success){
-                        System.out.println("Finish");
                         finish();
+                    }
+                    else{
+                        Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 }catch (Exception e){e.printStackTrace();}
             }
