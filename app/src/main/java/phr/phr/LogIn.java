@@ -37,6 +37,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 try {
+
                     AsyncTask<Void, Void, Void> asyncTask =  new AsyncTask<Void, Void, Void>() {
                         private ProgressDialog p = new ProgressDialog(LogIn.this);
                         protected void onPreExecute(){
@@ -48,7 +49,9 @@ public class LogIn extends AppCompatActivity {
                         }
                         protected Void doInBackground(Void... progress) {
                             System.out.println("Start Login");
-                            user = Lib.login("doc@hp.com", "password");
+                            if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
+                                return null;
+                            user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
                             return null;
                         }
                         protected void onPostExecute(Void Void){
@@ -77,17 +80,6 @@ public class LogIn extends AppCompatActivity {
                         }
                     };
                     asyncTask.execute();
-                    /*
-                    if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
-                        return;
-                    User user = new AsyncTask<Void, Void, User>() {
-                        protected User doInBackground(Void... progress) {
-                            System.out.println("Start Login");
-                            User test = Lib.login(email_input.getText().toString(), password_input.getText().toString());
-                            return test;
-                        }
-                    }.execute().get();
-                    */
 
                 }catch (Exception e){e.printStackTrace();}
             }
