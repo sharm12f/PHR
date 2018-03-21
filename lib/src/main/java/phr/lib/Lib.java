@@ -18,33 +18,30 @@ public class Lib {
     public static User login(String email, String password){
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
+
+        if(!checkPassword || !checkUsername){
+            return null;
+        }
+
         boolean isPatient = Auth_Access.userExists(email);
         boolean isPhysician = Auth_Access.healthUserExists(email);
         if(isPatient){
             Patient patient = null;
-            if (!checkUsername || !checkPassword)
-                System.out.println("Nope");
-            else {
-                if(Auth_Access.isUser(email, password)) {
-                    patient = makeUser(email);
-                }
-                else{
-                    System.out.println("Wrong email or password");
-                }
+            if(Auth_Access.isUser(email, password)) {
+                patient = makeUser(email);
+            }
+            else{
+                return null;
             }
             return patient;
         }
         else if(isPhysician){
             HealthProfessional healthProfessional = null;
-            if (!checkUsername || !checkPassword)
-                System.out.println("Nope");
-            else {
-                if(Auth_Access.isHealthProfessional(email, password)) {
-                    healthProfessional = makeHealthProfessional(email);
-                }
-                else{
-                    System.out.println("Wrong email or password");
-                }
+            if(Auth_Access.isHealthProfessional(email, password)) {
+                healthProfessional = makeHealthProfessional(email);
+            }
+            else{
+                return null;
             }
             return healthProfessional;
         }
@@ -52,6 +49,11 @@ public class Lib {
     }
 
     public static Patient makeUser (String email){
+
+        boolean checkEmail = checkEmail(email);
+        if(!checkEmail)
+            return null;
+
         Patient patient = null;
         String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
         int db_id;
@@ -99,6 +101,11 @@ public class Lib {
     }
 
     public static HealthProfessional makeHealthProfessional (String email){
+
+        boolean checkEmail = checkEmail(email);
+        if(!checkEmail)
+            return null;
+
         HealthProfessional healthProfessional = null;
         String db_email, db_role, db_create, db_name, db_phone, db_region, db_organization, db_department, db_health;
         int db_id;
@@ -161,6 +168,10 @@ public class Lib {
     }
 
     public static Patient makeHealthProfessionalPatient (int id){
+
+        if(id < 0 )
+            return null;
+
         Patient patient = null;
         String db_email, db_role, db_create, db_name, db_phone, db_region, db_province;
         int db_id;
@@ -187,6 +198,10 @@ public class Lib {
     }
 
     public static Record makeRecord (int id){
+
+        if(id < 0)
+            return null;
+
         Record r = null;
         String records = Auth_Access.getUserHealthRecordById(id);
         if(records=="error") {
@@ -209,6 +224,12 @@ public class Lib {
         return r;
     }
 
+    public static boolean checkEmail(String str){
+        if(str.matches("^[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9_-]{2,}.[A-Za-z.]{2,7}$"))
+            return true;
+        return false;
+    }
+
     public static boolean checkString(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
@@ -217,16 +238,31 @@ public class Lib {
         return false;
     }
 
+    public static boolean checkPhone(String str){
+        if(str.length() > 128 || str.length() < 1)
+            return false;
+        if(str.matches("[a-z A-Z0-9+=*/^()_-]+"))
+            return true;
+        return false;
+    }
+
+
     public static boolean PatientUpdateRecord(String name, String description, int rid){
-        boolean result = false;
-        result = Auth_Access.updateRecord(name, description, rid);
-        return result;
+
+        boolean checkName = checkString(name);
+        boolean checkDescription = checkString(description);
+        if(rid < 0 || !checkDescription || !checkName)
+            return false;
+        return Auth_Access.updateRecord(name, description, rid);
     }
 
     public static boolean insertIntoRecord(String name, String description, int uid){
-        boolean result = false;
-        result = Auth_Access.insertIntoRecord(name, description, uid);
-        return result;
+        boolean checkName = checkString(name);
+        boolean checkDescription = checkString(description);
+        if(uid < 0 || !checkDescription || !checkName)
+            return false;
+        return Auth_Access.insertIntoRecord(name, description, uid);
+
     }
 
     public static Timestamp stringToTimestamp(String string){
@@ -243,96 +279,98 @@ public class Lib {
         }
     }
 
-    public static boolean checkEmail(String str){
-        if(str.matches("^[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9_-]{2,}.[A-Za-z.]{2,7}$"))
-            return true;
-        return false;
-    }
-
     public static Timestamp getTimestampNow(){
         Date date = new Date();
         return new Timestamp(date.getTime());
     }
 
-
-
-
     public static boolean PatientRegister(String name, String email, String password, String re_password, String phone, String region, String province){
-        boolean user = false;
-        String error = "";
+
+        boolean checkName = checkString(name);
+        boolean checkEmail = checkEmail(email);
+        boolean checkPassword = checkString(password);
+        boolean checkRePassword = checkString(re_password);
+        boolean checkPhone = checkPhone(phone);
+        boolean checkRegion = checkString(region);
+        boolean checkProvince = checkString(province);
+
+        boolean passwordMatch = false;
+        if(checkPassword || checkRePassword)
+            passwordMatch = password.equals(re_password);
+
+        if(!checkName || !checkEmail || !passwordMatch || !checkPhone || !checkRegion || !checkProvince)
+            return false;
+
         try{
-            boolean set = true;
             if(Auth_Access.userExists(email)) {
-                set = false;
-                error += "\tUsername already taken\n";
+                return false;
             }
-            boolean checkname = checkString(name);
-            boolean checkPassword = password.equals(re_password);
-            boolean checkEmail = checkEmail(email);
-            if(checkEmail && checkPassword && checkname && set){
-                if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
-                    user = true;
-                }
-                else
-                    error+="\tPatient Insertion failed\n";
-            }else{
-                if(!checkEmail)
-                    error+="\tEmail is not valid\n";
-                if(!checkname)
-                    error+="\tFirst name is not valid\n";
-                if(!checkPassword)
-                    error+="\tPassword's dont match\n";
+            if(Auth_Access.insertIntoUsers(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province)) {
+                return true;
             }
-            if(!error.equals("")){
-                throw new Exception(error);
-            }
-        }catch(Exception e){System.out.println(e);}
-        return user;
+            else
+                return false;
+        }catch(Exception e){e.printStackTrace();}
+        return false;
     }
 
     public static boolean healthProfessionalRegister(String name, String email, String password, String re_password, String phone, String region, String organization, String department, String health_professional){
-        boolean user = false;
-        String error = "";
+
+        boolean checkName = checkString(name);
+        boolean checkEmail = checkEmail(email);
+        boolean checkPassword = checkString(password);
+        boolean checkRePassword = checkString(re_password);
+        boolean checkPhone = checkPhone(phone);
+        boolean checkRegion = checkString(region);
+        boolean checkOrganization = checkString(organization);
+        boolean checkDepartment = checkString(department);
+        boolean checkHealthProfessional = checkString(health_professional);
+
+        boolean passwordMatch = false;
+        if(checkPassword || checkRePassword)
+            passwordMatch = password.equals(re_password);
+
+        if(!checkName || !checkEmail || !passwordMatch || !checkPhone || !checkRegion || !checkOrganization || !checkDepartment || !checkHealthProfessional)
+            return false;
+
         try{
-            boolean set = true;
-            if(Auth_Access.healthUserExists(email)) {
-                set = false;
-                error += "\tUse already taken\n";
-            }
-            boolean checkname = checkString(name);
-            boolean checkPassword = password.equals(re_password);
-            boolean checkEmail = checkEmail(email);
-            if(checkEmail && checkPassword && checkname && set){
-                if(Auth_Access.insertIntoHealthProfessional(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, organization, department, health_professional)) {
-                    user = true;
-                }
-                else
-                    error+="\tPatient Insertion failed\n";
-            }else{
-                if(!checkEmail)
-                    error+="\tEmail is not valid\n";
-                if(!checkname)
-                    error+="\tFirst name is not valid\n";
-                if(!checkPassword)
-                    error+="\tPassword's dont match\n";
-            }
-            if(!error.equals("")){
-                throw new Exception(error);
-            }
-        }catch(Exception e){System.out.println(e);}
-        return user;
+            if(Auth_Access.healthUserExists(email))
+                return false;
+            if(Auth_Access.insertIntoHealthProfessional(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, organization, department, health_professional))
+                return true;
+            else
+                return false;
+        }catch(Exception e){e.printStackTrace();}
+        return false;
     }
 
     public static boolean PatientUpdate(String name, String email, String phone, String region, String province){
-        boolean result = false;
-        result = Auth_Access.PatientUpdate(name,email,phone,region,province);
-        return result;
+        boolean checkName = checkString(name);
+        boolean checkEmail = checkEmail(email);
+        boolean checkPhone = checkPhone(phone);
+        boolean checkRegion = checkString(region);
+        boolean checkProvince = checkString(province);
+
+        if(!checkName || !checkEmail || !checkPhone || !checkRegion || !checkProvince)
+            return false;
+
+        return Auth_Access.PatientUpdate(name,email,phone,region,province);
+
     }
 
     public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
-        boolean result = false;
-        result = Auth_Access.HealthProfessionalUpdate(name,email,phone,region,id);
-        return result;
+
+        boolean checkName = checkString(name);
+        boolean checkEmail = checkEmail(email);
+        boolean checkPhone = checkPhone(phone);
+        boolean checkRegion = checkString(region);
+
+
+        if(!checkName || !checkEmail || !checkPhone || !checkRegion || id < 0)
+            return false;
+
+        return Auth_Access.HealthProfessionalUpdate(name,email,phone,region,id);
+
     }
 
     public static ArrayList<String> getRegions(){
