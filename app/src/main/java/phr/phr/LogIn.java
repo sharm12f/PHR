@@ -20,6 +20,7 @@ import phr.lib.User;
 
 public class LogIn extends AppCompatActivity {
     Boolean test = false;
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 try {
-                    AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                    AsyncTask<Void, Void, Void> asyncTask =  new AsyncTask<Void, Void, Void>() {
                         private ProgressDialog p = new ProgressDialog(LogIn.this);
                         protected void onPreExecute(){
                             super.onPreExecute();
@@ -47,7 +48,11 @@ public class LogIn extends AppCompatActivity {
                         }
                         protected Void doInBackground(Void... progress) {
                             System.out.println("Start Login");
-                            User user = Lib.login("doc@hp.com", "password");
+                            user = Lib.login("doc@hp.com", "password");
+                            return null;
+                        }
+                        protected void onPostExecute(Void Void){
+                            super.onPostExecute(Void);
                             if(user!=null) {
                                 String role = user.getRole();
                                 if (role.equals("USER")) {
@@ -65,13 +70,9 @@ public class LogIn extends AppCompatActivity {
                                 }
                             }
                             else{
-                                Toast toast = Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT);
+                                Toast toast = Toast.makeText(LogIn.this, "Invalid Username or Password", Toast.LENGTH_SHORT);
                                 toast.show();
                             }
-                            return null;
-                        }
-                        protected void onPostExecute(Void Void){
-                            super.onPostExecute(Void);
                             p.dismiss();
                         }
                     };
@@ -128,12 +129,16 @@ public class LogIn extends AppCompatActivity {
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
-
                         }
                         protected Void doInBackground(Void... progress) {
                             System.out.println("Start Login");
-                            User user = Lib.login("app@app.com", "password");
-                            if (user != null) {
+                            user = Lib.login("app@app.com", "password");
+
+                            return null;
+                        }
+                        protected void onPostExecute(Void Void){
+                            super.onPostExecute(Void);
+                            if(user!=null) {
                                 String role = user.getRole();
                                 if (role.equals("USER")) {
                                     Intent intent = new Intent(getApplicationContext(), PatientView.class);
@@ -148,14 +153,11 @@ public class LogIn extends AppCompatActivity {
                                     intent.putExtra("HP", list);
                                     startActivity(intent);
                                 }
-                            } else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT);
+                            }
+                            else{
+                                Toast toast = Toast.makeText(LogIn.this, "Invalid Username or Password", Toast.LENGTH_SHORT);
                                 toast.show();
                             }
-                            return null;
-                        }
-                        protected void onPostExecute(Void Void){
-                            super.onPostExecute(Void);
                             p.dismiss();
                         }
                     };

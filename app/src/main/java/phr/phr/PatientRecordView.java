@@ -53,56 +53,61 @@ public class PatientRecordView extends AppCompatActivity {
                     final String name = name_input.getText().toString();
                     final String description = description_input.getText().toString();
                     try{
-                        Success = new AsyncTask<Void, Void, Boolean>() {
+                        AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                             private ProgressDialog p = new ProgressDialog(PatientRecordView.this);
                             protected void onPreExecute(){
+                                super.onPreExecute();
                                 p.setMessage("Loading");
                                 p.setIndeterminate(false);
                                 p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 p.show();
-                                super.onPreExecute();
                             }
                             protected Boolean doInBackground(Void... progress) {
-                                boolean result = false;
-                                result = Lib.PatientUpdateRecord(name, description, record.getId());
-                                return result;
+                                return Lib.PatientUpdateRecord(name, description, record.getId());
                             }
-                        }.execute().get();
-                        if(Success){
-                            finish();
-                        }
-                        else{
-                            Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
+                            protected void onPostExecute(Boolean result){
+                                super.onPostExecute(result);
+                                if(result){
+                                    finish();
+                                }
+                                else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                        };
+                        asyncTask.execute();
                     }catch (Exception e){e.printStackTrace();}
                 }
                 else{
                     final String name = name_input.getText().toString();
                     final String description = description_input.getText().toString();
                     try{
-                        Success = new AsyncTask<Void, Void, Boolean>() {
+                        AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                             private ProgressDialog p = new ProgressDialog(PatientRecordView.this);
                             protected void onPreExecute(){
+                                super.onPreExecute();
                                 p.setMessage("Loading");
                                 p.setIndeterminate(false);
                                 p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 p.show();
-                                super.onPreExecute();
                             }
                             protected Boolean doInBackground(Void... progress) {
-                                boolean result = false;
-                                result = Lib.insertIntoRecord(name, description, id);
-                                return result;
+                                return Lib.insertIntoRecord(name, description, id);
                             }
-                        }.execute().get();
-                        if(Success){
-                            finish();
-                        }
-                        else{
-                            Toast toast = Toast.makeText(getApplicationContext(), "Add Error", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
+                            protected void onPostExecute(Boolean result){
+                                super.onPostExecute(result);
+                                p.dismiss();
+                                if(result){
+                                    finish();
+                                }
+                                else{
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Add Error", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                        };
+                        asyncTask.execute();
                     }catch (Exception e){e.printStackTrace();}
                 }
             }

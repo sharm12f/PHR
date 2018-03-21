@@ -15,7 +15,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.Patient;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 26-Jan-18.
@@ -41,9 +44,21 @@ public class PatientRegistration extends AppCompatActivity {
 
 
         new AsyncTask<Void, Void, Void>(){
+            private ProgressDialog p = new ProgressDialog(PatientRegistration.this);
+            protected void onPreExecute(){
+                super.onPreExecute();
+                p.setMessage("Loading");
+                p.setIndeterminate(false);
+                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                p.show();
+            }
             protected Void doInBackground(Void... progress){
                 loadSpinners(Sregion, Sprovinces);
                 return null;
+            }
+            protected void onPostExecute(Void Void){
+                super.onPostExecute(Void);
+                p.dismiss();
             }
         }.execute();
 
@@ -58,27 +73,43 @@ public class PatientRegistration extends AppCompatActivity {
                 final String region = Sregion.getSelectedItem().toString();
                 final String province = Sprovinces.getSelectedItem().toString();
                 try{
-                    Success = new AsyncTask<Void, Void, Boolean>() {
+                    AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                         private ProgressDialog p = new ProgressDialog(PatientRegistration.this);
                         protected void onPreExecute(){
+                            super.onPreExecute();
                             p.setMessage("Loading");
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
-                            super.onPreExecute();
                         }
                         protected Boolean doInBackground(Void... progress) {
                             System.out.println("Start Registration");
                             return Lib.PatientRegister(name , email, password, re_password, phone, region, province);
                         }
-                    }.execute().get();
-                    if(Success){
-                        finish();
-                    }
-                    else{
-                        Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
+                        protected void onPostExecute(Boolean result){
+                            super.onPostExecute(result);
+                            p.dismiss();
+                            if(result){
+                                Patient patient = Lib.makeUser(email);
+                                if(patient!=null) {
+                                    Intent intent = new Intent(getApplicationContext(), PatientView.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(patient);
+                                    intent.putExtra("USER", list);
+                                    startActivity(intent);
+                                }
+                                else{
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            }
+                            else{
+                                Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        }
+                    };
+                    asyncTask.execute();
                 }catch (Exception e){e.printStackTrace();}
             }
         });

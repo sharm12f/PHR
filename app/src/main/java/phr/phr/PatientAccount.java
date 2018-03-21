@@ -86,7 +86,6 @@ public class PatientAccount extends AppCompatActivity {
                 list.add(Slecteditem);
                 intent.putExtra("RECORD",list);
                 startActivity(intent);
-
             }
         });
     }
@@ -105,7 +104,6 @@ public class PatientAccount extends AppCompatActivity {
                 }
                 protected Void doInBackground(Void... progress) {
                     patient = Lib.makeUser(patient.getEmail());
-                    setFields();
                     return null;
                 }
                 protected void onPostExecute(Void Void){
@@ -116,6 +114,9 @@ public class PatientAccount extends AppCompatActivity {
                         toast.show();
                         Intent intent = new Intent(getApplicationContext(), LogIn.class);
                         startActivity(intent);
+                    }
+                    else{
+                        setFields();
                     }
                 }
             };

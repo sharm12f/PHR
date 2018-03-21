@@ -41,7 +41,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         view_all_records = findViewById(R.id.view_all_records_button);
         patients_listview = findViewById(R.id.patients_list_view);
 
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
+        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
         healthProfessional= list.get(0);
         if(healthProfessional==null){
             Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
@@ -59,7 +59,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccountUpdate.class);
                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                 list.add(healthProfessional);
-                intent.putExtra("USER",list);
+                intent.putExtra("HP",list);
                 startActivity(intent);
             }
         });
@@ -70,7 +70,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                 list.add(healthProfessional);
-                intent.putExtra("USER",list);
+                intent.putExtra("HP",list);
                 startActivity(intent);
             }
         });
@@ -89,9 +89,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                     p.show();
                 }
                 protected Void doInBackground(Void... progress) {
-                    HealthProfessional result = null;
                     healthProfessional = Lib.makeHealthProfessional(healthProfessional.getEmail());
-                    setFields();
                     return null;
                 }
                 protected void onPostExecute(Void Void){
@@ -102,6 +100,9 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                         toast.show();
                         Intent intent = new Intent(getApplicationContext(), LogIn.class);
                         startActivity(intent);
+                    }
+                    else{
+                        setFields();
                     }
                 }
 

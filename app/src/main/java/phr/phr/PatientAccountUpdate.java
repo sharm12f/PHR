@@ -1,6 +1,7 @@
 package phr.phr;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Lib;
 import phr.lib.Patient;
 
@@ -28,7 +30,6 @@ public class PatientAccountUpdate extends AppCompatActivity {
     Button update_button;
     Spinner regions;
     Spinner provinces;
-    Boolean Success = false;
     Patient patient =null;
     @Override
     protected void onCreate(Bundle savedInstance){
@@ -45,7 +46,34 @@ public class PatientAccountUpdate extends AppCompatActivity {
         provinces = findViewById(R.id.province_spinner);
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         patient = list.get(0);
-        setFields();
+
+        if(patient==null){
+            Toast toast = Toast.makeText(getApplicationContext(), "Error Making User", Toast.LENGTH_SHORT);
+            toast.show();
+            Intent intent = new Intent(getApplicationContext(), LogIn.class);
+            startActivity(intent);
+        }
+
+        final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            private ProgressDialog p = new ProgressDialog(PatientAccountUpdate.this);
+            protected void onPreExecute(){
+                super.onPreExecute();
+                p.setMessage("Loading");
+                p.setIndeterminate(false);
+                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                p.show();
+            }
+            protected Void doInBackground(Void... progress) {
+                setFields();
+                return null;
+            }
+            protected void onPostExecute(Void Void){
+                super.onPostExecute(Void);
+                p.dismiss();
+            }
+        };
+        asyncTask.execute();
+
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,34 +83,41 @@ public class PatientAccountUpdate extends AppCompatActivity {
                 final String region = regions.getSelectedItem().toString();
                 final String province = provinces.getSelectedItem().toString();
                 try{
-                    Success = new AsyncTask<Void, Void, Boolean>() {
+                    AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                         private ProgressDialog p = new ProgressDialog(PatientAccountUpdate.this);
                         protected void onPreExecute(){
+                            super.onPreExecute();
                             p.setMessage("Loading");
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
-                            super.onPreExecute();
                         }
                         protected Boolean doInBackground(Void... progress) {
-                            boolean result = false;
-                            result = Lib.PatientUpdate(name,email,phone,region,province);
-                            patient.setName(name);
-                            patient.setEmail(email);
-                            patient.setPhone(phone);
-                            patient.setRegion(region);
-                            patient.setProvince(province);
-                            System.out.println("Update: " +  result);
-                            return result;
+                            return Lib.PatientUpdate(name,email,phone,region,province);
+
                         }
-                    }.execute().get();
-                    if(Success){
-                        finish();
-                    }
-                    else{
-                        Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
+                        protected void onPostExecute(Boolean result){
+                            super.onPostExecute(result);
+                            if(result) {
+                                p.dismiss();
+                                patient.setName(name);
+                                patient.setEmail(email);
+                                patient.setPhone(phone);
+                                patient.setRegion(region);
+                                patient.setProvince(province);
+                                Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                ArrayList<Patient> list = new ArrayList<Patient>();
+                                list.add(patient);
+                                intent.putExtra("USER",list);
+                                startActivity(intent);
+                            }
+                            else{
+                                Toast toast = Toast.makeText(getApplicationContext(), "Error Updating User", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        }
+                    };
+                    asyncTask.execute();
                 }catch (Exception e){e.printStackTrace();}
             }
         });
@@ -93,18 +128,8 @@ public class PatientAccountUpdate extends AppCompatActivity {
         email_input.setText(patient.getEmail());
         phone_input.setText(patient.getPhone());
         try {
-            ArrayList<String> list = new AsyncTask<Void, Void, ArrayList<String>>() {
-                protected ArrayList<String> doInBackground(Void... progress) {
-                    ArrayList<String> list = Lib.getRegions();
-                    return list;
-                }
-            }.execute().get();
-            ArrayList<String> list2 = new AsyncTask<Void, Void, ArrayList<String>>() {
-                protected ArrayList<String> doInBackground(Void... progress) {
-                    ArrayList<String> list = Lib.getProvinces();
-                    return list;
-                }
-            }.execute().get();
+            ArrayList<String> list = Lib.getRegions();
+            ArrayList<String> list2 = Lib.getProvinces();
 
             loadSpinners(list,list2);
         }catch (Exception e){e.printStackTrace();}

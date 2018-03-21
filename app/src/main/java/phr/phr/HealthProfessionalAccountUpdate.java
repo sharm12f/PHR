@@ -41,10 +41,17 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         update_button = findViewById(R.id.update_button);
         regions = findViewById(R.id.region_spinner);
         provinces = findViewById(R.id.province_spinner);
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
+        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
         healthProfessional = list.get(0);
-        update = findViewById(R.id.update_button);
 
+        if(healthProfessional == null) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Error Making User", Toast.LENGTH_SHORT);
+            toast.show();
+            Intent intent = new Intent(getApplicationContext(), LogIn.class);
+            startActivity(intent);
+        }
+
+        update = findViewById(R.id.update_button);
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
             protected void onPreExecute(){
@@ -73,8 +80,6 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 final String phone = phone_input.getText().toString();
                 final String region = regions.getSelectedItem().toString();
                 try{
-
-
                     AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                         private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
                         protected void onPreExecute(){
@@ -88,20 +93,20 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                         protected Boolean doInBackground(Void... progress) {
                             int id = healthProfessional.getId();
                             Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,id);
-                            healthProfessional.setName(name);
-                            healthProfessional.setEmail(email);
-                            healthProfessional.setPhone(phone);
-                            healthProfessional.setRegion(region);
                             return result;
                         }
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
                             p.dismiss();
                             if(result){
+                                healthProfessional.setName(name);
+                                healthProfessional.setEmail(email);
+                                healthProfessional.setPhone(phone);
+                                healthProfessional.setRegion(region);
                                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
                                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                                 list.add(healthProfessional);
-                                intent.putExtra("USER",list);
+                                intent.putExtra("HP",list);
                                 startActivity(intent);
                             }
                             else{

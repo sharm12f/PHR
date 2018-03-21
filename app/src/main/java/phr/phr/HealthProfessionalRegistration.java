@@ -93,11 +93,17 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                             p.dismiss();
                             if(result){
                                 HealthProfessional healthProfessional = Lib.makeHealthProfessional(email);
-                                Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
-                                ArrayList<User> list = new ArrayList<User>();
-                                list.add(healthProfessional);
-                                intent.putExtra("HP", list);
-                                startActivity(intent);
+                                if(healthProfessional!=null) {
+                                    Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(healthProfessional);
+                                    intent.putExtra("HP", list);
+                                    startActivity(intent);
+                                }
+                                else{
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
                             }
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
