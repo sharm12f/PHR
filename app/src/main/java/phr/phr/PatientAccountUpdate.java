@@ -137,7 +137,6 @@ public class PatientAccountUpdate extends AppCompatActivity {
 
     private void loadSpinners(ArrayList<String> list, ArrayList<String> list2){
         try {
-
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_spinner_item, list);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -151,6 +150,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
             provinces.setAdapter(dataAdapter2);
             int p = dataAdapter2.getPosition(patient.getProvince());
             provinces.setSelection(p);
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();
+            System.out.println("Somethigns wrong with the lists?");}
     }
 }
