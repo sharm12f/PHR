@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 
 public class Auth_Access{
@@ -40,8 +41,11 @@ public class Auth_Access{
 
     protected static boolean isUser(String email, String password){
         boolean is_user=false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        postData.put("password", password);
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/is_user.php?email="+email+"&password="+password);
+        String responce = makePost(IP+"/PHR_AUTH/is_user.php?", postData);
         if (responce.equals("true"))
             is_user=true;
         return is_user;
@@ -112,35 +116,6 @@ public class Auth_Access{
         return result;
     }
 
-    private static String makeGet(String getcall){
-        String string="Error";
-        URL url;
-        HttpURLConnection urlConnection = null;
-        try {
-            url = new URL(getcall);
-            urlConnection = (HttpURLConnection) url
-                    .openConnection();
-            urlConnection.setConnectTimeout(2000);
-            InputStream in = urlConnection.getInputStream();
-            InputStreamReader isw = new InputStreamReader(in);
-            int data = isw.read();
-            String responce="";
-            while (data != -1) {
-                char current = (char) data;
-                data = isw.read();
-                responce+=current;
-                string = responce;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-        }
-        return string;
-    }
-
     protected static String getRegions(){
         String responce = makeGet(IP+"/PHR_AUTH/get_regions.php");
         System.out.println(responce);
@@ -186,6 +161,42 @@ public class Auth_Access{
         if(responce.equals("true"))
             result=true;
         return result;
+    }
+
+    private static String makeGet(String getcall){
+        String string="Error";
+        System.out.println(getcall);
+        URL url;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(getcall);
+            urlConnection = (HttpURLConnection) url
+                    .openConnection();
+            urlConnection.setConnectTimeout(2000);
+            InputStream in = urlConnection.getInputStream();
+            InputStreamReader isw = new InputStreamReader(in);
+            int data = isw.read();
+            String responce="";
+            while (data != -1) {
+                char current = (char) data;
+                data = isw.read();
+                responce+=current;
+                string = responce;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return string;
+    }
+
+    private static String makePost(String ip, HashMap<String, String> postData){
+        String responce = "";
+
+        return  responce;
     }
 
 }
