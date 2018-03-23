@@ -21,30 +21,42 @@ public class Auth_Access{
     //private static final String IP = "http://10.0.2.2";
 
     protected static String getUsersByEmail(String email){
-        String responce = makeGet(IP+"/PHR_AUTH/get_user_by_email.php?email="+email);
-        return responce;
+        email = email.toUpperCase();
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        return makePost(IP+"/PHR_AUTH/get_user_by_email.php", postData);
     }
 
     protected static String getUsersById(int id){
-        String responce = makeGet(IP+"/PHR_AUTH/get_user_by_id.php?id="+id);
-        return responce;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        return makePost(IP+"/PHR_AUTH/get_user_by_id.php", postData);
     }
 
     protected static String getHealthProfessionalUsersByEmail(String email){
-        String responce = makeGet(IP+"/PHR_AUTH/get_health_professional_by_email.php?email="+email);
-        return responce;
+        email = email.toUpperCase();
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        return makePost(IP+"/PHR_AUTH/get_health_professional_by_email.php", postData);
     }
 
     protected static String getUserHealthRecordByEmail(String email){
-        return makeGet(IP+"/PHR_AUTH/get_user_health_record_by_email.php?email="+email);
+        email = email.toUpperCase();
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        return makePost(IP+"/PHR_AUTH/get_user_health_record_by_email.php", postData);
     }
 
     protected static String getUserHealthRecordById(int id){
-        return makeGet(IP+"/PHR_AUTH/get_user_health_record_by_id.php?id="+id);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        return makePost(IP+"/PHR_AUTH/get_user_health_record_by_id.php", postData);
     }
 
     protected static String getHealthProfessionalRecordsById(int id){
-        return makeGet(IP+"/PHR_AUTH/get_health_professional_records_by_id.php?id="+id);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        return makePost(IP+"/PHR_AUTH/get_health_professional_records_by_id.php", postData);
     }
 
     protected static boolean isUser(String email, String password){
@@ -62,7 +74,10 @@ public class Auth_Access{
     protected static boolean isHealthProfessional(String email, String password){
         boolean is_user=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/is_health_professional.php?email="+email+"&password="+password);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        postData.put("password", password);
+        String responce = makePost(IP+"/PHR_AUTH/is_health_professional.php", postData);
         if (responce.equals("true"))
             is_user=true;
         return is_user;
@@ -71,7 +86,14 @@ public class Auth_Access{
     protected static boolean insertIntoUsers(String name,  String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/patient_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        postData.put("name", name);
+        postData.put("pssword", password);
+        postData.put("phone", phone);
+        postData.put("region", region);
+        postData.put("province", province);
+        String responce = makePost(IP+"/PHR_AUTH/patient_registration.php", postData);
         if (responce.equals("true"))
             success=true;
         return success;
@@ -80,7 +102,16 @@ public class Auth_Access{
     protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String organization, String department, String health_professional){
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/health_professional_registration.php?email="+email+"&password="+password+"&phone="+phone+"&name="+name+"&region="+region+"&organization="+organization+"&department="+department+"&health_professional="+health_professional);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("name",name);
+        postData.put("email", email);
+        postData.put("password", password);
+        postData.put("phone", phone);
+        postData.put("region", region);
+        postData.put("organization", organization);
+        postData.put("department", department);
+        postData.put("health_professional", health_professional);
+        String responce = makePost(IP+"/PHR_AUTH/health_professional_registration.php", postData);
         if (responce.equals("true"))
             success=true;
         else{
@@ -92,7 +123,9 @@ public class Auth_Access{
     protected static boolean userExists(String email) {
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/user_exists.php?email="+email);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        String responce = makePost(IP+"/PHR_AUTH/user_exists.php",postData);
         if (responce.equals("true"))
             success=true;
         return success;
@@ -101,7 +134,9 @@ public class Auth_Access{
     protected static boolean healthUserExists(String email) {
         boolean success=false;
         email = email.toUpperCase();
-        String responce = makeGet(IP+"/PHR_AUTH/health_user_exists.php?email="+email);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        String responce = makePost(IP+"/PHR_AUTH/health_user_exists.php", postData);
         if (responce.equals("true"))
             success=true;
         return success;
@@ -109,7 +144,11 @@ public class Auth_Access{
 
     protected static boolean updateRecord(String name, String description, int rid){
         boolean result = false;
-        String responce = makeGet(IP+"/PHR_AUTH/update_record.php?name="+name+"&description="+description+"&rid="+rid);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("name", name);
+        postData.put("description", description);
+        postData.put("rid", rid+"");
+        String responce = makePost(IP+"/PHR_AUTH/update_record.php", postData);
         if(responce.equals("true"))
             result=true;
         return result;
@@ -117,7 +156,11 @@ public class Auth_Access{
 
     protected static boolean insertIntoRecord(String name, String description, int uid){
         boolean result = false;
-        String responce = makeGet(IP+"/PHR_AUTH/insert_into_record.php?name="+name+"&description="+description+"&uid="+uid);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("name", name);
+        postData.put("description", description);
+        postData.put("uid", uid+"");
+        String responce = makePost(IP+"/PHR_AUTH/insert_into_record.php", postData);
         System.out.println(responce);
         if(responce.equals("true"))
             result=true;
@@ -156,7 +199,13 @@ public class Auth_Access{
 
     protected static boolean PatientUpdate(String name, String email, String phone, String region, String province){
         boolean result = false;
-        String responce = makeGet(IP+"/PHR_AUTH/update_user.php?email="+email+"&phone="+phone+"&name="+name+"&region="+region+"&province="+province);
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        postData.put("name", name);
+        postData.put("phone", phone);
+        postData.put("region", region);
+        postData.put("province", province);
+        String responce = makePost(IP+"/PHR_AUTH/update_user.php", postData);
         System.out.println(responce);
         if(responce.equals("true"))
             result=true;
@@ -165,7 +214,14 @@ public class Auth_Access{
 
     protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
         boolean result = false;
-        String responce = makeGet(IP+"/PHR_AUTH/health_professional_update.php?email="+email+"&phone="+phone+"&name="+name+"&region="+region+"&id="+id);
+        email=email.toUpperCase();
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("email", email);
+        postData.put("name", name);
+        postData.put("phone", phone);
+        postData.put("region", region);
+        postData.put("id",id+"");
+        String responce = makePost(IP+"/PHR_AUTH/health_professional_update.php", postData);
         if(responce.equals("true"))
             result=true;
         return result;
