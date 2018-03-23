@@ -1,10 +1,18 @@
 package phr.lib;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class Auth_Access{
@@ -41,11 +49,11 @@ public class Auth_Access{
 
     protected static boolean isUser(String email, String password){
         boolean is_user=false;
+        email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         postData.put("password", password);
-        email = email.toUpperCase();
-        String responce = makePost(IP+"/PHR_AUTH/is_user.php?", postData);
+        String responce = makePost(IP+"/PHR_AUTH/is_user.php", postData);
         if (responce.equals("true"))
             is_user=true;
         return is_user;
@@ -194,9 +202,57 @@ public class Auth_Access{
     }
 
     private static String makePost(String ip, HashMap<String, String> postData){
-        String responce = "";
+        String string = "";
+        System.out.println(ip);
+        URL url;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(ip);
+            urlConnection = (HttpURLConnection) url
+                    .openConnection();
+            urlConnection.setConnectTimeout(2000);
+            urlConnection.setRequestMethod("POST");
+            String urlParamaters="";
+            int i =0;
+            Iterator it = postData.entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry<String, String> entry = (Map.Entry) it.next();
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if(i==0){
+                    urlParamaters+=key+"="+value;
+                    i++;
+                }
+                else{
+                    urlParamaters+="&"+key+"="+value;
+                }
 
-        return  responce;
+            }
+            urlConnection.setDoOutput(true);
+            DataOutputStream outputPost = new DataOutputStream(urlConnection.getOutputStream());
+            System.out.println(urlParamaters);
+            outputPost.writeBytes(urlParamaters);
+            outputPost.flush();
+
+            InputStream in = urlConnection.getInputStream();
+            InputStreamReader isw = new InputStreamReader(in);
+            int data = isw.read();
+            String responce="";
+            while (data != -1) {
+                char current = (char) data;
+                data = isw.read();
+                responce+=current;
+                string = responce;
+            }
+            System.out.println(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return  string;
     }
 
 }
