@@ -36,7 +36,6 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
                 record_description_text.setText(record.getRecord());
             }
         }
-
     }
 
 }

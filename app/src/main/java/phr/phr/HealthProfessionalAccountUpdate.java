@@ -128,11 +128,19 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 protected void onPostExecute(Void Void){
                     super.onPostExecute(Void);
                     p.dismiss();
+                    loadSpinners(list,list2);
                 }
             };
             asyncTask.execute();
-            loadSpinners(list,list2);
         }catch (Exception e){e.printStackTrace();}
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
+        ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
+        list.add(healthProfessional);
+        intent.putExtra("HP",list);
+        startActivity(intent);
     }
 
     private void loadSpinners(ArrayList<String> list, ArrayList<String> list2){

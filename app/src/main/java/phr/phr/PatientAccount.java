@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
@@ -123,6 +124,14 @@ public class PatientAccount extends AppCompatActivity {
             asyncTask.execute();
 
         }catch(Exception e){e.printStackTrace();}
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), PatientView.class);
+        ArrayList<Patient> list = new ArrayList<Patient>();
+        list.add(patient);
+        intent.putExtra("USER",list);
+        startActivity(intent);
     }
 
     private void setFields(){

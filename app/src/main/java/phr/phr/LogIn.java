@@ -48,7 +48,6 @@ public class LogIn extends AppCompatActivity {
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
-                            System.out.println("Start Login");
                             if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
                                 return null;
                             user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
@@ -123,7 +122,6 @@ public class LogIn extends AppCompatActivity {
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
-                            System.out.println("Start Login");
                             user = Lib.login("app@app.com", "password");
 
                             return null;

@@ -161,7 +161,6 @@ public class Auth_Access{
         postData.put("description", description);
         postData.put("uid", uid+"");
         String responce = makePost(IP+"/PHR_AUTH/insert_into_record.php", postData);
-        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;
@@ -169,35 +168,30 @@ public class Auth_Access{
 
     protected static String getRegions(){
         String responce = makeGet(IP+"/PHR_AUTH/get_regions.php");
-        System.out.println(responce);
         return responce;
     }
 
     protected static String getProvinces(){
         String responce = makeGet(IP+"/PHR_AUTH/get_provinces.php");
-        System.out.println(responce);
         return responce;
     }
 
     protected static String getOrganization(){
         String responce = makeGet(IP+"/PHR_AUTH/get_organization.php");
-        System.out.println(responce);
         return responce;
     }
 
     protected static String getDepartment(){
         String responce = makeGet(IP+"/PHR_AUTH/get_department.php");
-        System.out.println(responce);
         return responce;
     }
 
     protected static String getHealthProfessional(){
         String responce = makeGet(IP+"/PHR_AUTH/get_health_professional.php");
-        System.out.println(responce);
         return responce;
     }
 
-    protected static boolean PatientUpdate(String name, String email, String phone, String region, String province){
+    protected static boolean PatientUpdate(String name, String email, String phone, String region, String province, String originalEmail){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
@@ -205,8 +199,8 @@ public class Auth_Access{
         postData.put("phone", phone);
         postData.put("region", region);
         postData.put("province", province);
+        postData.put("original_email", originalEmail);
         String responce = makePost(IP+"/PHR_AUTH/update_user.php", postData);
-        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;
@@ -229,7 +223,6 @@ public class Auth_Access{
 
     private static String makeGet(String getcall){
         String string="Error";
-        System.out.println(getcall);
         URL url;
         HttpURLConnection urlConnection = null;
         try {
@@ -259,7 +252,6 @@ public class Auth_Access{
 
     private static String makePost(String ip, HashMap<String, String> postData){
         String string = "";
-        System.out.println(ip);
         URL url;
         HttpURLConnection urlConnection = null;
         try {
@@ -286,7 +278,6 @@ public class Auth_Access{
             }
             urlConnection.setDoOutput(true);
             DataOutputStream outputPost = new DataOutputStream(urlConnection.getOutputStream());
-            System.out.println(urlParamaters);
             outputPost.writeBytes(urlParamaters);
             outputPost.flush();
 
@@ -300,7 +291,6 @@ public class Auth_Access{
                 responce+=current;
                 string = responce;
             }
-            System.out.println(string);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

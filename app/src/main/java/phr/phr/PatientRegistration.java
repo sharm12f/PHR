@@ -83,7 +83,6 @@ public class PatientRegistration extends AppCompatActivity {
                             p.show();
                         }
                         protected Boolean doInBackground(Void... progress) {
-                            System.out.println("Start Registration");
                             return Lib.PatientRegister(name , email, password, re_password, phone, region, province);
                         }
                         protected void onPostExecute(Boolean result){
@@ -113,6 +112,11 @@ public class PatientRegistration extends AppCompatActivity {
                 }catch (Exception e){e.printStackTrace();}
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+        startActivity(intent);
     }
 
     private void loadSpinners(Spinner regions, Spinner provinces){

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Patient;
 
 /**
@@ -36,5 +37,10 @@ public class PatientView extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+        startActivity(intent);
     }
 }

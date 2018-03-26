@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
+import javax.security.auth.login.LoginException;
+
 import phr.lib.HealthProfessional;
 
 /**
@@ -52,5 +54,10 @@ public class HealthProfessionalView extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+        startActivity(intent);
     }
 }

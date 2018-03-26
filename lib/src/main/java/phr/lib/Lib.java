@@ -237,6 +237,13 @@ public class Lib {
             return true;
         return false;
     }
+    public static boolean checkStringZero(String str){
+        if(str.length() > 128)
+            return false;
+        if(str.matches("[a-z A-Z0-9+=*/^()_-]+"))
+            return true;
+        return false;
+    }
 
     public static boolean checkPhone(String str){
         if(str.length() > 128 || str.length() < 1)
@@ -250,7 +257,7 @@ public class Lib {
     public static boolean PatientUpdateRecord(String name, String description, int rid){
 
         boolean checkName = checkString(name);
-        boolean checkDescription = checkString(description);
+        boolean checkDescription = checkStringZero(description);
         if(rid < 0 || !checkDescription || !checkName)
             return false;
         return Auth_Access.updateRecord(name, description, rid);
@@ -258,11 +265,13 @@ public class Lib {
 
     public static boolean insertIntoRecord(String name, String description, int uid){
         boolean checkName = checkString(name);
-        boolean checkDescription = checkString(description);
-        if(uid < 0 || !checkDescription || !checkName)
+        boolean checkDescription = checkStringZero(description);
+        if(uid < 0 || !checkDescription || !checkName) {
             return false;
-        return Auth_Access.insertIntoRecord(name, description, uid);
-
+        }
+        boolean result  = Auth_Access.insertIntoRecord(name, description, uid);
+        System.out.println("the result in lib: " + result);
+        return  result;
     }
 
     public static Timestamp stringToTimestamp(String string){
@@ -344,17 +353,18 @@ public class Lib {
         return false;
     }
 
-    public static boolean PatientUpdate(String name, String email, String phone, String region, String province){
+    public static boolean PatientUpdate(String name, String email, String phone, String region, String province, String originalEmail){
         boolean checkName = checkString(name);
         boolean checkEmail = checkEmail(email);
+        boolean checkOriginalEmail = checkEmail(originalEmail);
         boolean checkPhone = checkPhone(phone);
         boolean checkRegion = checkString(region);
         boolean checkProvince = checkString(province);
 
-        if(!checkName || !checkEmail || !checkPhone || !checkRegion || !checkProvince)
+        if(!checkName || !checkEmail || !checkPhone || !checkRegion || !checkProvince || !checkOriginalEmail)
             return false;
 
-        return Auth_Access.PatientUpdate(name,email,phone,region,province);
+        return Auth_Access.PatientUpdate(name,email,phone,region,province, originalEmail);
 
     }
 

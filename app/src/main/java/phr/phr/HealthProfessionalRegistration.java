@@ -118,6 +118,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         });
     }
 
+
     private void loadSpinners(Spinner regions, Spinner organization, Spinner department, Spinner healthprofessional){
         ArrayList<String> r = Lib.getRegions();
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
@@ -144,4 +145,10 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         healthprofessional.setAdapter(adh);
 
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+        startActivity(intent);
+    }
+
 }

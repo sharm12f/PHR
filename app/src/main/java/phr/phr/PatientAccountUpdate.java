@@ -76,8 +76,10 @@ public class PatientAccountUpdate extends AppCompatActivity {
                             p.show();
                         }
                         protected Boolean doInBackground(Void... progress) {
-                            return Lib.PatientUpdate(name,email,phone,region,province);
+                            Boolean result;
+                            result = Lib.PatientUpdate(name,email,phone,region,province,patient.getEmail());
 
+                            return result;
                         }
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
@@ -106,6 +108,15 @@ public class PatientAccountUpdate extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+        ArrayList<Patient> list = new ArrayList<Patient>();
+        list.add(patient);
+        intent.putExtra("USER",list);
+        startActivity(intent);
+    }
+
     private void setFields(){
         name_input.setText(patient.getName());
         email_input.setText(patient.getEmail());
@@ -128,11 +139,10 @@ public class PatientAccountUpdate extends AppCompatActivity {
                 protected void onPostExecute(Void Void){
                     super.onPostExecute(Void);
                     p.dismiss();
+                    loadSpinners(list,list2);
                 }
             };
             asyncTask.execute();
-
-            loadSpinners(list,list2);
         }catch (Exception e){e.printStackTrace();}
     }
 
@@ -151,7 +161,6 @@ public class PatientAccountUpdate extends AppCompatActivity {
             provinces.setAdapter(dataAdapter2);
             int p = dataAdapter2.getPosition(patient.getProvince());
             provinces.setSelection(p);
-        }catch (Exception e){e.printStackTrace();
-            System.out.println("Somethigns wrong with the lists?");}
+        }catch (Exception e){e.printStackTrace();}
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import phr.lib.Lib;
@@ -93,7 +94,9 @@ public class PatientRecordView extends AppCompatActivity {
                                 p.show();
                             }
                             protected Boolean doInBackground(Void... progress) {
-                                return Lib.insertIntoRecord(name, description, id);
+                                Boolean result = false;
+                                result = Lib.insertIntoRecord(name, description, id);
+                                return result;
                             }
                             protected void onPostExecute(Boolean result){
                                 super.onPostExecute(result);
