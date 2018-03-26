@@ -31,6 +31,8 @@ public class PatientAccountUpdate extends AppCompatActivity {
     Spinner regions;
     Spinner provinces;
     Patient patient =null;
+    ArrayList<String> list;
+    ArrayList<String> list2;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -53,26 +55,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), LogIn.class);
             startActivity(intent);
         }
-
-        final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            private ProgressDialog p = new ProgressDialog(PatientAccountUpdate.this);
-            protected void onPreExecute(){
-                super.onPreExecute();
-                p.setMessage("Loading");
-                p.setIndeterminate(false);
-                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                p.show();
-            }
-            protected Void doInBackground(Void... progress) {
-                setFields();
-                return null;
-            }
-            protected void onPostExecute(Void Void){
-                super.onPostExecute(Void);
-                p.dismiss();
-            }
-        };
-        asyncTask.execute();
+        setFields();
 
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,8 +81,8 @@ public class PatientAccountUpdate extends AppCompatActivity {
                         }
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
+                            p.dismiss();
                             if(result) {
-                                p.dismiss();
                                 patient.setName(name);
                                 patient.setEmail(email);
                                 patient.setPhone(phone);
@@ -128,8 +111,26 @@ public class PatientAccountUpdate extends AppCompatActivity {
         email_input.setText(patient.getEmail());
         phone_input.setText(patient.getPhone());
         try {
-            ArrayList<String> list = Lib.getRegions();
-            ArrayList<String> list2 = Lib.getProvinces();
+            final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(PatientAccountUpdate.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
+                }
+                protected Void doInBackground(Void... progress) {
+                    list = Lib.getRegions();
+                    list2 = Lib.getProvinces();
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                }
+            };
+            asyncTask.execute();
 
             loadSpinners(list,list2);
         }catch (Exception e){e.printStackTrace();}

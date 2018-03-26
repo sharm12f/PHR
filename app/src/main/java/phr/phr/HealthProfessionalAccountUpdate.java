@@ -32,6 +32,8 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
     Boolean Success = false;
     HealthProfessional healthProfessional;
     Button update;
+    ArrayList<String> list;
+    ArrayList<String> list2;
     protected void onCreate(Bundle SavedInstance){
         super.onCreate(SavedInstance);
         setContentView(R.layout.healthprofessional_update_info);
@@ -52,25 +54,8 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         }
 
         update = findViewById(R.id.update_button);
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
-            protected void onPreExecute(){
-                super.onPreExecute();
-                p.setMessage("Loading");
-                p.setIndeterminate(false);
-                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                p.show();
-            }
-            protected Void doInBackground(Void... progress) {
-                setFields();
-                return null;
-            }
-            protected void onPostExecute(Void Void){
-                super.onPostExecute(Void);
-                p.dismiss();
-            }
-        };
-        asyncTask.execute();
+
+        setFields();
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,8 +111,26 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         email_input.setText(healthProfessional.getEmail());
         phone_input.setText(healthProfessional.getPhone());
         try {
-            ArrayList<String> list = Lib.getRegions();
-            ArrayList<String> list2 = Lib.getProvinces();
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
+                }
+                protected Void doInBackground(Void... progress) {
+                    list = Lib.getRegions();
+                    list2 = Lib.getProvinces();
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                }
+            };
+            asyncTask.execute();
             loadSpinners(list,list2);
         }catch (Exception e){e.printStackTrace();}
     }
