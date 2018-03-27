@@ -112,11 +112,9 @@ public class Auth_Access{
         postData.put("department", department);
         postData.put("health_professional", health_professional);
         String responce = makePost(IP+"/PHR_AUTH/health_professional_registration.php", postData);
+        System.out.println(responce);
         if (responce.equals("true"))
             success=true;
-        else{
-            System.out.println(responce);
-        }
         return success;
     }
 
@@ -219,7 +217,6 @@ public class Auth_Access{
         postData.put("region", region);
         postData.put("id",id+"");
         String responce = makePost(IP+"/PHR_AUTH/health_professional_update.php", postData);
-        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;

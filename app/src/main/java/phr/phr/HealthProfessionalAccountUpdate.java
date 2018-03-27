@@ -33,7 +33,6 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
     HealthProfessional healthProfessional;
     Button update;
     ArrayList<String> list;
-    ArrayList<String> list2;
     protected void onCreate(Bundle SavedInstance){
         super.onCreate(SavedInstance);
         setContentView(R.layout.healthprofessional_update_info);

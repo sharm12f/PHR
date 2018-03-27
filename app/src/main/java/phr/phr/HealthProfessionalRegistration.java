@@ -25,6 +25,15 @@ import phr.lib.User;
 
 public class HealthProfessionalRegistration extends AppCompatActivity {
     Boolean Success = false;
+    Spinner Sregion;
+    Spinner Sorganization;
+    Spinner Sdepartment;
+    Spinner Shealthprofessional;
+
+    ArrayList<String> r;
+    ArrayList<String> o;
+    ArrayList<String> d;
+    ArrayList<String> h;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -38,30 +47,14 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         final EditText Epassword = findViewById(R.id.password_input);
         final EditText Ere_password = findViewById(R.id.re_pass_input);
         final Button create = findViewById(R.id.create_button);
-        final Spinner Sregion = findViewById(R.id.region_spinner);
-        final Spinner Sorganization = findViewById(R.id.organization_spinner);
-        final Spinner Sdepartment = findViewById(R.id.department_spinner);
-        final Spinner Shealthprofessional = findViewById(R.id.healthprofessional_spinner);
+        Sregion = findViewById(R.id.region_spinner);
+        Sorganization = findViewById(R.id.organization_spinner);
+        Sdepartment = findViewById(R.id.department_spinner);
+        Shealthprofessional = findViewById(R.id.healthprofessional_spinner);
 
 
-        new AsyncTask<Void, Void, Void>(){
-            private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);
-            protected void onPreExecute(){
-                super.onPreExecute();
-                p.setMessage("Loading");
-                p.setIndeterminate(false);
-                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                p.show();
-            }
-            protected Void doInBackground(Void... progress){
-                loadSpinners(Sregion,Sorganization,Sdepartment,Shealthprofessional);
-                return null;
-            }
-            protected void onPostExecute(Void Void) {
-                super.onPostExecute(Void);
-                p.dismiss();
-            }
-        }.execute();
+        setFields();
+
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,30 +117,55 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
     }
 
 
-    private void loadSpinners(Spinner regions, Spinner organization, Spinner department, Spinner healthprofessional){
-        ArrayList<String> r = Lib.getRegions();
+    private void loadSpinners(ArrayList<String> r, ArrayList<String> o, ArrayList<String> d, ArrayList<String>h){
+
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, r);
         adr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        regions.setAdapter(adr);
+        Sregion.setAdapter(adr);
 
-        ArrayList<String> o = Lib.getOrganization();
+
         ArrayAdapter<String> ado = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, o);
         ado.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        organization.setAdapter(ado);
+        Sorganization.setAdapter(ado);
 
-        ArrayList<String> d = Lib.getDepartment();
+
         ArrayAdapter<String> add = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, d);
         add.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        department.setAdapter(add);
+        Sdepartment.setAdapter(add);
 
-        ArrayList<String> h = Lib.getHealthProfessional();
+
         ArrayAdapter<String> adh = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, h);
         adh.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        healthprofessional.setAdapter(adh);
+        Shealthprofessional.setAdapter(adh);
+    }
+
+    private void setFields(){
+        new AsyncTask<Void, Void, Void>(){
+            private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);
+            protected void onPreExecute(){
+                super.onPreExecute();
+                p.setMessage("Loading");
+                p.setIndeterminate(false);
+                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                p.show();
+            }
+            protected Void doInBackground(Void... progress){
+                r = Lib.getRegions();
+                o = Lib.getOrganization();
+                d = Lib.getDepartment();
+                h = Lib.getHealthProfessional();
+                return null;
+            }
+            protected void onPostExecute(Void Void) {
+                super.onPostExecute(Void);
+                p.dismiss();
+                loadSpinners(r,o,d,h);
+            }
+        }.execute();
 
     }
 }
