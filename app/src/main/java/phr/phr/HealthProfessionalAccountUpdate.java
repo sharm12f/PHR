@@ -76,8 +76,8 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
 
                         }
                         protected Boolean doInBackground(Void... progress) {
-                            int id = healthProfessional.getId();
-                            Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,id);
+
+                            Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,healthProfessional.getId());
                             return result;
                         }
                         protected void onPostExecute(Boolean result){
@@ -122,13 +122,12 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 }
                 protected Void doInBackground(Void... progress) {
                     list = Lib.getRegions();
-                    list2 = Lib.getProvinces();
                     return null;
                 }
                 protected void onPostExecute(Void Void){
                     super.onPostExecute(Void);
                     p.dismiss();
-                    loadSpinners(list,list2);
+                    loadSpinners(list);
                 }
             };
             asyncTask.execute();
@@ -143,7 +142,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void loadSpinners(ArrayList<String> list, ArrayList<String> list2){
+    private void loadSpinners(ArrayList<String> list){
         try {
 
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,

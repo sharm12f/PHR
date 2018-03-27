@@ -191,15 +191,17 @@ public class Auth_Access{
         return responce;
     }
 
-    protected static boolean PatientUpdate(String name, String email, String phone, String region, String province, String originalEmail){
+    protected static boolean PatientUpdate(String name, String email, String phone, String region, String province, int id){
         boolean result = false;
+        email=email.toUpperCase();
+        name=name.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         postData.put("name", name);
         postData.put("phone", phone);
         postData.put("region", region);
         postData.put("province", province);
-        postData.put("original_email", originalEmail);
+        postData.put("id", id+"");
         String responce = makePost(IP+"/PHR_AUTH/update_user.php", postData);
         if(responce.equals("true"))
             result=true;
@@ -209,6 +211,7 @@ public class Auth_Access{
     protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
         boolean result = false;
         email=email.toUpperCase();
+        name=name.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         postData.put("name", name);
@@ -216,6 +219,7 @@ public class Auth_Access{
         postData.put("region", region);
         postData.put("id",id+"");
         String responce = makePost(IP+"/PHR_AUTH/health_professional_update.php", postData);
+        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;

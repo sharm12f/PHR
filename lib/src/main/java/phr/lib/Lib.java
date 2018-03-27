@@ -353,18 +353,17 @@ public class Lib {
         return false;
     }
 
-    public static boolean PatientUpdate(String name, String email, String phone, String region, String province, String originalEmail){
+    public static boolean PatientUpdate(String name, String email, String phone, String region, String province, int id){
         boolean checkName = checkString(name);
         boolean checkEmail = checkEmail(email);
-        boolean checkOriginalEmail = checkEmail(originalEmail);
         boolean checkPhone = checkPhone(phone);
         boolean checkRegion = checkString(region);
         boolean checkProvince = checkString(province);
 
-        if(!checkName || !checkEmail || !checkPhone || !checkRegion || !checkProvince || !checkOriginalEmail)
+        if(!checkName || !checkEmail || !checkPhone || !checkRegion || !checkProvince || id < 0)
             return false;
 
-        return Auth_Access.PatientUpdate(name,email,phone,region,province, originalEmail);
+        return Auth_Access.PatientUpdate(name,email,phone,region,province, id);
 
     }
 

@@ -122,8 +122,7 @@ public class LogIn extends AppCompatActivity {
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
-                            user = Lib.login("app@app.com", "password");
-
+                            user = Lib.login("hp@hp.com", "password");
                             return null;
                         }
                         protected void onPostExecute(Void Void){

@@ -77,7 +77,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
                         }
                         protected Boolean doInBackground(Void... progress) {
                             Boolean result;
-                            result = Lib.PatientUpdate(name,email,phone,region,province,patient.getEmail());
+                            result = Lib.PatientUpdate(name,email,phone,region,province,patient.getId());
 
                             return result;
                         }

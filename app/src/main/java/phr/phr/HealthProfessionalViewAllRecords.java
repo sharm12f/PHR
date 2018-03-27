@@ -65,7 +65,7 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
+        Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
         ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
         list.add(healthProfessional);
         intent.putExtra("HP",list);

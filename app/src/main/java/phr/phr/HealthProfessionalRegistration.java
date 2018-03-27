@@ -117,6 +117,11 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+        startActivity(intent);
+    }
 
 
     private void loadSpinners(Spinner regions, Spinner organization, Spinner department, Spinner healthprofessional){
@@ -145,10 +150,4 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         healthprofessional.setAdapter(adh);
 
     }
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), LogIn.class);
-        startActivity(intent);
-    }
-
 }
