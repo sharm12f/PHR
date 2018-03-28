@@ -14,6 +14,11 @@ import phr.lib.Record;
 
 /**
  * Created by Anupam on 28-Jan-18.
+ *
+ *  This is the list view that the user sees with all the patients on the hp account page
+ *
+ *  I have reused the patients list view since there is only one text item that needs to be displayed for the list, but in this case that text is set to the patients name
+ *
  */
 
 public class HealthProfessionalPatientListViewAdapter extends ArrayAdapter<Record>{
@@ -34,7 +39,6 @@ public class HealthProfessionalPatientListViewAdapter extends ArrayAdapter<Recor
     public View getView(int position, View view, ViewGroup parent){
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=LayoutInflater.from(getContext()).inflate(R.layout.patient_record_listview, parent, false);
-
         TextView name = (TextView) rowView.findViewById(R.id.name);
         Patient p = patients.get(position);
         name.setText(p.getName());

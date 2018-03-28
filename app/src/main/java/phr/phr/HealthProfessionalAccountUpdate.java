@@ -20,6 +20,10 @@ import phr.lib.Lib;
 
 /**
  * Created by Anupam on 20-Feb-18.
+ *
+ *  This file is the logic for the health professional account update - they get here by pressing update account info
+ *
+ *
  */
 
 public class HealthProfessionalAccountUpdate extends AppCompatActivity {
@@ -44,7 +48,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         provinces = findViewById(R.id.province_spinner);
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
         healthProfessional = list.get(0);
-
+        //ensure that a hp object is recieved into the activity
         if(healthProfessional == null) {
             Toast toast = Toast.makeText(getApplicationContext(), "Error Making User", Toast.LENGTH_SHORT);
             toast.show();
@@ -54,6 +58,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
 
         update = findViewById(R.id.update_button);
 
+        // fill all the fields with the users infor that we already have in the database
         setFields();
 
         update.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +68,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 final String email = email_input.getText().toString();
                 final String phone = phone_input.getText().toString();
                 final String region = regions.getSelectedItem().toString();
+                // the following async task tries to update the users info
                 try{
                     AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                         private ProgressDialog p = new ProgressDialog(HealthProfessionalAccountUpdate.this);
@@ -70,18 +76,19 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                             super.onPreExecute();
                             p.setMessage("Loading");
                             p.setIndeterminate(false);
+                            p.setCancelable(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
 
                         }
                         protected Boolean doInBackground(Void... progress) {
-
                             Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,healthProfessional.getId());
                             return result;
                         }
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
                             p.dismiss();
+                            // if the update is success full then go back to the account page
                             if(result){
                                 healthProfessional.setName(name);
                                 healthProfessional.setEmail(email);
@@ -105,6 +112,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         });
     }
 
+    // set all the fields with the users pre-exesting info
     private void setFields(){
         name_input.setText(healthProfessional.getName());
         email_input.setText(healthProfessional.getEmail());
@@ -115,6 +123,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 protected void onPreExecute(){
                     super.onPreExecute();
                     p.setMessage("Loading");
+                    p.setCancelable(false);
                     p.setIndeterminate(false);
                     p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     p.show();
@@ -132,6 +141,8 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
             asyncTask.execute();
         }catch (Exception e){e.printStackTrace();}
     }
+
+    // control where the user goes when they press the back button
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
@@ -141,6 +152,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // sets the values for all the drop down options
     private void loadSpinners(ArrayList<String> list){
         try {
 

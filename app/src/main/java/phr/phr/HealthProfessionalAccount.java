@@ -53,13 +53,14 @@ public class HealthProfessionalAccount extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), LogIn.class);
             startActivity(intent);
         }
-
+        // the following async task creates the user again, this is done so that the latest data is pulled from the database since they could have updated their info before getting here (its possible for them to update their info and press back to get here)
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
                 protected void onPreExecute(){
                     super.onPreExecute();
                     p.setMessage("Loading");
+                    p.setCancelable(false);
                     p.setIndeterminate(false);
                     p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     p.show();
@@ -113,6 +114,8 @@ public class HealthProfessionalAccount extends AppCompatActivity {
             }
         });
     }
+
+    // controls where the user goes if they press the back button
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
@@ -121,7 +124,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         intent.putExtra("HP",list);
         startActivity(intent);
     }
-
+    // sets all the fields on the page
     private void setFields(){
         name_text.setText(healthProfessional.getName());
         email_text.setText(healthProfessional.getEmail());
