@@ -26,6 +26,11 @@ import phr.lib.User;
 
 public class PatientRegistration extends AppCompatActivity {
     Boolean Success = false;
+
+    ArrayList<String> r, pro;
+
+    Spinner Sregion;
+    Spinner Sprovinces;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,28 +44,10 @@ public class PatientRegistration extends AppCompatActivity {
         final EditText Epassword = findViewById(R.id.password_input);
         final EditText Ere_password = findViewById(R.id.re_pass_input);
         final Button create = findViewById(R.id.create_button);
-        final Spinner Sregion = findViewById(R.id.region_spinner);
-        final Spinner Sprovinces = findViewById(R.id.province_spinner);
+        Sregion = findViewById(R.id.region_spinner);
+        Sprovinces = findViewById(R.id.province_spinner);
 
-
-        new AsyncTask<Void, Void, Void>(){
-            private ProgressDialog p = new ProgressDialog(PatientRegistration.this);
-            protected void onPreExecute(){
-                super.onPreExecute();
-                p.setMessage("Loading");
-                p.setIndeterminate(false);
-                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                p.show();
-            }
-            protected Void doInBackground(Void... progress){
-                loadSpinners(Sregion, Sprovinces);
-                return null;
-            }
-            protected void onPostExecute(Void Void){
-                super.onPostExecute(Void);
-                p.dismiss();
-            }
-        }.execute();
+        setFields();
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,18 +76,11 @@ public class PatientRegistration extends AppCompatActivity {
                             super.onPostExecute(result);
                             p.dismiss();
                             if(result){
-                                Patient patient = Lib.makeUser(email);
-                                if(patient!=null) {
-                                    Intent intent = new Intent(getApplicationContext(), PatientView.class);
-                                    ArrayList<User> list = new ArrayList<User>();
-                                    list.add(patient);
-                                    intent.putExtra("USER", list);
-                                    startActivity(intent);
-                                }
-                                else{
-                                    Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
-                                    toast.show();
-                                }
+                                Toast toast = Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_LONG);
+                                toast.show();
+                                Intent intent = new Intent(getApplicationContext(), LogIn.class);
+                                startActivity(intent);
+
                             }
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
@@ -119,18 +99,41 @@ public class PatientRegistration extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void loadSpinners(Spinner regions, Spinner provinces){
-        ArrayList<String> list = Lib.getRegions();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        regions.setAdapter(dataAdapter);
+    private void  setFields(){
+        new AsyncTask<Void, Void, Void>(){
+            private ProgressDialog p = new ProgressDialog(PatientRegistration.this);
+            protected void onPreExecute(){
+                super.onPreExecute();
+                p.setMessage("Loading");
+                p.setIndeterminate(false);
+                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                p.show();
+            }
+            protected Void doInBackground(Void... progress){
+                r = Lib.getRegions();
+                pro = Lib.getProvinces();
+                return null;
+            }
+            protected void onPostExecute(Void Void) {
+                super.onPostExecute(Void);
+                p.dismiss();
+                loadSpinners(r,pro);
+            }
+        }.execute();
+    }
 
-        ArrayList<String> list2 = Lib.getProvinces();
+    private void loadSpinners(ArrayList<String> r, ArrayList<String> pro){
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, r);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Sregion.setAdapter(dataAdapter);
+
+
         ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list2);
+                android.R.layout.simple_spinner_item, pro);
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        provinces.setAdapter(dataAdapter2);
+        Sprovinces.setAdapter(dataAdapter2);
 
     }
 }

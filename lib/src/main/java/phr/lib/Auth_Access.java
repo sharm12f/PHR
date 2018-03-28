@@ -86,14 +86,17 @@ public class Auth_Access{
     protected static boolean insertIntoUsers(String name,  String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
+        if(userExists(email) || healthUserExists(email))
+            return false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         postData.put("name", name);
-        postData.put("pssword", password);
+        postData.put("password", password);
         postData.put("phone", phone);
         postData.put("region", region);
         postData.put("province", province);
         String responce = makePost(IP+"/PHR_AUTH/patient_registration.php", postData);
+        System.out.println(responce);
         if (responce.equals("true"))
             success=true;
         return success;
@@ -102,6 +105,8 @@ public class Auth_Access{
     protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String organization, String department, String health_professional){
         boolean success=false;
         email = email.toUpperCase();
+        if(userExists(email) || healthUserExists(email))
+            return false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("name",name);
         postData.put("email", email);
