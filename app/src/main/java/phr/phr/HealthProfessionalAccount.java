@@ -54,36 +54,6 @@ public class HealthProfessionalAccount extends AppCompatActivity {
             startActivity(intent);
         }
 
-        HealthProfessionalPatientListViewAdapter adapter = new HealthProfessionalPatientListViewAdapter(this, healthProfessional.getPatient());
-        patients_listview.setAdapter(adapter);
-
-        //open the health professional account edit activity
-        edit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccountUpdate.class);
-                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
-                list.add(healthProfessional);
-                intent.putExtra("HP",list);
-                startActivity(intent);
-            }
-        });
-
-        //open the view all records activity for the health professional
-        view_all_records.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
-                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
-                list.add(healthProfessional);
-                intent.putExtra("HP",list);
-                startActivity(intent);
-            }
-        });
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
@@ -115,6 +85,33 @@ public class HealthProfessionalAccount extends AppCompatActivity {
             };
             asyncTask.execute();
         }catch(Exception e){e.printStackTrace();}
+
+        HealthProfessionalPatientListViewAdapter adapter = new HealthProfessionalPatientListViewAdapter(this, healthProfessional.getPatient());
+        patients_listview.setAdapter(adapter);
+
+        //open the health professional account edit activity
+        edit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccountUpdate.class);
+                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
+                list.add(healthProfessional);
+                intent.putExtra("HP",list);
+                startActivity(intent);
+            }
+        });
+
+        //open the view all records activity for the health professional
+        view_all_records.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
+                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
+                list.add(healthProfessional);
+                intent.putExtra("HP",list);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     public void onBackPressed() {

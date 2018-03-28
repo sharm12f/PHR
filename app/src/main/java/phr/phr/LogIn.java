@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.Record;
 import phr.lib.User;
 
 public class LogIn extends AppCompatActivity {
@@ -24,6 +26,15 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getIntent().getExtras()!=null){
+            if(getIntent().getExtras().containsKey("EXIT")){
+                boolean exit = (boolean)getIntent().getExtras().get("EXIT");
+                if(exit)
+                    finish();
+            }
+        }
+
         ActionBar actionbar = getSupportActionBar();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
@@ -155,4 +166,12 @@ public class LogIn extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
+    }
+
 }

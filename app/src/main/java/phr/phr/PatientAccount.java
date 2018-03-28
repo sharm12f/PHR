@@ -52,6 +52,37 @@ public class PatientAccount extends AppCompatActivity {
             startActivity(intent);
         }
 
+        try{
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(PatientAccount.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
+                }
+                protected Void doInBackground(Void... progress) {
+                    patient = Lib.makeUser(patient.getEmail());
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                    if(patient==null){
+                        Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
+                        toast.show();
+                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        setFields();
+                    }
+                }
+            };
+            asyncTask.execute();
+        }catch(Exception e){e.printStackTrace();}
+
         RecordListViewAdapter adapter = new RecordListViewAdapter(this, patient.getRecords());
         record_list_view.setAdapter(adapter);
 
@@ -89,41 +120,6 @@ public class PatientAccount extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        try{
-            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-                private ProgressDialog p = new ProgressDialog(PatientAccount.this);
-                protected void onPreExecute(){
-                    super.onPreExecute();
-                    p.setMessage("Loading");
-                    p.setIndeterminate(false);
-                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    p.show();
-                }
-                protected Void doInBackground(Void... progress) {
-                    patient = Lib.makeUser(patient.getEmail());
-                    return null;
-                }
-                protected void onPostExecute(Void Void){
-                    super.onPostExecute(Void);
-                    p.dismiss();
-                    if(patient==null){
-                        Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
-                        toast.show();
-                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
-                        startActivity(intent);
-                    }
-                    else{
-                        setFields();
-                    }
-                }
-            };
-            asyncTask.execute();
-
-        }catch(Exception e){e.printStackTrace();}
     }
     @Override
     public void onBackPressed() {
