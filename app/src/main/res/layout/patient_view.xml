@@ -49,7 +49,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/view_all_records_button"
+        android:id="@+id/add_note_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="240dp"
         android:layout_height="68dp"

@@ -15,6 +15,9 @@ import phr.lib.HealthProfessional;
 
 /**
  * Created by Anupam on 29-Jan-18.
+ *
+ * This is the health professional first view, they can see all records from here, or go to their account if they want to see
+ *
  */
 
 public class HealthProfessionalView extends AppCompatActivity {
@@ -28,6 +31,10 @@ public class HealthProfessionalView extends AppCompatActivity {
         setContentView(R.layout.healthprofessional_view);
         my_account_button = findViewById(R.id.myaccount_button);
         view_all_record_button = findViewById(R.id.all_records_button);
+
+        //not sure if this button is need at all so its hidden for now.
+        view_all_record_button.setVisibility(View.GONE);
+        view_all_record_button.setClickable(false);
 
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
         final HealthProfessional physician = list.get(0);

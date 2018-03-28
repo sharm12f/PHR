@@ -51,6 +51,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/patient_name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -72,6 +73,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/patient_email_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -92,6 +94,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/patient_phone_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -112,6 +115,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/patient_region_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -132,6 +136,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/patient_province_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -180,10 +185,6 @@
                     tools:layout_editor_absoluteX="99sp"
                     tools:layout_editor_absoluteY="264sp" />
 
-                <SearchView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
             </TableRow>
         </TableLayout>
 
@@ -204,7 +205,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/view_all_records_button"
+        android:id="@+id/add_note_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="242dp"
         android:layout_height="50dp"

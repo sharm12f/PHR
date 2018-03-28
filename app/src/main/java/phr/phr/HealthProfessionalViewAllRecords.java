@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import phr.lib.HealthProfessional;
 import phr.lib.Patient;
 import phr.lib.Record;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 26-Feb-18.
@@ -46,7 +47,6 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
 
 
         record_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -56,10 +56,12 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
                 Record Slecteditem= healthProfessional.getPatient().get(i).getRecords().get(j);
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
                 ArrayList<Record> list = new ArrayList<Record>();
+                ArrayList<Patient> list2 = new ArrayList<Patient>();
+                list2.add(healthProfessional.getPatient().get(i));
                 list.add(Slecteditem);
                 intent.putExtra("RECORD",list);
+                intent.putExtra("USER",list2);
                 startActivity(intent);
-
             }
         });
     }

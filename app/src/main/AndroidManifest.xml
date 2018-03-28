@@ -27,6 +27,7 @@
         <activity android:name=".HealthProfessionalAccountUpdate"></activity>
         <activity android:name=".HealthProfessionalViewAllRecords"></activity>
         <activity android:name=".HealthProfessionalRecordView"></activity>
+        <activity android:name=".HealthProfessionalSinglePatient"></activity>
     </application>
 
 </manifest>

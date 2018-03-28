@@ -15,7 +15,7 @@ import phr.lib.Record;
 /**
  * Created by Anupam on 28-Jan-18.
  *
- *  
+ *  This is the listview adapter for the health professional when they select view all record.
  *
  */
 

@@ -64,9 +64,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:text="Description:"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:text="Description"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
             </TableRow>
 
@@ -94,6 +94,7 @@
             android:layout_margin="22dp"
             android:text="Leave Note"
             android:theme="@style/myButtonTheme" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

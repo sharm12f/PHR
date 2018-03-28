@@ -21,19 +21,26 @@ import phr.lib.User;
 
 /**
  * Created by Anupam on 28-Jan-18.
+ *
+ * This the registration activity for the health professional
+ *
  */
 
 public class HealthProfessionalRegistration extends AppCompatActivity {
     Boolean Success = false;
+
+    //These ar the drop down options for the various sub-section that the HP belongs to. This will help narrow the search for the HP when the patient is looking to give them permissions
     Spinner Sregion;
     Spinner Sorganization;
     Spinner Sdepartment;
     Spinner Shealthprofessional;
 
+    // These lists are created after the list of avalible sub-section is retrieved from the database, the spinner adapters get these lists
     ArrayList<String> r;
     ArrayList<String> o;
     ArrayList<String> d;
     ArrayList<String> h;
+
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -41,6 +48,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.healthprofessional_registration);
+        // all the fiels in the layout are defined here
         final EditText Ename = findViewById(R.id.name_input);
         final EditText Eemail = findViewById(R.id.email_input);
         final EditText Ephone = findViewById(R.id.phone_input);
@@ -53,12 +61,14 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         Shealthprofessional = findViewById(R.id.healthprofessional_spinner);
 
 
+        // this loads only the spinners with the avalible lists from the database
         setFields();
 
-
+        // the button to create the user
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // get all the users input
                 final String name = Ename.getText().toString();
                 final String email = Eemail.getText().toString();
                 final String phone = Ephone.getText().toString();
@@ -68,6 +78,8 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                 final String organization = Sorganization.getSelectedItem().toString();
                 final String department = Sdepartment.getSelectedItem().toString();
                 final String healthprofessional = Shealthprofessional.getSelectedItem().toString();
+
+                // the following async task will try to register the users account
                 try{
                     AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
                         private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);
@@ -84,12 +96,14 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
                             p.dismiss();
+                            // show the user the account is created, and re-direct them to the login page
                             if(result){
                                 Toast toast = Toast.makeText(getApplicationContext(), "Account Created", Toast.LENGTH_LONG);
                                 toast.show();
                                 Intent intent = new Intent(getApplicationContext(), LogIn.class);
                                 startActivity(intent);
                             }
+                            //tell the user there was an error, this error is very generic, and can be updated in the future if needed
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);
                                 toast.show();
@@ -102,13 +116,15 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
             }
         });
     }
+
+    //control where the user goes when they press the back button
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), LogIn.class);
         startActivity(intent);
     }
 
-
+    // set the spinners with the values retrieved from the database
     private void loadSpinners(ArrayList<String> r, ArrayList<String> o, ArrayList<String> d, ArrayList<String>h){
 
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
@@ -135,6 +151,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         Shealthprofessional.setAdapter(adh);
     }
 
+    // get a list for all the spinners from the database
     private void setFields(){
         new AsyncTask<Void, Void, Void>(){
             private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);

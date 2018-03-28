@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.Patient;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 29-Jan-18.
@@ -41,7 +44,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         name_text = findViewById(R.id.name_text);
         email_text = findViewById(R.id.email_text);
         edit_button = findViewById(R.id.edit_button);
-        view_all_records = findViewById(R.id.view_all_records_button);
+        view_all_records = findViewById(R.id.add_note_button);
         patients_listview = findViewById(R.id.patients_list_view);
 
         //ensure that you get a valid healthprofessional object when this activity is called, go back to login activity if not
@@ -111,6 +114,23 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                 list.add(healthProfessional);
                 intent.putExtra("HP",list);
                 startActivity(intent);
+            }
+        });
+
+        patients_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Patient patient = healthProfessional.getPatient().get(+position);
+
+                Intent intent = new Intent(getApplicationContext(), HealthProfessionalSinglePatient.class);
+
+                ArrayList<User> list = new ArrayList<User>();
+                list.add(healthProfessional);
+                list.add(patient);
+                intent.putExtra("INFO",list);
+
+                startActivity(intent);
+
             }
         });
     }
