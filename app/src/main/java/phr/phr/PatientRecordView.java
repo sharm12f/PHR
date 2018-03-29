@@ -22,11 +22,10 @@ import phr.lib.Record;
 
 public class PatientRecordView extends AppCompatActivity {
     EditText name_input, description_input;
-    Button add_update_button;
+    Button add_update_button, browse_button;
     Record record;
     boolean update=false;
     int id;
-    Boolean Success = false;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -37,6 +36,12 @@ public class PatientRecordView extends AppCompatActivity {
         name_input = findViewById(R.id.name_input);
         description_input = findViewById(R.id.description_input);
         add_update_button = findViewById(R.id.add_update_button);
+
+        // not gonna use this button for now, its so that that the user can attach files
+        browse_button = findViewById(R.id.browse_button);
+        browse_button.setClickable(false);
+        browse_button.setVisibility(View.GONE);
+
         if(getIntent().getExtras()!=null){
             if(getIntent().getExtras().containsKey("ID")){
                 id = (int)getIntent().getExtras().get("ID");

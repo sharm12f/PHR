@@ -1,7 +1,9 @@
 package phr.lib;
 
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -18,6 +20,7 @@ public class User implements Serializable{
     private int id;
     private Timestamp create;
     private Timestamp session;
+    private ArrayList<Note> notes;
 
     public User(String name, String email, Timestamp create, String role, Timestamp session){
         this.name = name;
@@ -45,6 +48,7 @@ public class User implements Serializable{
     public String getName(){return this.name;}
     public String getPhone(){return this.phone;}
     public String getRegion(){return this.region;}
+    public ArrayList<Note> getNotes(){return this.notes;}
 
     public void setSession(Timestamp session){
         this.session = session;
@@ -64,6 +68,7 @@ public class User implements Serializable{
     public void setName(String name){this.name=name;}
     public void setPhone(String phone){this.phone=phone;}
     public void setRegion(String region){this.region = region;}
+    public void setNotes(ArrayList<Note> notes){this.notes=notes;}
 
     public String toString(){
         return "Name: " + this.name + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region;

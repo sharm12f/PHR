@@ -9,39 +9,34 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import phr.lib.Patient;
+import phr.lib.Note;
 import phr.lib.Record;
 
 /**
  * Created by Anupam on 28-Jan-18.
- *
- *  This is the list view that the user sees with all the patients on the hp account page
- *
- *  I have reused the patients list view since there is only one text item that needs to be displayed for the list, but in this case that text is set to the patients name
- *
  */
 
-public class HealthProfessionalPatientListViewAdapter extends ArrayAdapter<Record>{
+public class NoteListViewAdapter extends ArrayAdapter<Record>{
     private final Activity context;
-    ArrayList<Patient> patients;
+    ArrayList<Note> notes;
 
-    public HealthProfessionalPatientListViewAdapter(Activity context, ArrayList<Patient> patients) {
+    public NoteListViewAdapter(Activity context, ArrayList<Note> notes) {
         super(context, R.layout.text_list_view);
         // TODO Auto-generated constructor stub
         this.context=context;
-        this.patients =patients;
+        this.notes=notes;
     }
 
     public int getCount(){
-        return patients.size();
+        return notes.size();
     }
 
     public View getView(int position, View view, ViewGroup parent){
-        LayoutInflater inflater=context.getLayoutInflater();
+
         View rowView=LayoutInflater.from(getContext()).inflate(R.layout.text_list_view, parent, false);
         TextView name = (TextView) rowView.findViewById(R.id.name);
-        Patient p = patients.get(position);
-        name.setText(p.getName());
+        Note n = notes.get(position);
+        name.setText(n.getName());
         return rowView;
     }
 }

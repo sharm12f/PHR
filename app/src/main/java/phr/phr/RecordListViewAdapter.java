@@ -20,7 +20,7 @@ public class RecordListViewAdapter extends ArrayAdapter<Record>{
     ArrayList<Record> records;
 
     public RecordListViewAdapter(Activity context, ArrayList<Record> records) {
-        super(context, R.layout.patient_record_listview);
+        super(context, R.layout.text_list_view);
         // TODO Auto-generated constructor stub
         this.context=context;
         this.records=records;
@@ -32,7 +32,7 @@ public class RecordListViewAdapter extends ArrayAdapter<Record>{
 
     public View getView(int position, View view, ViewGroup parent){
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=LayoutInflater.from(getContext()).inflate(R.layout.patient_record_listview, parent, false);
+        View rowView=LayoutInflater.from(getContext()).inflate(R.layout.text_list_view, parent, false);
 
         TextView name = (TextView) rowView.findViewById(R.id.name);
         Record r = records.get(position);

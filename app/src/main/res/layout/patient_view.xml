@@ -34,7 +34,7 @@
             tools:layout_editor_absoluteY="264sp" />
 
         <ListView
-            android:id="@+id/records_list_view"
+            android:id="@+id/notes_list_views"
             android:layout_width="350dp"
             android:layout_height="255dp"
             android:layout_alignParentBottom="true"

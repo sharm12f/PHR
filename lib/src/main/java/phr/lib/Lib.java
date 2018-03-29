@@ -15,6 +15,7 @@ import java.util.Map;
 import org.json.*;
 
 public class Lib {
+
     public static User login(String email, String password){
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
@@ -97,6 +98,11 @@ public class Lib {
             r.setId(rid);
             patient.addRecord(r);
         }
+
+
+        ArrayList<Note> notes = makePatientNotes(patient.getId());
+        patient.setNotes(notes);
+
         return patient;
     }
 
@@ -165,6 +171,29 @@ public class Lib {
             healthProfessional.addPatient(p);
         }
         return healthProfessional;
+    }
+
+    public static ArrayList<Note> makePatientNotes(int patient_id){
+        ArrayList<Note> notes = new ArrayList<>();
+        String responce = Auth_Access.getNotesForPatient(patient_id);
+        if(responce.equals(""))
+            return null;
+        System.out.println(responce);
+        JSONArray str = new JSONArray(responce);
+        for (int i=0;i<str.length(); i++) {
+            int id, uid, hpid;
+            String name, desc, hpname;
+            JSONObject result = str.getJSONObject(i);
+            id = result.getInt("id");
+            uid = result.getInt("user_id");
+            hpid = result.getInt("health_professional_id");
+            name = result.getString("name");
+            desc = result.getString("description");
+            hpname = result.getString("health_professional_name");
+            Note n = new Note(id,uid,hpid,name,desc,hpname);
+            notes.add(n);
+        }
+        return notes;
     }
 
     public static Patient makeHealthProfessionalPatient (int id){

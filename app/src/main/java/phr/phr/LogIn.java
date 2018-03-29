@@ -59,9 +59,10 @@ public class LogIn extends AppCompatActivity {
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
-                            if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
-                                return null;
-                            user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            //if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
+                            //    return null;
+                            //user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            user = Lib.login("app@app.com", "p");
                             return null;
                         }
                         protected void onPostExecute(Void Void){
@@ -133,7 +134,7 @@ public class LogIn extends AppCompatActivity {
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
-                            user = Lib.login("hp@hp.com", "password");
+                            user = Lib.login("hp@hp.com", "p");
                             return null;
                         }
                         protected void onPostExecute(Void Void){

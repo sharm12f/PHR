@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import phr.lib.Patient;
-import phr.lib.Record;
-
 /**
  * Created by Anupam on 28-Jan-18.
  *
@@ -24,7 +21,7 @@ public class HealthProfessionalRecordListViewAdapter extends ArrayAdapter<String
     ArrayList<String[]> records;
 
     public HealthProfessionalRecordListViewAdapter(Activity context, ArrayList<String[]> records) {
-        super(context, R.layout.patient_record_listview);
+        super(context, R.layout.text_list_view);
         // TODO Auto-generated constructor stub
         this.context=context;
         this.records=records;

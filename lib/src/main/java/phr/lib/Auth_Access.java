@@ -169,6 +169,13 @@ public class Auth_Access{
         return result;
     }
 
+    protected static String getNotesForPatient(int user_id){
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("user_id", user_id+"");
+        String responce = makePost(IP+"/PHR_AUTH/get_notes.php", postData);
+        return responce;
+    }
+
     protected static String getRegions(){
         String responce = makeGet(IP+"/PHR_AUTH/get_regions.php");
         return responce;
