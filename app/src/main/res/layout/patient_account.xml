@@ -116,7 +116,25 @@
     <Button
         android:id="@+id/add_record_button"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="242dp"
+        android:layout_width="154dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Edit Permissions"
+        android:theme="@style/myButtonTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.915"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.823" />
+
+    <Button
+        android:id="@+id/add_record_button2"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="138dp"
         android:layout_height="54dp"
         android:layout_gravity="center"
         android:layout_marginEnd="8dp"
@@ -126,9 +144,10 @@
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.091"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.841" />
+        app:layout_constraintVertical_bias="0.823" />
 
     <Button
         android:id="@+id/edit_user_button"
