@@ -169,6 +169,20 @@ public class Auth_Access{
         return result;
     }
 
+    protected static boolean insertIntoNotes(String name, String description, int uid, int hpid){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("name", name);
+        postData.put("description", description);
+        postData.put("user_id", uid+"");
+        postData.put("health_professional_id", hpid+"");
+        String responce = makePost(IP+"/PHR_AUTH/insert_into_notes.php", postData);
+        System.out.println(responce);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
     protected static String getNotesForPatient(int user_id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("user_id", user_id+"");

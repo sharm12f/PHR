@@ -16,6 +16,10 @@ import org.json.*;
 
 public class Lib {
 
+    private static String REGXNAME = "[a-z A-Z-]+";
+    private static String REGXOTHER = "[a-z A-Z0-9+=*/^():\\s\\S_-]+";
+    private static String REGXPHONE = "[0-9-]+";
+
     public static User login(String email, String password){
         boolean checkUsername = checkEmail(email);
         boolean checkPassword = checkString(password);
@@ -262,14 +266,12 @@ public class Lib {
     public static boolean checkString(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
-        if(str.matches("[a-z A-Z0-9+=*/^()_-]+"))
+        if(str.matches(REGXNAME))
             return true;
         return false;
     }
     public static boolean checkStringZero(String str){
-        if(str.length() > 128)
-            return false;
-        if(str.matches("[a-z A-Z0-9+=*/^()_-]+"))
+        if(str.matches(REGXOTHER))
             return true;
         return false;
     }
@@ -277,7 +279,7 @@ public class Lib {
     public static boolean checkPhone(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
-        if(str.matches("[a-z A-Z0-9+=*/^()_-]+"))
+        if(str.matches(REGXPHONE))
             return true;
         return false;
     }
@@ -393,7 +395,18 @@ public class Lib {
             return false;
 
         return Auth_Access.PatientUpdate(name,email,phone,region,province, id);
+    }
 
+    public static boolean HealthProfessionalLeaveNote(String name, String description, int uid, int hpid){
+        boolean responce = false;
+        boolean checkName = checkString(name);
+        boolean checkDesc = checkStringZero(description);
+        if(!checkName || !checkDesc || uid < 0 || hpid < 0) {
+            System.out.println("Not pass");
+            return false;
+        }
+        responce = Auth_Access.insertIntoNotes(name,description,uid,hpid);
+        return responce;
     }
 
     public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){

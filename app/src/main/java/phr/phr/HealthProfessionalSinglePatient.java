@@ -55,11 +55,13 @@ public class HealthProfessionalSinglePatient extends AppCompatActivity {
                 Record Slecteditem= patient.getRecords().get(+position);
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
                 ArrayList<Record> list = new ArrayList<Record>();
-                ArrayList<Patient> list2 = new ArrayList<Patient>();
+                ArrayList<User> list2 = new ArrayList<User>();
                 list2.add(patient);
+                list2.add(healthProfessional);
                 list.add(Slecteditem);
                 intent.putExtra("RECORD",list);
                 intent.putExtra("USER",list2);
+                intent.putExtra("GOTO","SinglePatient");
                 startActivity(intent);
             }
         });

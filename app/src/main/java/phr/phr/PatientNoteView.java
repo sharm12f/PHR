@@ -20,8 +20,8 @@ import phr.lib.User;
 
 public class PatientNoteView extends AppCompatActivity {
     Patient patient;
-    TextView note_name_text, to_from_text, note_to_from_name_text;
-    EditText note_description;
+    TextView to_from_text, note_to_from_name_text;
+    EditText note_description, note_name_text;
     Button leave_note_button;
     int position;
     @Override
@@ -69,6 +69,7 @@ public class PatientNoteView extends AppCompatActivity {
         note_to_from_name_text.setText(patient.getNotes().get(+position).getHealth_professional_name());
 
         //set the name of note
+        note_name_text.setFocusable(false);
         note_name_text.setText(patient.getNotes().get(+position).getName());
 
     }
