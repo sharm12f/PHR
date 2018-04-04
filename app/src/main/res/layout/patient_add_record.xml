@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/add_update_button2"
+        android:id="@+id/edit_permissions_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.57" />
 
     <Button
-        android:id="@+id/add_update_button"
+        android:id="@+id/delete_record_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="102dp"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         app:layout_constraintVertical_bias="0.57" />
 
     <Button
-        android:id="@+id/add_update_button3"
+        android:id="@+id/add_update_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="102dp"
         android:layout_height="wrap_content"

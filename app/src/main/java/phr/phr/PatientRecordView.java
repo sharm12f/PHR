@@ -22,7 +22,7 @@ import phr.lib.Record;
 
 public class PatientRecordView extends AppCompatActivity {
     EditText name_input, description_input;
-    Button add_update_button, browse_button;
+    Button add_update_button, browse_button, delete_record, edit_permissions;
     Record record;
     boolean update=false;
     int id;
@@ -36,15 +36,25 @@ public class PatientRecordView extends AppCompatActivity {
         name_input = findViewById(R.id.name_input);
         description_input = findViewById(R.id.description_input);
         add_update_button = findViewById(R.id.add_update_button);
+        delete_record = findViewById(R.id.delete_record_button);
+        edit_permissions = findViewById(R.id.edit_permissions_button);
+        browse_button = findViewById(R.id.browse_button);
 
         // not gonna use this button for now, its so that that the user can attach files
-        browse_button = findViewById(R.id.browse_button);
         browse_button.setClickable(false);
         browse_button.setVisibility(View.GONE);
 
         if(getIntent().getExtras()!=null){
             if(getIntent().getExtras().containsKey("ID")){
                 id = (int)getIntent().getExtras().get("ID");
+
+                //If the user is adding a new button they dont need to see the permission or the delete record button
+                delete_record.setClickable(false);
+                delete_record.setVisibility(View.GONE);
+                edit_permissions.setClickable(false);
+                edit_permissions.setVisibility(View.GONE);
+
+
             }
             else if(getIntent().getExtras().containsKey("RECORD")){
                 ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
