@@ -22,13 +22,17 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
     HealthProfessional healthProfessional;
     ListView record_list_view;
     ArrayList<String[]> rcs;
+    ArrayList<Record> list;
+    ArrayList<User> list2;
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.healthprofessional_view_all_records);
         record_list_view = findViewById(R.id.records_list_view);
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
-        healthProfessional = list.get(0);
+        ArrayList<HealthProfessional> intent_extra = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
+        healthProfessional = intent_extra.get(0);
         rcs = new ArrayList<String[]>();
+        list2 = new ArrayList<User>();
+        list = new ArrayList<Record>();
         ArrayList<Patient> temp = healthProfessional.getPatient();
         for (int i=0; i<temp.size();i++){
             Patient p = temp.get(i);
@@ -55,12 +59,12 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
                 int j = Integer.parseInt(rcs.get(+position)[3]);
                 Record Slecteditem= healthProfessional.getPatient().get(i).getRecords().get(j);
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
-                ArrayList<Record> list = new ArrayList<Record>();
-                ArrayList<Patient> list2 = new ArrayList<Patient>();
                 list2.add(healthProfessional.getPatient().get(i));
+                list2.add(healthProfessional);
                 list.add(Slecteditem);
                 intent.putExtra("RECORD",list);
                 intent.putExtra("USER",list2);
+                intent.putExtra("GOTO","ViewAllRecords");
                 startActivity(intent);
             }
         });
