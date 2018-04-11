@@ -1,7 +1,6 @@
 package phr.phr;
 
 import android.content.Intent;
-import android.icu.text.AlphabeticIndex;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import phr.lib.HealthProfessional;
 import phr.lib.Patient;
 
 /**
@@ -41,7 +38,7 @@ public class PatientView extends AppCompatActivity {
         notes_list_view.setAdapter(adapter);
 
         //gonna hide this for now, you can re-enable it and list all history notes
-        notes = findViewById(R.id.add_note_button);
+        notes = findViewById(R.id.button2);
         notes.setVisibility(View.GONE);
         notes.setClickable(false);
 

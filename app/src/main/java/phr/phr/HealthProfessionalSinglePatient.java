@@ -38,7 +38,7 @@ public class HealthProfessionalSinglePatient extends AppCompatActivity {
         records_list_view = findViewById(R.id.records_list_view);
 
         //not sure if this button is needed so gonna hide it for now
-        add_note_button = findViewById(R.id.add_note_button);
+        add_note_button = findViewById(R.id.button2);
         add_note_button.setClickable(false);
         add_note_button.setVisibility(View.GONE);
 

@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class Note implements Serializable {
-      private int id, user_id, health_professional_id;
+    private int id, user_id, health_professional_id;
     private String name, description, health_professional_name;
 
     public Note(int id, int user_id, int health_professional_id, String name, String description, String health_professional_name){

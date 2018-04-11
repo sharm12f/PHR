@@ -30,7 +30,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/title_text_view"
                     android:layout_width="290dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

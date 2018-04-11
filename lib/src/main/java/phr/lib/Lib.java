@@ -2,6 +2,7 @@ package phr.lib;
 
 import com.sun.org.apache.regexp.internal.RE;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.security.spec.ECField;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -16,7 +17,7 @@ import org.json.*;
 
 public class Lib {
 
-    private static String REGXNAME = "[a-z A-Z-]+";
+    private static String REGXNAME = "[a-z 0-9A-Z-]+";
     private static String REGXOTHER = "[a-z A-Z0-9+=*/^():\\s\\S_-]+";
     private static String REGXPHONE = "[0-9-]+";
 
@@ -270,8 +271,9 @@ public class Lib {
             return true;
         return false;
     }
+
     public static boolean checkStringZero(String str){
-        if(str.matches(REGXOTHER))
+        if(str.matches(REGXOTHER) || str.length() == 0)
             return true;
         return false;
     }
@@ -284,14 +286,84 @@ public class Lib {
         return false;
     }
 
-
     public static boolean PatientUpdateRecord(String name, String description, int rid){
-
         boolean checkName = checkString(name);
         boolean checkDescription = checkStringZero(description);
-        if(rid < 0 || !checkDescription || !checkName)
+        if(rid < 0 || !checkDescription || !checkName) {
             return false;
+        }
         return Auth_Access.updateRecord(name, description, rid);
+    }
+
+    public static boolean deleteRecord(int id){
+        if(id < 0){
+            return false;
+        }
+        return Auth_Access.deleteRecord(id);
+    }
+
+    public static ArrayList<RecordPermission> getRecordPerms(int id){
+        ArrayList<RecordPermission> result = new ArrayList<RecordPermission>();
+        if(id < 0){
+            return null;
+        }
+        String responce = Auth_Access.getRecordPerms(id);
+        if(responce.equals(""))
+            return null;
+        JSONArray array = new JSONArray(responce);
+        for(int i=0;i<array.length();i++){
+            JSONObject obj = array.getJSONObject(i);
+            int r_id, hp_id, pid;
+            String r_name, hp_name;
+            r_id = Integer.parseInt(obj.getString("rid"));
+            hp_id = Integer.parseInt(obj.getString("hpid"));
+            pid = Integer.parseInt(obj.getString("pid"));
+            r_name = obj.getString("rname");
+            hp_name = obj.getString("hpname");
+            RecordPermission perm = new RecordPermission(hp_id, hp_name,r_id,r_name,pid);
+            result.add(perm);
+        }
+
+        return result;
+    }
+
+    public static ArrayList<HealthProfessional> searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
+        ArrayList<HealthProfessional> healthProfessionalArrayList = new ArrayList<>();
+
+        String responce = Auth_Access.searchHealthProfessionals(region, organization, department, healthProfessional);
+
+        if(responce == null){
+            healthProfessionalArrayList = null;
+        }
+        else{
+            JSONArray str = new JSONArray(responce);
+            for (int i=0;i<str.length(); i++) {
+                String email;
+                JSONObject result = str.getJSONObject(i);
+                email = result.getString("email");
+                HealthProfessional hp = Lib.makeHealthProfessional(email);
+                healthProfessionalArrayList.add(hp);
+            }
+        }
+        return healthProfessionalArrayList;
+    }
+
+    public static boolean givePermission(RecordPermission recordPermission){
+        boolean result= false;
+        result = Auth_Access.givePermission(recordPermission.getHp_id(),recordPermission.getR_id());
+        return result;
+    }
+
+    public static boolean permsExist(RecordPermission recordPermission){
+        boolean result= false;
+        result = Auth_Access.permissionsExist(recordPermission.getHp_id(),recordPermission.getR_id());
+        return result;
+    }
+
+    public static boolean revokePermission(RecordPermission recordPermission){
+        boolean result= false;
+        result = Auth_Access.revokePermission(recordPermission.getId());
+        return result;
     }
 
     public static boolean insertIntoRecord(String name, String description, int uid){
@@ -301,7 +373,6 @@ public class Lib {
             return false;
         }
         boolean result  = Auth_Access.insertIntoRecord(name, description, uid);
-        System.out.println("the result in lib: " + result);
         return  result;
     }
 

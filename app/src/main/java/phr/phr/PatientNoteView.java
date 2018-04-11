@@ -27,7 +27,7 @@ public class PatientNoteView extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notes_view);
+        setContentView(R.layout.health_professional_notes_view);
         leave_note_button = findViewById(R.id.leave_note_button);
         note_description = findViewById(R.id.note_description);
         to_from_text = findViewById(R.id.to_from_text);

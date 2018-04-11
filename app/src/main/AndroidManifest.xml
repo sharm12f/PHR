@@ -22,6 +22,9 @@
         <activity android:name=".PatientAccountUpdate"></activity>
         <activity android:name=".PatientRecordView"></activity>
         <activity android:name=".PatientNoteView"></activity>
+        <activity android:name=".PatientEditPermissionsRecord"></activity>
+        <activity android:name=".PatientAddPermissionRecord"></activity>
+        <activity android:name=".PatientAddPermissionAllRecords"></activity>
         <activity android:name=".HealthProfessionalRegistration"></activity>
         <activity android:name=".HealthProfessionalView"></activity>
         <activity android:name=".HealthProfessionalAccount"></activity>

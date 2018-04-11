@@ -1,6 +1,7 @@
 package phr.phr;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,7 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import phr.lib.Lib;
+import phr.lib.Patient;
 import phr.lib.Record;
 
 /**
@@ -53,8 +55,6 @@ public class PatientRecordView extends AppCompatActivity {
                 delete_record.setVisibility(View.GONE);
                 edit_permissions.setClickable(false);
                 edit_permissions.setVisibility(View.GONE);
-
-
             }
             else if(getIntent().getExtras().containsKey("RECORD")){
                 ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
@@ -62,6 +62,51 @@ public class PatientRecordView extends AppCompatActivity {
                 edit_record(record);
             }
         }
+
+        edit_permissions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), PatientEditPermissionsRecord.class);
+                ArrayList<Record> list = new ArrayList<Record>();
+                list.add(record);
+                intent.putExtra("RECORD",list);
+                startActivity(intent);
+            }
+        });
+
+        delete_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
+                        private ProgressDialog p = new ProgressDialog(PatientRecordView.this);
+                        protected void onPreExecute(){
+                            super.onPreExecute();
+                            p.setMessage("Loading");
+                            p.setIndeterminate(false);
+                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            p.show();
+                        }
+                        protected Boolean doInBackground(Void... progress) {
+                            return Lib.deleteRecord(record.getId());
+                        }
+                        protected void onPostExecute(Boolean result){
+                            super.onPostExecute(result);
+                            p.dismiss();
+                            if(result){
+                                finish();
+                            }
+                            else {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Delete Error", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        }
+                    };
+                    asyncTask.execute();
+                }catch (Exception e){e.printStackTrace();}
+            }
+        });
+
         add_update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +128,7 @@ public class PatientRecordView extends AppCompatActivity {
                             }
                             protected void onPostExecute(Boolean result){
                                 super.onPostExecute(result);
+                                p.dismiss();
                                 if(result){
                                     finish();
                                 }

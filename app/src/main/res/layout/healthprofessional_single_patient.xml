@@ -173,7 +173,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/title_text_view"
                     android:layout_width="290dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -205,7 +205,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/add_note_button"
+        android:id="@+id/button2"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="242dp"
         android:layout_height="50dp"

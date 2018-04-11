@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -157,6 +158,7 @@ public class Auth_Access{
         return result;
     }
 
+
     protected static boolean insertIntoRecord(String name, String description, int uid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -187,6 +189,89 @@ public class Auth_Access{
         HashMap<String, String> postData = new HashMap<>();
         postData.put("user_id", user_id+"");
         String responce = makePost(IP+"/PHR_AUTH/get_notes.php", postData);
+        return responce;
+    }
+
+    protected static boolean deleteRecord(int id){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        String responce = makePost(IP+"/PHR_AUTH/delete_record.php", postData);
+        if(responce.equals("true"))
+            result = true;
+        return result;
+    }
+
+    protected static String getRecordPerms(int id){
+        String result = "";
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        String responce = makePost(IP+"/PHR_AUTH/get_record_perms.php", postData);
+        System.out.println("Responce11: "+responce);
+        if(!responce.equals("error")){
+            result = responce;
+        }
+        return result;
+    }
+
+    protected static boolean givePermission(int hpid, int rid){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("hpid", hpid+"");
+        postData.put("rid", rid+"");
+        String responce = makePost(IP+"/PHR_AUTH/insert_into_health_professional_has_user_health_record.php", postData);
+        if(responce.equals("true"))
+            result = true;
+        return result;
+    }
+
+    protected static boolean revokePermission(int id){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        String responce = makePost(IP+"/PHR_AUTH/delete_from_health_professional_has_user_health_record.php", postData);
+        if(responce.equals("true"))
+            result = true;
+        return result;
+    }
+
+    protected static boolean permissionsExist(int hpid, int rid){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("hpid", hpid+"");
+        postData.put("rid", rid+"");
+        String responce = makePost(IP+"/PHR_AUTH/permission_exists.php", postData);
+        if(responce.equals("true"))
+            result = true;
+        return result;
+    }
+
+    protected static String searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
+        HashMap<String, String> postData = new HashMap<>();
+        boolean set = false;
+        if(!region.equals(" ")){
+            postData.put("region", region);
+            set = true;
+        }
+        if(!organization.equals(" ")){
+            postData.put("organization", organization);
+            set = true;
+        }
+        if(!department.equals(" ")){
+            postData.put("department", department);
+            set = true;
+        }
+        if(!healthProfessional.equals(" ")){
+            postData.put("healthProfessional", healthProfessional);
+            set = true;
+        }
+        if(!set){
+            return null;
+        }
+        String responce = makePost(IP+"/PHR_AUTH/get_health_professional_by_search.php", postData);
+        System.out.println(responce);
+        if(responce.equals("error"))
+           return null;
         return responce;
     }
 

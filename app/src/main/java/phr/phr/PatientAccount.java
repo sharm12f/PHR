@@ -26,7 +26,7 @@ import phr.lib.Record;
 public class PatientAccount extends AppCompatActivity {
     TextView name;
     TextView email;
-    Button edit_user ;
+    Button edit_user, edit_perms_button;
     Button add_record;
     ListView record_list_view;
     Patient patient;
@@ -41,7 +41,21 @@ public class PatientAccount extends AppCompatActivity {
         email = findViewById(R.id.email);
         edit_user = findViewById(R.id.edit_user_button);
         add_record = findViewById(R.id.add_record_button);
+        edit_perms_button = findViewById(R.id.edit_permissions_button);
         record_list_view = findViewById(R.id.records_list_view);
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), PatientView.class);
+        ArrayList<Patient> list = new ArrayList<Patient>();
+        list.add(patient);
+        intent.putExtra("USER",list);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         patient = list.get(0);
         if(patient==null){
@@ -105,6 +119,16 @@ public class PatientAccount extends AppCompatActivity {
             }
         });
 
+        edit_perms_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), PatientAddPermissionAllRecords.class);ArrayList<Patient> list = new ArrayList<Patient>();
+                list.add(patient);
+                intent.putExtra("USER",list);
+                startActivity(intent);
+            }
+        });
+
         record_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -119,14 +143,6 @@ public class PatientAccount extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), PatientView.class);
-        ArrayList<Patient> list = new ArrayList<Patient>();
-        list.add(patient);
-        intent.putExtra("USER",list);
-        startActivity(intent);
     }
 
     private void setFields(){
