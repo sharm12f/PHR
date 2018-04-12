@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,8 +19,8 @@ import java.util.Map;
 
 public class Auth_Access{
 
-    private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
-    //private static final String IP = "http://10.0.2.2";
+    //private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
+    private static final String IP = "http://10.0.2.2";
 
     protected static String getUsersByEmail(String email){
         email = email.toUpperCase();
@@ -246,27 +247,83 @@ public class Auth_Access{
         return result;
     }
 
+    protected static boolean setLoginUser(int id, Timestamp login){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        postData.put("login", login+"");
+        String responce = makePost(IP+"/PHR_AUTH/set_login_user.php", postData);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
+    protected static boolean setLogoutUser(int id, Timestamp login){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        postData.put("login", login+"");
+        String responce = makePost(IP+"/PHR_AUTH/set_logout_user.php", postData);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
+    protected static boolean setLoginHealthProfessional(int id, Timestamp login){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        postData.put("login", login+"");
+        String responce = makePost(IP+"/PHR_AUTH/set_login_health_professional.php", postData);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
+    protected static boolean setLogoutHealthProfessional(int id, Timestamp login){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        postData.put("login", login+"");
+        String responce = makePost(IP+"/PHR_AUTH/set_logout_health_professional.php", postData);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
+
+    protected static String getLoginLogoutUser(int id){
+        String result = "";
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        String responce = makePost(IP+"/PHR_AUTH/get_loginout_user.php", postData);
+        if(!responce.equals("error"))
+            result=responce;
+        return result;
+    }
+
+    protected static String getLoginLogoutHealthProfessional(int id){
+        String result = "";
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("id", id+"");
+        String responce = makePost(IP+"/PHR_AUTH/get_loginout_health_professional.php", postData);
+        if(!responce.equals("error"))
+            result=responce;
+        return result;
+    }
+
     protected static String searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
         HashMap<String, String> postData = new HashMap<>();
-        boolean set = false;
-        if(!region.equals(" ")){
+        if(!region.equals("Any")){
             postData.put("region", region);
-            set = true;
         }
-        if(!organization.equals(" ")){
+        if(!organization.equals("Any")){
             postData.put("organization", organization);
-            set = true;
         }
-        if(!department.equals(" ")){
+        if(!department.equals("Any")){
             postData.put("department", department);
-            set = true;
         }
-        if(!healthProfessional.equals(" ")){
+        if(!healthProfessional.equals("Any")){
             postData.put("healthProfessional", healthProfessional);
-            set = true;
-        }
-        if(!set){
-            return null;
         }
         String responce = makePost(IP+"/PHR_AUTH/get_health_professional_by_search.php", postData);
         System.out.println(responce);

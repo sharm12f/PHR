@@ -1,11 +1,8 @@
 package phr.lib;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * Created by Anupam on 29-Jan-18.
@@ -19,19 +16,19 @@ public class User implements Serializable{
     private String region;
     private int id;
     private Timestamp create;
+    private Timestamp login;
     private Timestamp session;
     private ArrayList<Note> notes;
 
-    public User(String name, String email, Timestamp create, String role, Timestamp session){
+    public User(String name, String email, Timestamp create, String role){
         this.name = name;
         this.email = email;
         this.role = role;
         this.create = create;
-        this.session = session;
     }
 
-    public Timestamp getSession(){
-        return this.session;
+    public Timestamp getLogin(){
+        return this.login;
     }
     public Timestamp getCreate(){
         return this.create;
@@ -50,8 +47,8 @@ public class User implements Serializable{
     public String getRegion(){return this.region;}
     public ArrayList<Note> getNotes(){return this.notes;}
 
-    public void setSession(Timestamp session){
-        this.session = session;
+    public void setLogin(Timestamp login){
+        this.login = login;
     }
     public void setCreate(Timestamp create){
         this.create = create;
@@ -70,7 +67,15 @@ public class User implements Serializable{
     public void setRegion(String region){this.region = region;}
     public void setNotes(ArrayList<Note> notes){this.notes=notes;}
 
+    public Timestamp getSession() {
+        return session;
+    }
+
+    public void setSession(Timestamp session) {
+        this.session = session;
+    }
+
     public String toString(){
-        return "Name: " + this.name + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " session: " + this.session + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region;
+        return "Name: " + this.name + " Email: " + this.email + " Role: " + this.role + " create: " + this.create + " login: " + this.login + " ID: " + this.id + " Phone: "+ this.phone + " Region: " + this.region;
     }
 }

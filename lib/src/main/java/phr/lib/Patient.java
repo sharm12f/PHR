@@ -19,8 +19,8 @@ public class Patient extends User implements Serializable{
     private String province;
     private ArrayList<Record> records;
 
-    public Patient(String name, String email, Timestamp create, String role, Timestamp session){
-        super(name,email,create,role,session);
+    public Patient(String name, String email, Timestamp create, String role){
+        super(name,email,create,role);
         this.records = new ArrayList<Record>();
     }
 
@@ -47,7 +47,12 @@ public class Patient extends User implements Serializable{
 
     public void setProvince(String province){this.province=province;}
 
-    public String toString(){
-        return super.toString() + " Province: "+ this.province;
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "province='" + province + '\'' +
+                ", records=" + records +
+                super.toString() +
+                '}';
     }
 }

@@ -16,6 +16,15 @@ import phr.lib.User;
 
 /**
  * Created by Anupam on 28-Mar-18.
+ *
+ * This page allows the user to view a note left for them.
+ *
+ * Top of the page is the name of the note
+ *
+ * Below that is who its from
+ *
+ * The body of the note may list which record the note refers to.
+ *
  */
 
 public class PatientNoteView extends AppCompatActivity {
@@ -34,14 +43,17 @@ public class PatientNoteView extends AppCompatActivity {
         note_name_text = findViewById(R.id.note_name_text);
         note_to_from_name_text = findViewById(R.id.note_to_from_name_text);
 
+        // get he user object
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         patient = list.get(0);
         position = (int)getIntent().getExtras().get("POS");
 
+        //load all the fields
         setFields();
 
     }
 
+    // control the flow the app regardless of the stack
     @Override
     public void onBackPressed() {
         super.onBackPressed();

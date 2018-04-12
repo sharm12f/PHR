@@ -14,8 +14,8 @@ public class HealthProfessional extends User implements Serializable{
     private String health_professional;
     private ArrayList<Patient> patients;
 
-    public HealthProfessional(String name, String email, Timestamp create, String role, Timestamp session){
-        super(name,email,create,role,session);
+    public HealthProfessional(String name, String email, Timestamp create, String role){
+        super(name,email,create,role);
         this.patients = new ArrayList<Patient>();
     }
 
@@ -42,7 +42,15 @@ public class HealthProfessional extends User implements Serializable{
             System.out.println(this.patients.get(i).toString());
         }
     }
-    public String toString(){
-        return super.toString() + " Organization: "+ this.organization+ " Department: "+ this.department+ " Health Professional: "+ this.health_professional;
+
+    @Override
+    public String toString() {
+        return "HealthProfessional{" +
+                "organization='" + organization + '\'' +
+                ", department='" + department + '\'' +
+                ", health_professional='" + health_professional + '\'' +
+                ", patients=" + patients +
+                super.toString() +
+                '}';
     }
 }

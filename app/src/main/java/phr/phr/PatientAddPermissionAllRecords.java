@@ -1,6 +1,7 @@
 package phr.phr;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,9 +21,25 @@ import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.RecordPermission;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 10-Apr-18.
+ *
+ * This page is very similar to how a user may add permission to a single record.
+ * This page allows the user to search for the health professional they want to grand permission to. Duplicate permissions are ignored
+ *
+ * This page indicates that all records are going to be effected at the top.
+ *
+ * The spinners to filter the health professional are provided. Any is select by default
+ *
+ * The list view is populated once the user clicks the search button
+ *
+ * After searching for the health professional
+ *      they user can select one from the list, and add permission to grand them access
+ *      or
+ *      they can select give to all and grant everyone on the list access
+ *
  */
 
 public class PatientAddPermissionAllRecords extends AppCompatActivity {
@@ -64,16 +81,19 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
 
         record_name_text_view.setText("All Records");
 
+        // set all the spinner with database data
         setSpinnes();
 
-        ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
-        patient = list.get(0);
+        // get the user object
+        ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
+        patient = (Patient)list.get(0);
 
-
+        // allow the user to add permission for a selected health professional
         add_perms_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean set = false;
+                //ensure a health professional is selected from the list
                 if(health_professional_list_view.getCheckedItemPosition() != -1)
                     set=true;
                 if(set) {
@@ -115,6 +135,11 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
                                 if(result){
                                     Toast toast = Toast.makeText(getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT);
                                     toast.show();
+                                    Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(patient);
+                                    intent.putExtra("USER",list);
+                                    startActivity(intent);
                                     finish();
                                 }
                                 else{
@@ -177,6 +202,11 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
                             if(result){
                                 Toast toast = Toast.makeText(getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT);
                                 toast.show();
+                                Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                ArrayList<User> list = new ArrayList<User>();
+                                list.add(patient);
+                                intent.putExtra("USER",list);
+                                startActivity(intent);
                                 finish();
                             }
                             else{
@@ -230,11 +260,13 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
 
     }
 
+    //set the search list view with the health professionals
     private void setSearchListView() {
         HealthProfessionalListViewAdapter adapter = new HealthProfessionalListViewAdapter(this, healthProfessionalsList);
         health_professional_list_view.setAdapter(adapter);
     }
 
+    // set all the spinners
     private void loadSpinners(ArrayList<String> r, ArrayList<String> o, ArrayList<String> d, ArrayList<String> h) {
 
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
@@ -281,10 +313,10 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
                     d = Lib.getDepartment();
                     h = Lib.getHealthProfessional();
                     //insert and empty entry into all array lists
-                    r.add(0, " ");
-                    o.add(0, " ");
-                    d.add(0, " ");
-                    h.add(0, " ");
+                    r.add(0, "Any");
+                    o.add(0, "Any");
+                    d.add(0, "Any");
+                    h.add(0, "Any");
 
                     return null;
                 }
@@ -298,5 +330,16 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+        ArrayList<User> list = new ArrayList<User>();
+        list.add(patient);
+        intent.putExtra("USER",list);
+        startActivity(intent);
+        finish();
     }
 }

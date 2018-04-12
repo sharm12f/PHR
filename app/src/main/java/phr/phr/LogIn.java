@@ -20,18 +20,48 @@ import phr.lib.Lib;
 import phr.lib.Record;
 import phr.lib.User;
 
+/**
+ * Created by Anupam on 27-Jan-18.
+ *
+ *  is the login page for the app
+ *  it allows the user to:
+ *      login
+ *      register
+ *
+ */
+
+
 public class LogIn extends AppCompatActivity {
-    Boolean test = false;
+
+    // Variable user, can be both patient or physician
     User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // if they press the back button on the login page, the stack is going to be cleared and the app will exit. (i do this, because previously the app would go back on the last activity on the stack)
         if(getIntent().getExtras()!=null){
             if(getIntent().getExtras().containsKey("EXIT")){
                 boolean exit = (boolean)getIntent().getExtras().get("EXIT");
                 if(exit)
                     finish();
+            }
+        }
+        // check if this activity was started because of a timeout
+        if(getIntent().getExtras()!=null){
+            if(getIntent().getExtras().containsKey("TIMEOUT")){
+                boolean exit = (boolean)getIntent().getExtras().get("TIMEOUT");
+                if(exit) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
+                    builder.setMessage("Session Timeout")
+                            .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         }
 
@@ -44,11 +74,12 @@ public class LogIn extends AppCompatActivity {
         final Button register_button = findViewById(R.id.register_button);
         final EditText email_input = findViewById(R.id.email_input);
         final EditText password_input=  findViewById(R.id.password_input);
+
+        // The login button will.. well log in  the user
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 try {
-
                     AsyncTask<Void, Void, Void> asyncTask =  new AsyncTask<Void, Void, Void>() {
                         private ProgressDialog p = new ProgressDialog(LogIn.this);
                         protected void onPreExecute(){
@@ -59,15 +90,19 @@ public class LogIn extends AppCompatActivity {
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
-                            if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
-                                return null;
-                            user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
-                            //user = Lib.login("app@app.com", "p");
+                            // get the users credentials and try to login them in
+
+                            //if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
+                            //    return null;
+                            //user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            user = Lib.login("app@app.com", "p");
                             return null;
                         }
                         protected void onPostExecute(Void Void){
                             super.onPostExecute(Void);
                             if(user!=null) {
+                                // set the session timestart, and check if the user is a patient or physician
+                                user.setSession(Lib.getTimestampNow());
                                 String role = user.getRole();
                                 if (role.equals("USER")) {
                                     Intent intent = new Intent(getApplicationContext(), PatientView.class);
@@ -75,12 +110,14 @@ public class LogIn extends AppCompatActivity {
                                     list.add(user);
                                     intent.putExtra("USER", list);
                                     startActivity(intent);
+                                    finish();
                                 } else if (role.equals("HP")) {
                                     Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
                                     ArrayList<User> list = new ArrayList<User>();
                                     list.add(user);
                                     intent.putExtra("HP", list);
                                     startActivity(intent);
+                                    finish();
                                 }
                             }
                             else{
@@ -95,10 +132,13 @@ public class LogIn extends AppCompatActivity {
                 }catch (Exception e){e.printStackTrace();}
             }
         });
+
+        //allow the user to register
         register_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try{
+                    // show an alert asking them what type of account they want.
                     AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
                     builder.setMessage("Are you a Patient of a Physician")
                             .setPositiveButton("Patient", new DialogInterface.OnClickListener() {
@@ -119,7 +159,7 @@ public class LogIn extends AppCompatActivity {
             }
         });
 
-
+        // not yet implemented however I use it as a quick login as a physician
         reset_password_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +180,7 @@ public class LogIn extends AppCompatActivity {
                         protected void onPostExecute(Void Void){
                             super.onPostExecute(Void);
                             if(user!=null) {
+                                user.setSession(Lib.getTimestampNow());
                                 String role = user.getRole();
                                 if (role.equals("USER")) {
                                     Intent intent = new Intent(getApplicationContext(), PatientView.class);
@@ -147,12 +188,14 @@ public class LogIn extends AppCompatActivity {
                                     list.add(user);
                                     intent.putExtra("USER", list);
                                     startActivity(intent);
+                                    finish();
                                 } else if (role.equals("HP")) {
                                     Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
                                     ArrayList<User> list = new ArrayList<User>();
                                     list.add(user);
                                     intent.putExtra("HP", list);
                                     startActivity(intent);
+                                    finish();
                                 }
                             }
                             else{
@@ -167,12 +210,15 @@ public class LogIn extends AppCompatActivity {
             }
         });
     }
+
+    //if the back button is pressed again during this activity, the stack is cleared and the app is told to exit.
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), LogIn.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("EXIT", true);
         startActivity(intent);
+        finish();
     }
 
 }

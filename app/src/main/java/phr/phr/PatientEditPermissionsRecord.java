@@ -13,15 +13,31 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 
 import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.RecordPermission;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 10-Apr-18.
+ *
+ * This view allows the user to edit the permission for a specific record
+ *
+ * At the top of the view is the name of the record
+ * a list of health professional's with access to the record is shown
+ *
+ * The user can take the following actions
+ *  1 - grand permission to a new health professional
+ *  2 - revoke permission from a health professional
+ *
+ *  To Add permission they simply select the add permission button
+ *
+ *  To revoke permission they have to select a health professional from the list and then select revoke permission
  */
 
 public class PatientEditPermissionsRecord extends AppCompatActivity {
@@ -30,6 +46,9 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
     ListView perms_list_view;
     Record record;
     ArrayList<RecordPermission> perms_list;
+
+    Patient patient;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +57,8 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
         ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
         record = list.get(0);
 
+        ArrayList<Patient> list2 = (ArrayList<Patient>)getIntent().getExtras().get("USER");
+        patient = list2.get(0);
 
         record_name = findViewById(R.id.title_text_view);
         select = findViewById(R.id.button1);
@@ -60,22 +81,31 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
         //set the record name
         record_name.setText(record.getName());
 
+        // set the list of health professional's with access to this record
         setPermsListView();
 
+        // take the user to the add permission page so they can find the health professional they want to grand permission to
         add_perms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PatientAddPermissionRecord.class);
                 ArrayList<Record> list = new ArrayList<>();
                 list.add(record);
+                ArrayList<User> list2 = new ArrayList<>();
+                list2.add(patient);
+                intent.putExtra("USER",list2);
                 intent.putExtra("RECORD", list);
                 startActivity(intent);
+                finish();
             }
         });
 
+
+        // revoke the permission from the health professional selected from the list.
         revoke_perms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ensure that a selection is made
                 final int position = perms_list_view.getCheckedItemPosition();
                 if(position != -1){
                     AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
@@ -98,6 +128,7 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
                             p.dismiss();
+                            // reload the list view after the permissions have been revoked.
                             if(result){
                                 setPermsListView();
                                 Toast toast = Toast.makeText(getApplicationContext(), "Permission Revoked", Toast.LENGTH_SHORT);
@@ -117,12 +148,14 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
 
     }
 
+    // ensure the list is always uptodate evenduring the same session
     @Override
     protected void onResume() {
         super.onResume();
         setPermsListView();
     }
 
+    //get the permisson for the record from the database.
     private void setPermsListView() {
         //get all the perms for this record
         try{
@@ -159,6 +192,21 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
         //set the listView
         PermissionListViewAdapter adapter = new PermissionListViewAdapter(this, perms_list);
         perms_list_view.setAdapter(adapter);
+    }
+
+    // control the flow of the app regardless of the stack
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), PatientRecordView.class);
+        ArrayList<Record> list = new ArrayList<>();
+        list.add(record);
+        ArrayList<User> list2  = new ArrayList<>();
+        list2.add(patient);
+        intent.putExtra("USER", list2);
+        intent.putExtra("RECORD",list);
+        startActivity(intent);
+        finish();
     }
 
 }

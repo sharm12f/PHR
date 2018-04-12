@@ -21,6 +21,14 @@ import phr.lib.Patient;
 
 /**
  * Created by Anupam on 26-Jan-18.
+ *
+ * This page allows the user to update their account information
+ *
+ * The page as edit text entries pre-filled for the following:
+ *      Name, email, phone
+ * Spinners with this current option as the selection allowing them to change it to another if needed
+ * The spinners are for region and province
+ *
  */
 
 public class PatientAccountUpdate extends AppCompatActivity {
@@ -46,20 +54,19 @@ public class PatientAccountUpdate extends AppCompatActivity {
         update_button = findViewById(R.id.update_button);
         regions = findViewById(R.id.region_spinner);
         provinces = findViewById(R.id.province_spinner);
+
+        // get the user object
         ArrayList<Patient> list = (ArrayList<Patient>)getIntent().getExtras().get("USER");
         patient = list.get(0);
 
-        if(patient==null){
-            Toast toast = Toast.makeText(getApplicationContext(), "Error Making User", Toast.LENGTH_SHORT);
-            toast.show();
-            Intent intent = new Intent(getApplicationContext(), LogIn.class);
-            startActivity(intent);
-        }
+        //pre-fill all the options with what is already in the database about the user.
         setFields();
 
+        // the user wants to update their data
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get all the information from all the edit text entries and spinners
                 final String name = name_input.getText().toString();
                 final String email = email_input.getText().toString();
                 final String phone = phone_input.getText().toString();
@@ -95,6 +102,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
                                 list.add(patient);
                                 intent.putExtra("USER",list);
                                 startActivity(intent);
+                                finish();
                             }
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Error Updating User", Toast.LENGTH_SHORT);
@@ -108,6 +116,8 @@ public class PatientAccountUpdate extends AppCompatActivity {
         });
     }
 
+
+    //control the flow of the app regardless of the stack
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
@@ -115,8 +125,10 @@ public class PatientAccountUpdate extends AppCompatActivity {
         list.add(patient);
         intent.putExtra("USER",list);
         startActivity(intent);
+        finish();
     }
 
+    // retrieve the spinner data from the database, and set the edit text of with user data
     private void setFields(){
         name_input.setText(patient.getName());
         email_input.setText(patient.getEmail());
@@ -146,6 +158,7 @@ public class PatientAccountUpdate extends AppCompatActivity {
         }catch (Exception e){e.printStackTrace();}
     }
 
+    // load all the spinners.
     private void loadSpinners(ArrayList<String> list, ArrayList<String> list2){
         try {
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,

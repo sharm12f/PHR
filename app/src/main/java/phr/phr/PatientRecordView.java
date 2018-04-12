@@ -17,9 +17,31 @@ import java.util.ArrayList;
 import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 30-Jan-18.
+ *
+ * User can arriave to this page using two different methods
+ *  1 - By selecting add record
+ *  2 - By selecting a record from the list
+ *
+ *  1 - The page layout if they select add record is
+ *      edit text at the top to allow the user to enter the record name
+ *      edit text under the description to allow the user to enter a description for the record
+ *      add record button at the bottom to add the record to their account.
+ *
+ *  2 - The page layout if they select a record is
+ *      edit text at the top with the name of the record pre-filled allowing the user to update the name if needed
+ *      edit text user the description pre-filled allowing the user to update the description if needed
+ *      3 button
+ *      1 - edit permission
+ *          allowing the user to view/add/remove permission for this record
+ *      2 - update record
+ *          allowing the user to update any changes they made
+ *      3 - delete record
+ *          allowing the user to delete the record
+ *
  */
 
 public class PatientRecordView extends AppCompatActivity {
@@ -28,6 +50,8 @@ public class PatientRecordView extends AppCompatActivity {
     Record record;
     boolean update=false;
     int id;
+
+    Patient patient;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -46,34 +70,45 @@ public class PatientRecordView extends AppCompatActivity {
         browse_button.setClickable(false);
         browse_button.setVisibility(View.GONE);
 
+        // get the user object should always be passed from activity to activity
+        ArrayList<User> u = (ArrayList<User>) getIntent().getExtras().get("USER");
+        patient = (Patient)u.get(0);
+
+        // check to see the the intent was passed with information
         if(getIntent().getExtras()!=null){
             if(getIntent().getExtras().containsKey("ID")){
+                // the user wants to add a new record, and user id is passed to achive this
                 id = (int)getIntent().getExtras().get("ID");
-
-                //If the user is adding a new button they dont need to see the permission or the delete record button
                 delete_record.setClickable(false);
                 delete_record.setVisibility(View.GONE);
                 edit_permissions.setClickable(false);
                 edit_permissions.setVisibility(View.GONE);
             }
             else if(getIntent().getExtras().containsKey("RECORD")){
+                // the user wants to update a pre-existing record and that record is passed
                 ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
                 record = list.get(0);
                 edit_record(record);
             }
         }
 
+        // allows the user to edit the records permissions
         edit_permissions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PatientEditPermissionsRecord.class);
-                ArrayList<Record> list = new ArrayList<Record>();
+                ArrayList<Record> list = new ArrayList<>();
                 list.add(record);
+                ArrayList<User> list2 = new ArrayList<>();
+                list2.add(patient);
+                intent.putExtra("USER",list2);
                 intent.putExtra("RECORD",list);
                 startActivity(intent);
+                finish();
             }
         });
 
+        // allows the user to delete the record
         delete_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +129,11 @@ public class PatientRecordView extends AppCompatActivity {
                             super.onPostExecute(result);
                             p.dismiss();
                             if(result){
+                                Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                ArrayList<User> list = new ArrayList<User>();
+                                list.add(patient);
+                                intent.putExtra("USER",list);
+                                startActivity(intent);
                                 finish();
                             }
                             else {
@@ -107,6 +147,7 @@ public class PatientRecordView extends AppCompatActivity {
             }
         });
 
+        // allows the user to update and or add new record, depending on how they got here (see the first block comment)
         add_update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +171,11 @@ public class PatientRecordView extends AppCompatActivity {
                                 super.onPostExecute(result);
                                 p.dismiss();
                                 if(result){
+                                    Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(patient);
+                                    intent.putExtra("USER",list);
+                                    startActivity(intent);
                                     finish();
                                 }
                                 else {
@@ -163,6 +209,11 @@ public class PatientRecordView extends AppCompatActivity {
                                 super.onPostExecute(result);
                                 p.dismiss();
                                 if(result){
+                                    Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(patient);
+                                    intent.putExtra("USER",list);
+                                    startActivity(intent);
                                     finish();
                                 }
                                 else{
@@ -178,10 +229,23 @@ public class PatientRecordView extends AppCompatActivity {
         });
     }
 
+    // set the fields of all the edit text if the thats whats happening.
     private void edit_record(Record r){
             name_input.setText(r.getName());
             description_input.setText(r.getRecord());
             add_update_button.setText("Update Record");
             update=true;
+    }
+
+    // controls the flow of the application regarless of the stack.
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+        ArrayList<User> list = new ArrayList<>();
+        list.add(patient);
+        intent.putExtra("USER",list);
+        startActivity(intent);
+        finish();
     }
 }

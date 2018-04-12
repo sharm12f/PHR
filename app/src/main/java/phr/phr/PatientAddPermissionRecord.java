@@ -1,6 +1,7 @@
 package phr.phr;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,11 +18,27 @@ import java.util.ArrayList;
 
 import phr.lib.HealthProfessional;
 import phr.lib.Lib;
+import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.RecordPermission;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 10-Apr-18.
+ *
+ * This page allows the user to search for the health professional they want to grand permission to. Duplicate permissions are ignored
+ *
+ * This page shows the user name of the record at the top.
+ *
+ * The spinners to filter the health professional are provided. Any is select by default
+ *
+ * The list view is populated once the user clicks the search button
+ *
+ * After searching for the health professional
+ *      they user can select one from the list, and add permission to grand them access to the record.
+ *      or
+ *      they can select give to all and grant everyone on the list access to the record.
+ *
  */
 
 public class PatientAddPermissionRecord extends AppCompatActivity {
@@ -38,6 +55,7 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
 
 
     //Other variables
+    Patient patient;
     Record record;
     RecordPermission recordPermission;
     ArrayList<HealthProfessional> healthProfessionalsList;
@@ -64,15 +82,20 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
         ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
         record = list.get(0);
 
+        ArrayList<Patient> list2 = (ArrayList<Patient>)getIntent().getExtras().get("USER");
+        patient = list2.get(0);
+
         //set the name of the record
         record_name_text_view.setText("Record Name: "+record.getName());
 
         setSpinnes();
 
+        // add permission button gives access to the selected health professional
         add_perms_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean set = false;
+                // ensure a selection is made from the list. (funny how i used a different method to ensure this compare to the edit permissoin page where the same things is done)
                 if(health_professional_list_view.getCheckedItemPosition() != -1)
                     set=true;
                 if(set) {
@@ -106,6 +129,14 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
                                 if(result){
                                     Toast toast = Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT);
                                     toast.show();
+                                    Intent intent = new Intent(getApplicationContext(), PatientEditPermissionsRecord.class);
+                                    ArrayList<Record> list = new ArrayList<>();
+                                    list.add(record);
+                                    ArrayList<User> list2 = new ArrayList<>();
+                                    list2.add(patient);
+                                    intent.putExtra("USER",list2);
+                                    intent.putExtra("RECORD",list);
+                                    startActivity(intent);
                                     finish();
                                 }
                                 else{
@@ -126,60 +157,74 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
             }
         });
 
+        // give permissions to all the health professional in the list
         add_perms_all_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    new AsyncTask<Void, Void, Boolean>() {
-                        private ProgressDialog p = new ProgressDialog(PatientAddPermissionRecord.this);
+                // ensure the list is not empty
+                int len = healthProfessionalsList.size();
+                if(len >= 1) {
+                    try {
+                        new AsyncTask<Void, Void, Boolean>() {
+                            private ProgressDialog p = new ProgressDialog(PatientAddPermissionRecord.this);
 
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                            p.setMessage("Loading");
-                            p.setIndeterminate(false);
-                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            p.show();
-                        }
-
-                        protected Boolean doInBackground(Void... progress) {
-                            boolean allSet = true;
-                            for(int i=0; i<healthProfessionalsList.size(); i++) {
-                                boolean result = false;
-                                HealthProfessional hp = healthProfessionalsList.get(i);
-                                recordPermission = new RecordPermission(hp.getId(), hp.getName(), record.getId(), record.getName());
-                                boolean permsExist = Lib.permsExist(recordPermission);
-
-                                if (!permsExist)
-                                    result = Lib.givePermission(recordPermission);
-
-                                if(!result && !permsExist)
-                                    allSet=false;
-
-                            }
-                            return allSet;
-                        }
-
-                        protected void onPostExecute(Boolean result) {
-                            super.onPostExecute(result);
-                            p.dismiss();
-                            if(result){
-                                Toast toast = Toast.makeText(getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT);
-                                toast.show();
-                                finish();
-                            }
-                            else{
-                                Toast toast = Toast.makeText(getApplicationContext(), "Error, NO Permissions Granted or Partial Permissions Granted", Toast.LENGTH_SHORT);
-                                toast.show();
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                p.setMessage("Loading");
+                                p.setIndeterminate(false);
+                                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                p.show();
                             }
 
-                        }
-                    }.execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                            protected Boolean doInBackground(Void... progress) {
+                                boolean allSet = true;
+                                // loop through all the health professionals in the list and give them permission
+                                for (int i = 0; i < healthProfessionalsList.size(); i++) {
+                                    boolean result = false;
+                                    HealthProfessional hp = healthProfessionalsList.get(i);
+                                    recordPermission = new RecordPermission(hp.getId(), hp.getName(), record.getId(), record.getName());
+                                    boolean permsExist = Lib.permsExist(recordPermission);
+                                    // ignore the health professional if they already have access
+                                    if (!permsExist)
+                                        result = Lib.givePermission(recordPermission);
+                                    // some thing went wrong and maybe only some got access
+                                    if (!result && !permsExist)
+                                        allSet = false;
+
+                                }
+                                return allSet;
+                            }
+
+                            protected void onPostExecute(Boolean result) {
+                                super.onPostExecute(result);
+                                p.dismiss();
+                                if (result) {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    Intent intent = new Intent(getApplicationContext(), PatientEditPermissionsRecord.class);
+                                    ArrayList<Record> list = new ArrayList<>();
+                                    list.add(record);
+                                    ArrayList<User> list2 = new ArrayList<>();
+                                    list2.add(patient);
+                                    intent.putExtra("USER",list2);
+                                    intent.putExtra("RECORD",list);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Error, NO Permissions Granted or Partial Permissions Granted", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+
+                            }
+                        }.execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
 
+        // search for health professional based on the selections made above. Any is default
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,11 +262,14 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
 
     }
 
+    // set the list view
     private void setSearchListView(){
         HealthProfessionalListViewAdapter adapter = new HealthProfessionalListViewAdapter(this, healthProfessionalsList);
         health_professional_list_view.setAdapter(adapter);
     }
 
+
+    // load all the spinners with database data
     private void loadSpinners(ArrayList<String> r, ArrayList<String> o, ArrayList<String> d, ArrayList<String>h){
 
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
@@ -268,10 +316,10 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
                     d = Lib.getDepartment();
                     h = Lib.getHealthProfessional();
                     //insert and empty entry into all array lists
-                    r.add(0, " ");
-                    o.add(0, " ");
-                    d.add(0, " ");
-                    h.add(0, " ");
+                    r.add(0, "Any");
+                    o.add(0, "Any");
+                    d.add(0, "Any");
+                    h.add(0, "Any");
 
                     return null;
                 }
@@ -283,6 +331,20 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
                 }
             }.execute();
         }catch (Exception e){e.printStackTrace();}
+    }
 
+    // control the flow of the app regardless of the stack
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), PatientEditPermissionsRecord.class);
+        ArrayList<Record> list = new ArrayList<>();
+        list.add(record);
+        ArrayList<User> list2 = new ArrayList<>();
+        list2.add(patient);
+        intent.putExtra("USER",list2);
+        intent.putExtra("RECORD",list);
+        startActivity(intent);
+        finish();
     }
 }

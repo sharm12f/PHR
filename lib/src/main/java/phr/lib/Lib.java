@@ -15,11 +15,15 @@ import java.util.Map;
 
 import org.json.*;
 
+import javax.xml.bind.util.JAXBSource;
+
 public class Lib {
 
     private static String REGXNAME = "[a-z 0-9A-Z-]+";
     private static String REGXOTHER = "[a-z A-Z0-9+=*/^():\\s\\S_-]+";
     private static String REGXPHONE = "[0-9-]+";
+    //private static long SESSION_TIMEOUT = 120000;
+    private static long SESSION_TIMEOUT = 5000;
 
     public static User login(String email, String password){
         boolean checkUsername = checkEmail(email);
@@ -35,6 +39,9 @@ public class Lib {
             Patient patient = null;
             if(Auth_Access.isUser(email, password)) {
                 patient = makeUser(email);
+                Timestamp login = getTimestampNow();
+                Auth_Access.setLoginUser(patient.getId(),login);
+                patient.setLogin(login);
             }
             else{
                 return null;
@@ -45,6 +52,9 @@ public class Lib {
             HealthProfessional healthProfessional = null;
             if(Auth_Access.isHealthProfessional(email, password)) {
                 healthProfessional = makeHealthProfessional(email);
+                Timestamp login = getTimestampNow();
+                Auth_Access.setLoginHealthProfessional(healthProfessional.getId(),login);
+                healthProfessional.setLogin(login);
             }
             else{
                 return null;
@@ -77,32 +87,14 @@ public class Lib {
         db_region = obj.getString("region");
         db_province = obj.getString("province");
         Timestamp creattime = stringToTimestamp(db_create);
-        patient = new Patient(db_name, db_email, creattime, db_role,getTimestampNow());
+        patient = new Patient(db_name, db_email, creattime, db_role);
         patient.setId(db_id);
         patient.setPhone(db_phone);
         patient.setRegion(db_region);
         patient.setProvince(db_province);
 
-        String records = Auth_Access.getUserHealthRecordByEmail(db_email);
-        if(records=="error"){
-            return null;
-        }
 
-        JSONArray str = new JSONArray(records);
-        for (int i=0;i<str.length(); i++) {
-            int rid, uid;
-            String record, name;
-            Timestamp create_time;
-            JSONObject result = str.getJSONObject(i);
-            create_time = stringToTimestamp(result.getString("create_time"));
-            rid = result.getInt("rid");
-            uid = result.getInt("uid");
-            name = result.getString("name");
-            record = result.getString("record");
-            Record r = new Record(name, record, uid, create_time);
-            r.setId(rid);
-            patient.addRecord(r);
-        }
+        patient.setRecords(getPatientRecords(db_email));
 
 
         ArrayList<Note> notes = makePatientNotes(patient.getId());
@@ -136,7 +128,7 @@ public class Lib {
         db_department = obj.getString("department");
         db_health = obj.getString("health_professional");
         Timestamp creattime = stringToTimestamp(db_create);
-        healthProfessional = new HealthProfessional(db_name, db_email, creattime, db_role,getTimestampNow());
+        healthProfessional = new HealthProfessional(db_name, db_email, creattime, db_role);
         healthProfessional.setId(db_id);
         healthProfessional.setPhone(db_phone);
         healthProfessional.setRegion(db_region);
@@ -223,7 +215,7 @@ public class Lib {
         db_region = obj.getString("region");
         db_province = obj.getString("province");
         Timestamp creattime = stringToTimestamp(db_create);
-        patient = new Patient(db_name, db_email, creattime, db_role,getTimestampNow());
+        patient = new Patient(db_name, db_email, creattime, db_role);
         patient.setId(db_id);
         patient.setPhone(db_phone);
         patient.setRegion(db_region);
@@ -366,6 +358,36 @@ public class Lib {
         return result;
     }
 
+    public static ArrayList<Record> getPatientRecords (String email){
+        ArrayList<Record> records = null;
+        boolean checkEmail = checkEmail(email);
+        if(!checkEmail)
+            return records;
+
+        String responce = Auth_Access.getUserHealthRecordByEmail(email);
+        if(responce=="error"){
+            return null;
+        }
+        records = new ArrayList<>();
+        JSONArray str = new JSONArray(responce);
+        for (int i=0;i<str.length(); i++) {
+            int rid, uid;
+            String record, name;
+            Timestamp create_time;
+            JSONObject result = str.getJSONObject(i);
+            create_time = stringToTimestamp(result.getString("create_time"));
+            rid = result.getInt("rid");
+            uid = result.getInt("uid");
+            name = result.getString("name");
+            record = result.getString("record");
+            Record r = new Record(name, record, uid, create_time);
+            r.setId(rid);
+            records.add(r);
+        }
+
+        return records;
+    }
+
     public static boolean insertIntoRecord(String name, String description, int uid){
         boolean checkName = checkString(name);
         boolean checkDescription = checkStringZero(description);
@@ -493,6 +515,42 @@ public class Lib {
 
         return Auth_Access.HealthProfessionalUpdate(name,email,phone,region,id);
 
+    }
+
+    public static Timestamp getLoginUser(int id){
+        Timestamp login = null;
+        String responce = Auth_Access.getLoginLogoutUser(id);
+        if(!responce.equals("")){
+            JSONArray array = new JSONArray(responce);
+            for(int i=0; i<array.length(); i++){
+                JSONObject obj = array.getJSONObject(i);
+                login = stringToTimestamp(obj.getString("login"));
+            }
+        }
+        return login;
+    }
+
+    public static Timestamp getLoginHealthProfessional(int id){
+        Timestamp login = null;
+        String responce = Auth_Access.getLoginLogoutHealthProfessional(id);
+        if(!responce.equals("")){
+            JSONArray array = new JSONArray(responce);
+            for(int i=0; i<array.length(); i++){
+                JSONObject obj = array.getJSONObject(i);
+                login = stringToTimestamp(obj.getString("login"));
+            }
+        }
+        return login;
+    }
+
+    public static boolean timeOut(Timestamp login){
+        boolean result = false;
+        Timestamp now = getTimestampNow();
+        long diff = now.getTime() - login.getTime();
+        if(diff > SESSION_TIMEOUT){
+            result = true;
+        }
+        return result;
     }
 
     public static ArrayList<String> getRegions(){
