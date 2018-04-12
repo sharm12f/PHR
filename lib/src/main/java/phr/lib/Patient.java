@@ -13,10 +13,14 @@ import javax.sound.sampled.ReverbType;
 
 /**
  * Created by Anupam on 28-Dec-17.
+ *
+ * The patient inherets form the user object, it only contains the records list, which if generated using other library functions
+ *
+ * The records are not a part of the user table.
+ *
  */
 
 public class Patient extends User implements Serializable{
-    private String province;
     private ArrayList<Record> records;
 
     public Patient(String name, String email, Timestamp create, String role){
@@ -43,14 +47,11 @@ public class Patient extends User implements Serializable{
         }
     }
 
-    public String getProvince(){return this.province;}
 
-    public void setProvince(String province){this.province=province;}
 
     @Override
     public String toString() {
         return "Patient{" +
-                "province='" + province + '\'' +
                 ", records=" + records +
                 super.toString() +
                 '}';

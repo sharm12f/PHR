@@ -1,6 +1,8 @@
 package phr.phr;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,15 +12,22 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import phr.lib.HealthProfessional;
+import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.User;
 
 /**
  * Created by Anupam on 26-Feb-18.
+ *
+ * This page shows the user list of all the records they have access to.
+ *
+ * The user can select a record to view it in detail and/or leave a note regarding the record.
+ *
  */
 
 public class HealthProfessionalViewAllRecords extends AppCompatActivity {
+
     HealthProfessional healthProfessional;
     ListView record_list_view;
     ArrayList<String[]> rcs;
@@ -28,11 +37,85 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
         super.onCreate(savedInstance);
         setContentView(R.layout.healthprofessional_view_all_records);
         record_list_view = findViewById(R.id.records_list_view);
-        ArrayList<HealthProfessional> intent_extra = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
-        healthProfessional = intent_extra.get(0);
+
         rcs = new ArrayList<String[]>();
         list2 = new ArrayList<User>();
         list = new ArrayList<Record>();
+
+
+        //get the user object
+        ArrayList<HealthProfessional> intent_extra = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
+        healthProfessional = intent_extra.get(0);
+
+
+        //opens the selected record.
+        record_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                int i = Integer.parseInt(rcs.get(+position)[2]);
+                int j = Integer.parseInt(rcs.get(+position)[3]);
+                Record Slecteditem= healthProfessional.getPatient().get(i).getRecords().get(j);
+                Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
+                list2.add(healthProfessional.getPatient().get(i));
+                list2.add(healthProfessional);
+                list.add(Slecteditem);
+                intent.putExtra("POS",j);
+                intent.putExtra("RECORD",list);
+                intent.putExtra("USER",list2);
+                //used to let the record view know to come back to this page on back press.
+                intent.putExtra("GOTO","ViewAllRecords");
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    //control the flow of the app regardless of the stack
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
+        ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
+        list.add(healthProfessional);
+        intent.putExtra("USER",list);
+        startActivity(intent);
+        finish();
+    }
+
+    //ensure the list only has records they have access to, if access was revoked during their session.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //pull the latest patient list, ensures that if access is revoked during an active session, then they wont be able to interact with it.
+        try{
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(HealthProfessionalViewAllRecords.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
+                }
+                protected Void doInBackground(Void... progress) {
+                    healthProfessional.setPatient(Lib.makeHealthProfessionalPatientsList(healthProfessional.getId()));
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                    setPatientListView();
+                }
+            };
+            asyncTask.execute();
+        }catch(Exception e){e.printStackTrace();}
+    }
+
+    //show the list in the list view.
+    private void setPatientListView(){
+        // this a rcs list is used for the list view to show patient name and note name. (easiest way i could think of doing it)
+        // i and j in this list represent Ith patient's Jth record.
         ArrayList<Patient> temp = healthProfessional.getPatient();
         for (int i=0; i<temp.size();i++){
             Patient p = temp.get(i);
@@ -48,34 +131,6 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
         }
         HealthProfessionalRecordListViewAdapter adapter = new HealthProfessionalRecordListViewAdapter(this, rcs);
         record_list_view.setAdapter(adapter);
-
-
-        record_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
-                int i = Integer.parseInt(rcs.get(+position)[2]);
-                int j = Integer.parseInt(rcs.get(+position)[3]);
-                Record Slecteditem= healthProfessional.getPatient().get(i).getRecords().get(j);
-                Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
-                list2.add(healthProfessional.getPatient().get(i));
-                list2.add(healthProfessional);
-                list.add(Slecteditem);
-                intent.putExtra("RECORD",list);
-                intent.putExtra("USER",list2);
-                intent.putExtra("GOTO","ViewAllRecords");
-                startActivity(intent);
-            }
-        });
-    }
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
-        ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
-        list.add(healthProfessional);
-        intent.putExtra("HP",list);
-        startActivity(intent);
     }
 
 }

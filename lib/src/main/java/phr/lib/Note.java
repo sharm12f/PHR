@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 /**
  * Created by Anupam on 28-Mar-18.
+ *
+ * The note object, contains all relevant information regarding the note.
+ *
+ * The healtprofessional name is not a part of the db, however the query used to retrive the note information uses where and "and" condition to insert it.
+ *
  */
 
 public class Note implements Serializable {

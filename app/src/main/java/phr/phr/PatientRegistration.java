@@ -80,7 +80,7 @@ public class PatientRegistration extends AppCompatActivity {
                                 toast.show();
                                 Intent intent = new Intent(getApplicationContext(), LogIn.class);
                                 startActivity(intent);
-
+                                finish();
                             }
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Creation Error", Toast.LENGTH_SHORT);

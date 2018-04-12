@@ -46,7 +46,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         update_button = findViewById(R.id.update_button);
         regions = findViewById(R.id.region_spinner);
         provinces = findViewById(R.id.province_spinner);
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
+        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional = list.get(0);
         //ensure that a hp object is recieved into the activity
         if(healthProfessional == null) {
@@ -97,8 +97,9 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
                                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                                 list.add(healthProfessional);
-                                intent.putExtra("HP",list);
+                                intent.putExtra("USER",list);
                                 startActivity(intent);
+                                finish();
                             }
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Update Error", Toast.LENGTH_SHORT);
@@ -148,8 +149,9 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
         ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
         list.add(healthProfessional);
-        intent.putExtra("HP",list);
+        intent.putExtra("USER",list);
         startActivity(intent);
+        finish();
     }
 
     // sets the values for all the drop down options

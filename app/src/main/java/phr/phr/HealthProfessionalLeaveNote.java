@@ -22,6 +22,19 @@ import phr.lib.User;
 
 /**
  * Created by anupam on 29/03/18.
+ *
+ * This page allows the user to leave a note for the patient regarding a record
+ *
+ * Edit text at the top of the page is the name of the note
+ *
+ * The patient it is being addressed to is bellow the name
+ *
+ * I hope to put a fixed un-editable field here that shows what note they are referring to
+ *
+ * Edit text for the description if at the bottom, allowing the user to write their thoughts.
+ *
+ * At the very bottom is the button to leave the note
+ *
  */
 
 public class HealthProfessionalLeaveNote extends AppCompatActivity {
@@ -44,17 +57,20 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
         note_name_text = findViewById(R.id.note_name_text);
         note_to_from_name_text = findViewById(R.id.note_to_from_name_text);
 
-
+        // is used to desicde where the user came from and where to send them back
         GOTO = (String)getIntent().getExtras().get("GOTO");
 
-
+        //get the user and record objects
         ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
         ArrayList<User> list2 = (ArrayList<User>)getIntent().getExtras().get("USER");
         record = list.get(0);
         patient = (Patient)list2.get(0);
         healthProfessional = (HealthProfessional)list2.get(1);
+
+        // pre-fill all the fields
         setFields();
 
+        // allows the user to leave a note
         leave_note_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,8 +88,10 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
                         protected Boolean doInBackground(Void... progress) {
                             Boolean result = false;
                             String name = note_name_text.getText().toString();
-                            String description = note_description.getText().toString();
-                            result = Lib.HealthProfessionalLeaveNote(name,description,patient.getId(),healthProfessional.getId());
+                            if(name.length() >=1 ) {
+                                String description = note_description.getText().toString();
+                                result = Lib.HealthProfessionalLeaveNote(name, description, patient.getId(), healthProfessional.getId());
+                            }
                             return result;
                         }
                         protected void onPostExecute(Boolean result){
@@ -92,6 +110,7 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
                                 intent.putExtra("USER",list2);
                                 intent.putExtra("GOTO", GOTO);
                                 startActivity(intent);
+                                finish();
                             }
                             else{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Could not Leave note", Toast.LENGTH_SHORT);
@@ -106,6 +125,7 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
 
     }
 
+    //control the flow of the app regardless of the stack
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -119,9 +139,15 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
         intent.putExtra("USER",list2);
         intent.putExtra("GOTO", GOTO);
         startActivity(intent);
+        finish();
     }
 
+    //pre-fill the fields with known data
     private void setFields(){
+        //set the hit for note name
+        note_name_text.setText("");
+        note_name_text.setHint("Note Name");
+
         //change to_from_text to the patient
         to_from_text.setText("To: ");
 

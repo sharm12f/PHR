@@ -6,6 +6,12 @@ import java.util.ArrayList;
 
 /**
  * Created by Anupam on 29-Jan-18.
+ *
+ * The user object contains all the common information regarding the two types of users.
+ *
+ * The session variable is not a part of the db at all, it is created in java, and is used to ensure the app is not left open for too long, if so the session times out and the user is logged out.
+ *
+ * The notes list, tho common among the two users, is not always the same, and is generated using other library functions.
  */
 
 public class User implements Serializable{
@@ -14,6 +20,8 @@ public class User implements Serializable{
     private String name;
     private String phone;
     private String region;
+    private String province;
+
     private int id;
     private Timestamp create;
     private Timestamp login;
@@ -66,6 +74,14 @@ public class User implements Serializable{
     public void setPhone(String phone){this.phone=phone;}
     public void setRegion(String region){this.region = region;}
     public void setNotes(ArrayList<Note> notes){this.notes=notes;}
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
 
     public Timestamp getSession() {
         return session;

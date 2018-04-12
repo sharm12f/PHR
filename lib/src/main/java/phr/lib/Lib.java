@@ -1,9 +1,5 @@
 package phr.lib;
 
-import com.sun.org.apache.regexp.internal.RE;
-
-import java.awt.image.AreaAveragingScaleFilter;
-import java.security.spec.ECField;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,19 +11,39 @@ import java.util.Map;
 
 import org.json.*;
 
-import javax.xml.bind.util.JAXBSource;
+/**
+ * Created by Anupam on 28-Mar-18.
+ *
+ * This is the main library for the app. Logic is the only thing done in activity where as input sanatization, and other security measures are taken here
+ *
+ * This is the meat of the app (relies on the  auth access to retrieve the data)
+ *
+ * Async task needs to be used when calling a function in this library that calls auth access.
+ *      EX: the login function calls auth access multiple times
+ *          so when an activity calls login it needs to be done from a async task. (a loading progress dialog is shown until the task is complete)
+ */
 
 public class Lib {
 
-    private static String REGXNAME = "[a-z 0-9A-Z-]+";
-    private static String REGXOTHER = "[a-z A-Z0-9+=*/^():\\s\\S_-]+";
-    private static String REGXPHONE = "[0-9-]+";
-    //private static long SESSION_TIMEOUT = 120000;
-    private static long SESSION_TIMEOUT = 5000;
+    //private final varibles used within the library
 
+    //used to ensure all names meet requirement
+    private static final String REGXNAME = "[a-z 0-9A-Z-]+";
+    //things such as descriptions use this to meet requirement
+    private static final String REGXOTHER = "[a-z A-Z0-9+=*/^():\\s\\S_-]+";
+    //validate phone numbers
+    private static final String REGXPHONE = "[0-9-]+";
+
+    //used to set the session timeout limit
+    //private static final long SESSION_TIMEOUT = 120000;
+    private static final long SESSION_TIMEOUT = 5000;
+
+
+    // creates and returns a user object if login is success full given the correct email and password for the user
+    //(can log in both patients and health professionals)
     public static User login(String email, String password){
-        boolean checkUsername = checkEmail(email);
-        boolean checkPassword = checkString(password);
+        boolean checkUsername = checkStringEmail(email);
+        boolean checkPassword = checkStringName(password);
 
         if(!checkPassword || !checkUsername){
             return null;
@@ -63,10 +79,10 @@ public class Lib {
         }
         return null;
     }
-
+    //Creates and returns Patient object given the email
     public static Patient makeUser (String email){
 
-        boolean checkEmail = checkEmail(email);
+        boolean checkEmail = checkStringEmail(email);
         if(!checkEmail)
             return null;
 
@@ -102,10 +118,10 @@ public class Lib {
 
         return patient;
     }
-
+    //Creates and returns Health Professional object given the email
     public static HealthProfessional makeHealthProfessional (String email){
 
-        boolean checkEmail = checkEmail(email);
+        boolean checkEmail = checkStringEmail(email);
         if(!checkEmail)
             return null;
 
@@ -136,8 +152,15 @@ public class Lib {
         healthProfessional.setDepartment(db_department);
         healthProfessional.setHealthProfessional(db_health);
 
+        healthProfessional.setPatient(makeHealthProfessionalPatientsList(db_id));
+
+        return healthProfessional;
+    }
+    //Creates and returns a list of patients given the known unique health professional id. These patients have given access to the health professional to one or more records.
+    public static ArrayList<Patient> makeHealthProfessionalPatientsList(int id){
+        ArrayList<Patient> list = new ArrayList<>();
         HashMap<Integer, ArrayList<Record>> healthProfessionalPatientRecordOnly = new HashMap<Integer, ArrayList<Record>>();
-        String records = Auth_Access.getHealthProfessionalRecordsById(db_id);
+        String records = Auth_Access.getHealthProfessionalRecordsById(id);
         if(records=="error"){
             return null;
         }
@@ -146,7 +169,7 @@ public class Lib {
             int rid;
             JSONObject result = str.getJSONObject(i);
             rid = result.getInt("rid");
-            Record r = makeRecord(rid);
+            Record r = makeRecordByUserId(rid);
             if(healthProfessionalPatientRecordOnly.containsKey(r.getUser_id())) {
                 ArrayList<Record> tmp = healthProfessionalPatientRecordOnly.get(r.getUser_id());
                 tmp.add(r);
@@ -165,34 +188,11 @@ public class Lib {
             ArrayList<Record> rcs = entry.getValue();
             Patient p = makeHealthProfessionalPatient(uid);
             p.setRecords(rcs);
-            healthProfessional.addPatient(p);
+            list.add(p);
         }
-        return healthProfessional;
+        return list;
     }
-
-    public static ArrayList<Note> makePatientNotes(int patient_id){
-        ArrayList<Note> notes = new ArrayList<>();
-        String responce = Auth_Access.getNotesForPatient(patient_id);
-        if(responce.equals(""))
-            return null;
-        System.out.println(responce);
-        JSONArray str = new JSONArray(responce);
-        for (int i=0;i<str.length(); i++) {
-            int id, uid, hpid;
-            String name, desc, hpname;
-            JSONObject result = str.getJSONObject(i);
-            id = result.getInt("id");
-            uid = result.getInt("user_id");
-            hpid = result.getInt("health_professional_id");
-            name = result.getString("name");
-            desc = result.getString("description");
-            hpname = result.getString("health_professional_name");
-            Note n = new Note(id,uid,hpid,name,desc,hpname);
-            notes.add(n);
-        }
-        return notes;
-    }
-
+    //Creates and returns a patient given the known unique user id. This does not contain the records of the patient, just patient information, the records are populated when the health professional is made.
     public static Patient makeHealthProfessionalPatient (int id){
 
         if(id < 0 )
@@ -222,8 +222,31 @@ public class Lib {
         patient.setProvince(db_province);
         return patient;
     }
-
-    public static Record makeRecord (int id){
+    //creates and returns a list of notes address to a patient given the known unique user id.
+    public static ArrayList<Note> makePatientNotes(int patient_id){
+        ArrayList<Note> notes = new ArrayList<>();
+        String responce = Auth_Access.getNotesForPatient(patient_id);
+        if(responce.equals(""))
+            return null;
+        System.out.println(responce);
+        JSONArray str = new JSONArray(responce);
+        for (int i=0;i<str.length(); i++) {
+            int id, uid, hpid;
+            String name, desc, hpname;
+            JSONObject result = str.getJSONObject(i);
+            id = result.getInt("id");
+            uid = result.getInt("user_id");
+            hpid = result.getInt("health_professional_id");
+            name = result.getString("name");
+            desc = result.getString("description");
+            hpname = result.getString("health_professional_name");
+            Note n = new Note(id,uid,hpid,name,desc,hpname);
+            notes.add(n);
+        }
+        return notes;
+    }
+    //creates and returns a record given the known and unique user id.
+    public static Record makeRecordByUserId(int id){
 
         if(id < 0)
             return null;
@@ -249,27 +272,27 @@ public class Lib {
         }
         return r;
     }
-
-    public static boolean checkEmail(String str){
+    //checks and returns true if the email string meets requirements
+    public static boolean checkStringEmail(String str){
         if(str.matches("^[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9_-]{2,}.[A-Za-z.]{2,7}$"))
             return true;
         return false;
     }
-
-    public static boolean checkString(String str){
+    //checks and returns true if the string meets requirements
+    public static boolean checkStringName(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
         if(str.matches(REGXNAME))
             return true;
         return false;
     }
-
+    //checks and returns true if the other string meets requirements
     public static boolean checkStringZero(String str){
         if(str.matches(REGXOTHER) || str.length() == 0)
             return true;
         return false;
     }
-
+    //checks and returns true if the phone string meets requirements
     public static boolean checkPhone(String str){
         if(str.length() > 128 || str.length() < 1)
             return false;
@@ -277,23 +300,23 @@ public class Lib {
             return true;
         return false;
     }
-
+    //updates the users record given the known unique record id.
     public static boolean PatientUpdateRecord(String name, String description, int rid){
-        boolean checkName = checkString(name);
+        boolean checkName = checkStringName(name);
         boolean checkDescription = checkStringZero(description);
         if(rid < 0 || !checkDescription || !checkName) {
             return false;
         }
         return Auth_Access.updateRecord(name, description, rid);
     }
-
+    //deletes a record given its known unique record id
     public static boolean deleteRecord(int id){
         if(id < 0){
             return false;
         }
         return Auth_Access.deleteRecord(id);
     }
-
+    //creates and returns a list of record permissions given the known unique user id
     public static ArrayList<RecordPermission> getRecordPerms(int id){
         ArrayList<RecordPermission> result = new ArrayList<RecordPermission>();
         if(id < 0){
@@ -318,7 +341,7 @@ public class Lib {
 
         return result;
     }
-
+    //creates and returns a list of health professionals based on the search parameters
     public static ArrayList<HealthProfessional> searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
         ArrayList<HealthProfessional> healthProfessionalArrayList = new ArrayList<>();
 
@@ -339,28 +362,28 @@ public class Lib {
         }
         return healthProfessionalArrayList;
     }
-
+    //gives permission to a health professional.
     public static boolean givePermission(RecordPermission recordPermission){
         boolean result= false;
         result = Auth_Access.givePermission(recordPermission.getHp_id(),recordPermission.getR_id());
         return result;
     }
-
+    //checks if the permissions already exist in the database
     public static boolean permsExist(RecordPermission recordPermission){
         boolean result= false;
         result = Auth_Access.permissionsExist(recordPermission.getHp_id(),recordPermission.getR_id());
         return result;
     }
-
+    //revokes the permission of a health professional
     public static boolean revokePermission(RecordPermission recordPermission){
         boolean result= false;
         result = Auth_Access.revokePermission(recordPermission.getId());
         return result;
     }
-
+    //creates and returns a list of records given a user's email
     public static ArrayList<Record> getPatientRecords (String email){
         ArrayList<Record> records = null;
-        boolean checkEmail = checkEmail(email);
+        boolean checkEmail = checkStringEmail(email);
         if(!checkEmail)
             return records;
 
@@ -387,9 +410,9 @@ public class Lib {
 
         return records;
     }
-
+    //inserts into records a new record given the known unique user id
     public static boolean insertIntoRecord(String name, String description, int uid){
-        boolean checkName = checkString(name);
+        boolean checkName = checkStringName(name);
         boolean checkDescription = checkStringZero(description);
         if(uid < 0 || !checkDescription || !checkName) {
             return false;
@@ -397,7 +420,7 @@ public class Lib {
         boolean result  = Auth_Access.insertIntoRecord(name, description, uid);
         return  result;
     }
-
+    //is used to convers the db time stamp into time stamp since it is returned as a sting
     public static Timestamp stringToTimestamp(String string){
         try {
             DateFormat formatter;
@@ -411,21 +434,21 @@ public class Lib {
             return null;
         }
     }
-
+    //creates the current time stamp
     public static Timestamp getTimestampNow(){
         Date date = new Date();
         return new Timestamp(date.getTime());
     }
-
+    //registers a new patient
     public static boolean PatientRegister(String name, String email, String password, String re_password, String phone, String region, String province){
 
-        boolean checkName = checkString(name);
-        boolean checkEmail = checkEmail(email);
-        boolean checkPassword = checkString(password);
-        boolean checkRePassword = checkString(re_password);
+        boolean checkName = checkStringName(name);
+        boolean checkEmail = checkStringEmail(email);
+        boolean checkPassword = checkStringName(password);
+        boolean checkRePassword = checkStringName(re_password);
         boolean checkPhone = checkPhone(phone);
-        boolean checkRegion = checkString(region);
-        boolean checkProvince = checkString(province);
+        boolean checkRegion = checkStringName(region);
+        boolean checkProvince = checkStringName(province);
 
         boolean passwordMatch = false;
         if(checkPassword || checkRePassword)
@@ -446,18 +469,18 @@ public class Lib {
         }catch(Exception e){e.printStackTrace();}
         return false;
     }
-
+    //registers a new health professional
     public static boolean healthProfessionalRegister(String name, String email, String password, String re_password, String phone, String region, String organization, String department, String health_professional){
 
-        boolean checkName = checkString(name);
-        boolean checkEmail = checkEmail(email);
-        boolean checkPassword = checkString(password);
-        boolean checkRePassword = checkString(re_password);
+        boolean checkName = checkStringName(name);
+        boolean checkEmail = checkStringEmail(email);
+        boolean checkPassword = checkStringName(password);
+        boolean checkRePassword = checkStringName(re_password);
         boolean checkPhone = checkPhone(phone);
-        boolean checkRegion = checkString(region);
-        boolean checkOrganization = checkString(organization);
-        boolean checkDepartment = checkString(department);
-        boolean checkHealthProfessional = checkString(health_professional);
+        boolean checkRegion = checkStringName(region);
+        boolean checkOrganization = checkStringName(organization);
+        boolean checkDepartment = checkStringName(department);
+        boolean checkHealthProfessional = checkStringName(health_professional);
 
         boolean passwordMatch = false;
         if(checkPassword || checkRePassword)
@@ -476,23 +499,23 @@ public class Lib {
         }catch(Exception e){e.printStackTrace();}
         return false;
     }
-
+    //allows the user to update this account information given the know unique user id.
     public static boolean PatientUpdate(String name, String email, String phone, String region, String province, int id){
-        boolean checkName = checkString(name);
-        boolean checkEmail = checkEmail(email);
+        boolean checkName = checkStringName(name);
+        boolean checkEmail = checkStringEmail(email);
         boolean checkPhone = checkPhone(phone);
-        boolean checkRegion = checkString(region);
-        boolean checkProvince = checkString(province);
+        boolean checkRegion = checkStringName(region);
+        boolean checkProvince = checkStringName(province);
 
         if(!checkName || !checkEmail || !checkPhone || !checkRegion || !checkProvince || id < 0)
             return false;
 
         return Auth_Access.PatientUpdate(name,email,phone,region,province, id);
     }
-
+    //allows the health professional to leave a note for a user given the known unique user and health professional id's
     public static boolean HealthProfessionalLeaveNote(String name, String description, int uid, int hpid){
         boolean responce = false;
-        boolean checkName = checkString(name);
+        boolean checkName = checkStringName(name);
         boolean checkDesc = checkStringZero(description);
         if(!checkName || !checkDesc || uid < 0 || hpid < 0) {
             System.out.println("Not pass");
@@ -501,13 +524,13 @@ public class Lib {
         responce = Auth_Access.insertIntoNotes(name,description,uid,hpid);
         return responce;
     }
-
+    // allows the health professional to update their account information given the known unique health professional id
     public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
 
-        boolean checkName = checkString(name);
-        boolean checkEmail = checkEmail(email);
+        boolean checkName = checkStringName(name);
+        boolean checkEmail = checkStringEmail(email);
         boolean checkPhone = checkPhone(phone);
-        boolean checkRegion = checkString(region);
+        boolean checkRegion = checkStringName(region);
 
 
         if(!checkName || !checkEmail || !checkPhone || !checkRegion || id < 0)
@@ -516,7 +539,7 @@ public class Lib {
         return Auth_Access.HealthProfessionalUpdate(name,email,phone,region,id);
 
     }
-
+    //gets the login time for a user given the known unique user id
     public static Timestamp getLoginUser(int id){
         Timestamp login = null;
         String responce = Auth_Access.getLoginLogoutUser(id);
@@ -529,7 +552,7 @@ public class Lib {
         }
         return login;
     }
-
+    //gets the login time for a user given the known unique health professional id
     public static Timestamp getLoginHealthProfessional(int id){
         Timestamp login = null;
         String responce = Auth_Access.getLoginLogoutHealthProfessional(id);
@@ -542,17 +565,18 @@ public class Lib {
         }
         return login;
     }
-
-    public static boolean timeOut(Timestamp login){
+    //returns true if the session should time out given the session start time
+    public static boolean timeOut(Timestamp session){
         boolean result = false;
         Timestamp now = getTimestampNow();
-        long diff = now.getTime() - login.getTime();
+        long diff = now.getTime() - session.getTime();
         if(diff > SESSION_TIMEOUT){
             result = true;
         }
         return result;
     }
 
+    //the following return a list of their respective attributes.
     public static ArrayList<String> getRegions(){
         ArrayList<String> list = new ArrayList<String>();
         String responce = Auth_Access.getRegions();

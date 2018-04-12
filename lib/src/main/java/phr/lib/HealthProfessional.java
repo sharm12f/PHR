@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 /**
  * Created by Anupam on 29-Jan-18.
+ *
+ * The health professional object inherets from the user
+ *
+ * the patient list is not a part of the db and needs to be generated using other library functions
+ *
  */
 
 public class HealthProfessional extends User implements Serializable{

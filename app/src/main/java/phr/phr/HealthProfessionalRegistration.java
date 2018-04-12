@@ -102,6 +102,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                                 toast.show();
                                 Intent intent = new Intent(getApplicationContext(), LogIn.class);
                                 startActivity(intent);
+                                finish();
                             }
                             //tell the user there was an error, this error is very generic, and can be updated in the future if needed
                             else{

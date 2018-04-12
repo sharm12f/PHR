@@ -18,17 +18,26 @@ import phr.lib.User;
 /**
  * Created by Anupam on 30-Jan-18.
  *
- * This activity shows the healthprofessional the record that they select
+ * This is the record view for the health professional
+ *
+ * At the top is the name of the patient the record belongs to
+ *
+ * The record name and description occoupy mejority of the page
+ *
+ * At the very bottom is a button to leave a note for the patient about this record.
  *
  */
 
 public class HealthProfessionalRecordView extends AppCompatActivity {
+
+
     TextView record_name_text, record_description_text, patient_name;
     Button leave_note_button;
     Record record;
     Patient patient;
     HealthProfessional healthProfessional;
     String GOTO;
+    int position;
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -41,11 +50,13 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
         leave_note_button = findViewById(R.id.leave_note_button);
         patient_name=findViewById(R.id.patient_name_text);
 
+        // this is used to desicide which page the user arrived here from, and will send them back to that page. (there are 2 - 3 pages that can come here from)
         GOTO = (String)getIntent().getExtras().get("GOTO");
 
 
         ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
         ArrayList<User> list2 = (ArrayList<User>)getIntent().getExtras().get("USER");
+        position = (int)getIntent().getExtras().get("POS");
         record = list.get(0);
         patient = (Patient)list2.get(0);
         healthProfessional = (HealthProfessional)list2.get(1);
@@ -53,6 +64,7 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
         record_name_text.setText(record.getName());
         record_description_text.setText(record.getRecord());
 
+        // Allows the user to leave a note for the patient regarding the record
         leave_note_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,20 +82,24 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
         });
     }
 
+    //control the flow of the app regardless of the stack
+    @Override
     public void onBackPressed() {
+        // The user arrived at this page from the vew all records page
         if(GOTO.equals("ViewAllRecords")){
             Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
             ArrayList<User> list = new ArrayList<>();
             list.add(healthProfessional);
-            intent.putExtra("HP",list);
+            intent.putExtra("USER",list);
             startActivity(intent);
         }
+        // the user arriaved  at this page from the single patients page
         else if(GOTO.equals("SinglePatient")){
             Intent intent = new Intent(getApplicationContext(), HealthProfessionalSinglePatient.class);
             ArrayList<User> list = new ArrayList<>();
             list.add(healthProfessional);
-            list.add(patient);
-            intent.putExtra("INFO",list);
+            intent.putExtra("USER",list);
+            intent.putExtra("POS",position);
             startActivity(intent);
         }
     }

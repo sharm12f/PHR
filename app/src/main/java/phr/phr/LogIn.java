@@ -115,7 +115,7 @@ public class LogIn extends AppCompatActivity {
                                     Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
                                     ArrayList<User> list = new ArrayList<User>();
                                     list.add(user);
-                                    intent.putExtra("HP", list);
+                                    intent.putExtra("USER", list);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -193,7 +193,7 @@ public class LogIn extends AppCompatActivity {
                                     Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
                                     ArrayList<User> list = new ArrayList<User>();
                                     list.add(user);
-                                    intent.putExtra("HP", list);
+                                    intent.putExtra("USER", list);
                                     startActivity(intent);
                                     finish();
                                 }

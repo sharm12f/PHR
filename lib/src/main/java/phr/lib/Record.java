@@ -5,6 +5,9 @@ import java.io.Serializable;
 
 /**
  * Created by Anupam on 29-Dec-17.
+ *
+ * This is the record object. It contains all the information that is found in its corospoinding database table.
+ *
  */
 
 public class Record implements Serializable{

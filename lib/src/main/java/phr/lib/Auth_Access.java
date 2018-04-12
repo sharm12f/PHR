@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+/**
+ * Created by Anupam on 28-Mar-18.
+ *
+ * This is a protected library that is designed to interact with the PHP webserver.
+ *
+ */
 
 
 public class Auth_Access{
@@ -22,45 +28,46 @@ public class Auth_Access{
     //private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
     private static final String IP = "http://10.0.2.2";
 
+    //get the users information using an email address
     protected static String getUsersByEmail(String email){
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         return makePost(IP+"/PHR_AUTH/get_user_by_email.php", postData);
     }
-
+    // get the user information using a known unique id for the user.
     protected static String getUsersById(int id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         return makePost(IP+"/PHR_AUTH/get_user_by_id.php", postData);
     }
-
+    //get the health professional using an email address
     protected static String getHealthProfessionalUsersByEmail(String email){
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         return makePost(IP+"/PHR_AUTH/get_health_professional_by_email.php", postData);
     }
-
+    //get all the records for a user using their email
     protected static String getUserHealthRecordByEmail(String email){
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         return makePost(IP+"/PHR_AUTH/get_user_health_record_by_email.php", postData);
     }
-
+    //get all the records for a user using their known unique id
     protected static String getUserHealthRecordById(int id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         return makePost(IP+"/PHR_AUTH/get_user_health_record_by_id.php", postData);
     }
-
+    //get all the recirds a health professional has access to given the health professional known unique id
     protected static String getHealthProfessionalRecordsById(int id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         return makePost(IP+"/PHR_AUTH/get_health_professional_records_by_id.php", postData);
     }
-
+    //authenticates the user given their email and password (used for login)
     protected static boolean isUser(String email, String password){
         boolean is_user=false;
         email = email.toUpperCase();
@@ -72,7 +79,7 @@ public class Auth_Access{
             is_user=true;
         return is_user;
     }
-
+    //authenticate the health professional give then email and password (used for login)
     protected static boolean isHealthProfessional(String email, String password){
         boolean is_user=false;
         email = email.toUpperCase();
@@ -84,7 +91,7 @@ public class Auth_Access{
             is_user=true;
         return is_user;
     }
-
+    //add a new user into the database (used for patient registration)
     protected static boolean insertIntoUsers(String name,  String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
@@ -103,7 +110,7 @@ public class Auth_Access{
             success=true;
         return success;
     }
-
+    //add a new health professional into the database (used for health professional registration)
     protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String organization, String department, String health_professional){
         boolean success=false;
         email = email.toUpperCase();
@@ -124,7 +131,7 @@ public class Auth_Access{
             success=true;
         return success;
     }
-
+    //return true if the user email provided exists in the database.
     protected static boolean userExists(String email) {
         boolean success=false;
         email = email.toUpperCase();
@@ -135,7 +142,7 @@ public class Auth_Access{
             success=true;
         return success;
     }
-
+    //return true if the health professional email provided exists in the database.
     protected static boolean healthUserExists(String email) {
         boolean success=false;
         email = email.toUpperCase();
@@ -146,7 +153,7 @@ public class Auth_Access{
             success=true;
         return success;
     }
-
+    //update a user record given the known unique record id
     protected static boolean updateRecord(String name, String description, int rid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -158,8 +165,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
-
+    //insert a new record given the known unique user id
     protected static boolean insertIntoRecord(String name, String description, int uid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -171,7 +177,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //insert a new note given the known unique user and health professional id
     protected static boolean insertIntoNotes(String name, String description, int uid, int hpid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -185,14 +191,14 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //get all notes addressed to a user given the known unique user id
     protected static String getNotesForPatient(int user_id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("user_id", user_id+"");
         String responce = makePost(IP+"/PHR_AUTH/get_notes.php", postData);
         return responce;
     }
-
+    //remove a record give the known unique record id
     protected static boolean deleteRecord(int id){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -202,7 +208,7 @@ public class Auth_Access{
             result = true;
         return result;
     }
-
+    //get the permissions for all the record for a user given the known unique user id
     protected static String getRecordPerms(int id){
         String result = "";
         HashMap<String, String> postData = new HashMap<>();
@@ -214,7 +220,7 @@ public class Auth_Access{
         }
         return result;
     }
-
+    //insert new permission for a record give the known unique health professional and record id.
     protected static boolean givePermission(int hpid, int rid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -225,7 +231,7 @@ public class Auth_Access{
             result = true;
         return result;
     }
-
+    //remove permission for a record given the known unique permission id (the permissions themselves also have unique id's)
     protected static boolean revokePermission(int id){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -235,7 +241,7 @@ public class Auth_Access{
             result = true;
         return result;
     }
-
+    //return true if the permissions already exists in the database given the known unique health professional and record id's.
     protected static boolean permissionsExist(int hpid, int rid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -246,7 +252,7 @@ public class Auth_Access{
             result = true;
         return result;
     }
-
+    //set the login time stamp for a user given the known unique user id.
     protected static boolean setLoginUser(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -257,7 +263,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //set the logout time stamp for a user given the known unique user id.
     protected static boolean setLogoutUser(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -268,7 +274,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //set the login time stamp for a health professional given the known unique health professional id.
     protected static boolean setLoginHealthProfessional(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -279,7 +285,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //set the logout time stamp for a healthprofessional given the known unique health professional id.
     protected static boolean setLogoutHealthProfessional(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
@@ -290,7 +296,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //get the login and logout time of a user give the known unique user id
     protected static String getLoginLogoutUser(int id){
         String result = "";
         HashMap<String, String> postData = new HashMap<>();
@@ -300,7 +306,7 @@ public class Auth_Access{
             result=responce;
         return result;
     }
-
+    //get the login and logout time of a health professional give the known unique health professional id
     protected static String getLoginLogoutHealthProfessional(int id){
         String result = "";
         HashMap<String, String> postData = new HashMap<>();
@@ -310,7 +316,7 @@ public class Auth_Access{
             result=responce;
         return result;
     }
-
+    //serach for a health professional using they attributes.
     protected static String searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
         HashMap<String, String> postData = new HashMap<>();
         if(!region.equals("Any")){
@@ -331,32 +337,32 @@ public class Auth_Access{
            return null;
         return responce;
     }
-
+    //get all the regions in the database.
     protected static String getRegions(){
         String responce = makeGet(IP+"/PHR_AUTH/get_regions.php");
         return responce;
     }
-
+    //get all the provinces in the database.
     protected static String getProvinces(){
         String responce = makeGet(IP+"/PHR_AUTH/get_provinces.php");
         return responce;
     }
-
+    //get all the organizations in the database.
     protected static String getOrganization(){
         String responce = makeGet(IP+"/PHR_AUTH/get_organization.php");
         return responce;
     }
-
+    //get all the departments in the database.
     protected static String getDepartment(){
         String responce = makeGet(IP+"/PHR_AUTH/get_department.php");
         return responce;
     }
-
+    //get all the health professional attributes in the databse (this is they perticular profession)
     protected static String getHealthProfessional(){
         String responce = makeGet(IP+"/PHR_AUTH/get_health_professional.php");
         return responce;
     }
-
+    //update the patient information given the known unique user id
     protected static boolean PatientUpdate(String name, String email, String phone, String region, String province, int id){
         boolean result = false;
         email=email.toUpperCase();
@@ -373,7 +379,7 @@ public class Auth_Access{
             result=true;
         return result;
     }
-
+    //update the health professional information give the known unique health professional id
     protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
         boolean result = false;
         email=email.toUpperCase();
@@ -390,6 +396,10 @@ public class Auth_Access{
         return result;
     }
 
+    //last two can only be used from this library
+    //i would like to make these two use HTTPS for added security.
+
+    //make a get call to a url (only used if there is no information being passed to the webserver)
     private static String makeGet(String getcall){
         String string="Error";
         URL url;
@@ -418,7 +428,7 @@ public class Auth_Access{
         }
         return string;
     }
-
+    //make a post call to a url (used when information is being passed to the webserver)
     private static String makePost(String ip, HashMap<String, String> postData){
         String string = "";
         URL url;

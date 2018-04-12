@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 /**
  * Created by Anupam on 10-Apr-18.
+ *
+ * This is the record permission object.
+ *
+ * It contains all information that is found in its corosponding db table, however the record name and health professional name are corolated using the where and "and" conditions in the sql query.
+ *
  */
 
 public class RecordPermission implements Serializable {

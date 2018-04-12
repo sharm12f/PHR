@@ -20,11 +20,14 @@ import phr.lib.User;
 /**
  * Created by Anupam on 29-Jan-18.
  *
- * This file the logic for the HealthProfessional Account - they get to this by select "my account" on the health professional view page
+ * This is the health professionals account page,
+ * Top of the page shows the user their name and email, to indicate the right account is logged in
  *
- * List the users name and email at the top, the patients that they have access to, with the list of those patients in the list view, and two buttons at the bottom to view all records they have access to and edit their user detail
+ * A list of patients is displayed, they can select a patient to view records by this patient.
  *
+ * A view all records button shows the user all the records from all the patients they have access to
  *
+ * An edit user details button allows the user to edit their account infromation.
  */
 
 public class HealthProfessionalAccount extends AppCompatActivity {
@@ -48,50 +51,19 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         patients_listview = findViewById(R.id.patients_list_view);
 
         //ensure that you get a valid healthprofessional object when this activity is called, go back to login activity if not
-        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("HP");
+        ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional= list.get(0);
         if(healthProfessional==null){
             Toast toast = Toast.makeText(getApplicationContext(), "Error Making User", Toast.LENGTH_SHORT);
             toast.show();
             Intent intent = new Intent(getApplicationContext(), LogIn.class);
             startActivity(intent);
+            finish();
         }
-        // the following async task creates the user again, this is done so that the latest data is pulled from the database since they could have updated their info before getting here (its possible for them to update their info and press back to get here)
-        try{
-            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-                private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
-                protected void onPreExecute(){
-                    super.onPreExecute();
-                    p.setMessage("Loading");
-                    p.setCancelable(false);
-                    p.setIndeterminate(false);
-                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    p.show();
-                }
-                protected Void doInBackground(Void... progress) {
-                    healthProfessional = Lib.makeHealthProfessional(healthProfessional.getEmail());
-                    return null;
-                }
-                protected void onPostExecute(Void Void){
-                    super.onPostExecute(Void);
-                    p.dismiss();
-                    if(healthProfessional==null) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Error Making user", Toast.LENGTH_SHORT);
-                        toast.show();
-                        Intent intent = new Intent(getApplicationContext(), LogIn.class);
-                        startActivity(intent);
-                    }
-                    else{
-                        setFields();
-                    }
-                }
 
-            };
-            asyncTask.execute();
-        }catch(Exception e){e.printStackTrace();}
+        //pre-fill all the fields with known data
+        setFields();
 
-        HealthProfessionalPatientListViewAdapter adapter = new HealthProfessionalPatientListViewAdapter(this, healthProfessional.getPatient());
-        patients_listview.setAdapter(adapter);
 
         //open the health professional account edit activity
         edit_button.setOnClickListener(new View.OnClickListener() {
@@ -100,8 +72,9 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccountUpdate.class);
                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                 list.add(healthProfessional);
-                intent.putExtra("HP",list);
+                intent.putExtra("USER",list);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -112,27 +85,33 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                 list.add(healthProfessional);
-                intent.putExtra("HP",list);
+                intent.putExtra("USER",list);
                 startActivity(intent);
+                finish();
             }
         });
 
+        //open the patients view and show them information regarding the patient.
         patients_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Patient patient = healthProfessional.getPatient().get(+position);
-
+                //send the health professional and the position off the patient they selected form the list
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalSinglePatient.class);
-
                 ArrayList<User> list = new ArrayList<User>();
                 list.add(healthProfessional);
-                list.add(patient);
-                intent.putExtra("INFO",list);
-
+                intent.putExtra("USER",list);
+                intent.putExtra("POS",+position);
                 startActivity(intent);
-
+                finish();
             }
         });
+    }
+
+    // allow the page to be refreshed once the activity is started.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setFields();
     }
 
     // controls where the user goes if they press the back button
@@ -141,12 +120,44 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
         ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
         list.add(healthProfessional);
-        intent.putExtra("HP",list);
+        intent.putExtra("USER",list);
         startActivity(intent);
+        finish();
     }
     // sets all the fields on the page
     private void setFields(){
         name_text.setText(healthProfessional.getName());
         email_text.setText(healthProfessional.getEmail());
+
+        //pull the latest patient list, ensures that if access is revoked during an active session, then they wont be able to interact with it.
+        try{
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
+                protected void onPreExecute(){
+                    super.onPreExecute();
+                    p.setMessage("Loading");
+                    p.setIndeterminate(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.show();
+                }
+                protected Void doInBackground(Void... progress) {
+                    healthProfessional.setPatient(Lib.makeHealthProfessionalPatientsList(healthProfessional.getId()));
+                    return null;
+                }
+                protected void onPostExecute(Void Void){
+                    super.onPostExecute(Void);
+                    p.dismiss();
+                    setPatientListView();
+                }
+            };
+            asyncTask.execute();
+        }catch(Exception e){e.printStackTrace();}
+
+    }
+
+    // show the list on the list view
+    private void setPatientListView(){
+        HealthProfessionalPatientListViewAdapter adapter = new HealthProfessionalPatientListViewAdapter(this, healthProfessional.getPatient());
+        patients_listview.setAdapter(adapter);
     }
 }
