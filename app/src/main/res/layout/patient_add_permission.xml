@@ -52,6 +52,8 @@
             android:background="@drawable/my_border">
 
             <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/my_border"
                 android:padding="8dp">
 
@@ -63,6 +65,23 @@
 
                 <Spinner
                     android:id="@+id/region_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <TableRow
+                android:background="@drawable/my_border"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Province:"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/province_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />

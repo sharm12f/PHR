@@ -31,12 +31,16 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
     EditText email_input;
     EditText phone_input;
     Button update_button;
-    Spinner regions;
-    Spinner provinces;
+    Spinner regionsSpinner;
+    Spinner provincesSpinner;
+    Spinner organizationSpinner;
+    Spinner departmentSpinner;
+    Spinner healthprofessionalSpinner;
+
     Boolean Success = false;
     HealthProfessional healthProfessional;
     Button update;
-    ArrayList<String> list;
+    ArrayList<String> dbRegions, dbProvince, dbOrganization, dbDepartment, dbHealthProfessionalProfession;
     protected void onCreate(Bundle SavedInstance){
         super.onCreate(SavedInstance);
         setContentView(R.layout.healthprofessional_update_info);
@@ -44,8 +48,11 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         email_input = findViewById(R.id.email_input);
         phone_input = findViewById(R.id.phone_input);
         update_button = findViewById(R.id.update_button);
-        regions = findViewById(R.id.region_spinner);
-        provinces = findViewById(R.id.province_spinner);
+        regionsSpinner = findViewById(R.id.region_spinner);
+        provincesSpinner = findViewById(R.id.province_spinner);
+        organizationSpinner = findViewById(R.id.organization_spinner);
+        departmentSpinner = findViewById(R.id.department_spinner);
+        healthprofessionalSpinner = findViewById(R.id.healthprofessional_spinner);
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional = list.get(0);
         //ensure that a hp object is recieved into the activity
@@ -67,7 +74,11 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                 final String name = name_input.getText().toString();
                 final String email = email_input.getText().toString();
                 final String phone = phone_input.getText().toString();
-                final String region = regions.getSelectedItem().toString();
+                final String region = regionsSpinner.getSelectedItem().toString();
+                final String province = provincesSpinner.getSelectedItem().toString();
+                final String organizaton = organizationSpinner.getSelectedItem().toString();
+                final String department = departmentSpinner.getSelectedItem().toString();
+                final String healthprofessionalProfession = healthprofessionalSpinner.getSelectedItem().toString();
                 // the following async task tries to update the users info
                 try{
                     AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
@@ -82,7 +93,7 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
 
                         }
                         protected Boolean doInBackground(Void... progress) {
-                            Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,healthProfessional.getId());
+                            Boolean result = Lib.HealthProfessionalUpdate(name,email,phone,region,province,organizaton,department,healthprofessionalProfession,healthProfessional.getId());
                             return result;
                         }
                         protected void onPostExecute(Boolean result){
@@ -94,6 +105,10 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                                 healthProfessional.setEmail(email);
                                 healthProfessional.setPhone(phone);
                                 healthProfessional.setRegion(region);
+                                healthProfessional.setProvince(province);
+                                healthProfessional.setOrganization(organizaton);
+                                healthProfessional.setDepartment(department);
+                                healthProfessional.setHealthProfessional(healthprofessionalProfession);
                                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalAccount.class);
                                 ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
                                 list.add(healthProfessional);
@@ -130,13 +145,17 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
                     p.show();
                 }
                 protected Void doInBackground(Void... progress) {
-                    list = Lib.getRegions();
+                    dbRegions = Lib.getRegions();
+                    dbProvince = Lib.getProvinces();
+                    dbOrganization = Lib.getOrganization();
+                    dbDepartment = Lib.getDepartment();
+                    dbHealthProfessionalProfession = Lib.getHealthProfessional();
                     return null;
                 }
                 protected void onPostExecute(Void Void){
                     super.onPostExecute(Void);
                     p.dismiss();
-                    loadSpinners(list);
+                    loadSpinners(dbRegions,dbProvince,dbOrganization,dbDepartment,dbHealthProfessionalProfession);
                 }
             };
             asyncTask.execute();
@@ -154,16 +173,35 @@ public class HealthProfessionalAccountUpdate extends AppCompatActivity {
         finish();
     }
 
+
     // sets the values for all the drop down options
-    private void loadSpinners(ArrayList<String> list){
+    private void loadSpinners(ArrayList<String> dbRegions, ArrayList<String> dbProvince, ArrayList<String> dbOrganization, ArrayList<String> dbDepartment, ArrayList<String> dbHealthProfessionalProfession){
         try {
 
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, list);
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            regions.setAdapter(dataAdapter);
-            int s = dataAdapter.getPosition(healthProfessional.getRegion());
-            regions.setSelection(s);
+            ArrayAdapter<String> regionAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dbRegions);
+            regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            regionsSpinner.setAdapter(regionAdapter);
+            regionsSpinner.setSelection(regionAdapter.getPosition(healthProfessional.getRegion()));
+
+            ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dbProvince);
+            provinceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            provincesSpinner.setAdapter(provinceAdapter);
+            provincesSpinner.setSelection(provinceAdapter.getPosition(healthProfessional.getProvince()));
+
+            ArrayAdapter<String> organizationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dbOrganization);
+            organizationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            organizationSpinner.setAdapter(organizationAdapter);
+            organizationSpinner.setSelection(organizationAdapter.getPosition(healthProfessional.getOrganization()));
+
+            ArrayAdapter<String> departmentAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dbDepartment);
+            departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            departmentSpinner.setAdapter(departmentAdapter);
+            departmentSpinner.setSelection(departmentAdapter.getPosition(healthProfessional.getDepartment()));
+
+            ArrayAdapter<String> hpAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dbHealthProfessionalProfession);
+            hpAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            healthprofessionalSpinner.setAdapter(hpAdapter);
+            healthprofessionalSpinner.setSelection(hpAdapter.getPosition(healthProfessional.getHealthProfessional()));
 
         }catch (Exception e){e.printStackTrace();}
     }

@@ -25,6 +25,7 @@ public class User implements Serializable{
     private int id;
     private Timestamp create;
     private Timestamp login;
+    private Timestamp logout;
     private Timestamp session;
     private ArrayList<Note> notes;
 
@@ -74,6 +75,14 @@ public class User implements Serializable{
     public void setPhone(String phone){this.phone=phone;}
     public void setRegion(String region){this.region = region;}
     public void setNotes(ArrayList<Note> notes){this.notes=notes;}
+
+    public Timestamp getLogout() {
+        return logout;
+    }
+
+    public void setLogout(Timestamp logout) {
+        this.logout = logout;
+    }
 
     public String getProvince() {
         return province;

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.User;
 
@@ -23,7 +24,7 @@ import phr.lib.User;
  *
  * Below that is who its from
  *
- * The body of the note may list which record the note refers to.
+ * The body of the note may dbRegions which record the note refers to.
  *
  */
 
@@ -64,6 +65,11 @@ public class PatientNoteView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     private void setFields(){
         //This button is not used for this view

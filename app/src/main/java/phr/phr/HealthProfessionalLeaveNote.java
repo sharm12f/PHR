@@ -47,6 +47,8 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
 
     String GOTO;
 
+    int position;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
 
         // is used to desicde where the user came from and where to send them back
         GOTO = (String)getIntent().getExtras().get("GOTO");
+        position = (int)getIntent().getExtras().get("POS");
 
         //get the user and record objects
         ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
@@ -109,6 +112,7 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
                                 intent.putExtra("RECORD",list);
                                 intent.putExtra("USER",list2);
                                 intent.putExtra("GOTO", GOTO);
+                                intent.putExtra("POS",position);
                                 startActivity(intent);
                                 finish();
                             }
@@ -138,9 +142,11 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
         intent.putExtra("RECORD",list);
         intent.putExtra("USER",list2);
         intent.putExtra("GOTO", GOTO);
+        intent.putExtra("POS",position);
         startActivity(intent);
         finish();
     }
+
 
     //pre-fill the fields with known data
     private void setFields(){

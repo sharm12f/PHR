@@ -1,6 +1,8 @@
 package phr.lib;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 /**
  * Created by Anupam on 10-Apr-18.
@@ -14,6 +16,7 @@ import java.io.Serializable;
 public class RecordPermission implements Serializable {
     private int r_id, hp_id, id;
     private String r_name, hp_name;
+    private Timestamp create;
 
     public RecordPermission (int health_professional_id, String health_professional_name, int record_id,  String record_name, int permission_id){
         this.hp_id = health_professional_id;
@@ -27,6 +30,14 @@ public class RecordPermission implements Serializable {
         this.hp_name = health_professional_name;
         this.r_id = record_id;
         this.r_name = record_name;
+    }
+
+    public Timestamp getCreate() {
+        return create;
+    }
+
+    public void setCreate(Timestamp create) {
+        this.create = create;
     }
 
     public int getR_id() {

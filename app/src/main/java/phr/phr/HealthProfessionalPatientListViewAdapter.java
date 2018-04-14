@@ -17,7 +17,7 @@ import phr.lib.Record;
  *
  *  This is the list view that the user sees with all the patients on the hp account page
  *
- *  I have reused the patients list view since there is only one text item that needs to be displayed for the list, but in this case that text is set to the patients name
+ *  I have reused the patients dbRegions view since there is only one text item that needs to be displayed for the dbRegions, but in this case that text is set to the patients name
  *
  */
 

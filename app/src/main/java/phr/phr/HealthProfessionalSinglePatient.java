@@ -26,7 +26,7 @@ import phr.lib.User;
  *
  * Top section of the page is patient information such as name, email, phone, region, and province
  *
- * The list of records is towards the bottom of the page.
+ * The dbRegions of records is towards the bottom of the page.
  *
  */
 
@@ -97,6 +97,7 @@ public class HealthProfessionalSinglePatient extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         //pre-fill all the fields with known data
         setFields();
     }
@@ -108,7 +109,7 @@ public class HealthProfessionalSinglePatient extends AppCompatActivity {
         patient_region_text.setText(patient.getRegion());
         patient_province_text.setText(patient.getProvince());
 
-        //pull the latest patient list, ensures that if access is revoked during an active session, then they wont be able to interact with it.
+        //pull the latest patient dbRegions, ensures that if access is revoked during an active session, then they wont be able to interact with it.
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(HealthProfessionalSinglePatient.this);

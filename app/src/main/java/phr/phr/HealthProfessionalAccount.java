@@ -23,7 +23,7 @@ import phr.lib.User;
  * This is the health professionals account page,
  * Top of the page shows the user their name and email, to indicate the right account is logged in
  *
- * A list of patients is displayed, they can select a patient to view records by this patient.
+ * A dbRegions of patients is displayed, they can select a patient to view records by this patient.
  *
  * A view all records button shows the user all the records from all the patients they have access to
  *
@@ -50,7 +50,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         view_all_records = findViewById(R.id.button2);
         patients_listview = findViewById(R.id.patients_list_view);
 
-        //ensure that you get a valid healthprofessional object when this activity is called, go back to login activity if not
+        //ensure that you get a valid healthProfessional object when this activity is called, go back to login activity if not
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional= list.get(0);
         if(healthProfessional==null){
@@ -95,7 +95,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         patients_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //send the health professional and the position off the patient they selected form the list
+                //send the health professional and the position off the patient they selected form the dbRegions
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalSinglePatient.class);
                 ArrayList<User> list = new ArrayList<User>();
                 list.add(healthProfessional);
@@ -111,6 +111,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         setFields();
     }
 
@@ -129,7 +130,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         name_text.setText(healthProfessional.getName());
         email_text.setText(healthProfessional.getEmail());
 
-        //pull the latest patient list, ensures that if access is revoked during an active session, then they wont be able to interact with it.
+        //pull the latest patient dbRegions, ensures that if access is revoked during an active session, then they wont be able to interact with it.
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
@@ -155,7 +156,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
 
     }
 
-    // show the list on the list view
+    // show the dbRegions on the dbRegions view
     private void setPatientListView(){
         HealthProfessionalPatientListViewAdapter adapter = new HealthProfessionalPatientListViewAdapter(this, healthProfessional.getPatient());
         patients_listview.setAdapter(adapter);

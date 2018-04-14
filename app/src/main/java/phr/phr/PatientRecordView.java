@@ -24,7 +24,7 @@ import phr.lib.User;
  *
  * User can arriave to this page using two different methods
  *  1 - By selecting add record
- *  2 - By selecting a record from the list
+ *  2 - By selecting a record from the dbRegions
  *
  *  1 - The page layout if they select add record is
  *      edit text at the top to allow the user to enter the record name
@@ -247,5 +247,11 @@ public class PatientRecordView extends AppCompatActivity {
         intent.putExtra("USER",list);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 }

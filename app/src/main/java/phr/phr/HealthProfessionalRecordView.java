@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import phr.lib.HealthProfessional;
+import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.User;
@@ -77,6 +78,7 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
                 intent.putExtra("RECORD",list);
                 intent.putExtra("USER",list2);
                 intent.putExtra("GOTO", GOTO);
+                intent.putExtra("POS",position);
                 startActivity(intent);
             }
         });
@@ -102,6 +104,15 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
             intent.putExtra("POS",position);
             startActivity(intent);
         }
+        else if(GOTO.equals("HealthProfessionalView")){
+            Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);
+            ArrayList<User> list = new ArrayList<User>();
+            list.add(healthProfessional);
+            intent.putExtra("USER", list);
+            startActivity(intent);
+            finish();
+        }
     }
+
 
 }

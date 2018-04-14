@@ -29,7 +29,7 @@ import phr.lib.User;
  * This view allows the user to edit the permission for a specific record
  *
  * At the top of the view is the name of the record
- * a list of health professional's with access to the record is shown
+ * a dbRegions of health professional's with access to the record is shown
  *
  * The user can take the following actions
  *  1 - grand permission to a new health professional
@@ -37,7 +37,7 @@ import phr.lib.User;
  *
  *  To Add permission they simply select the add permission button
  *
- *  To revoke permission they have to select a health professional from the list and then select revoke permission
+ *  To revoke permission they have to select a health professional from the dbRegions and then select revoke permission
  */
 
 public class PatientEditPermissionsRecord extends AppCompatActivity {
@@ -67,7 +67,7 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
         perms_list_view = findViewById(R.id.perms_list_view);
         health_professionla_list_text_view = findViewById(R.id.text_view1);
 
-        //set the perms list view to only one choice selection
+        //set the perms dbRegions view to only one choice selection
         perms_list_view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         perms_list_view.setSelector(R.color.darkGray);
 
@@ -75,13 +75,13 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
         select.setClickable(false);
         select.setVisibility(View.GONE);
 
-        //Set a text view to indicate this is list of Health Proofessional
+        //Set a text view to indicate this is dbRegions of Health Proofessional
         health_professionla_list_text_view.setText("Health Professionals with Permissions");
 
         //set the record name
         record_name.setText(record.getName());
 
-        // set the list of health professional's with access to this record
+        // set the dbRegions of health professional's with access to this record
         setPermsListView();
 
         // take the user to the add permission page so they can find the health professional they want to grand permission to
@@ -101,7 +101,7 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
         });
 
 
-        // revoke the permission from the health professional selected from the list.
+        // revoke the permission from the health professional selected from the dbRegions.
         revoke_perms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +128,7 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
                             p.dismiss();
-                            // reload the list view after the permissions have been revoked.
+                            // reload the dbRegions view after the permissions have been revoked.
                             if(result){
                                 setPermsListView();
                                 Toast toast = Toast.makeText(getApplicationContext(), "Permission Revoked", Toast.LENGTH_SHORT);
@@ -148,10 +148,11 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
 
     }
 
-    // ensure the list is always uptodate evenduring the same session
+    // ensure the dbRegions is always uptodate evenduring the same session
     @Override
     protected void onResume() {
         super.onResume();
+
         setPermsListView();
     }
 

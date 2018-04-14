@@ -105,13 +105,12 @@ public class Auth_Access{
         postData.put("region", region);
         postData.put("province", province);
         String responce = makePost(IP+"/PHR_AUTH/patient_registration.php", postData);
-        System.out.println(responce);
         if (responce.equals("true"))
             success=true;
         return success;
     }
     //add a new health professional into the database (used for health professional registration)
-    protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String organization, String department, String health_professional){
+    protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String province, String organization, String department, String health_professional){
         boolean success=false;
         email = email.toUpperCase();
         if(userExists(email) || healthUserExists(email))
@@ -122,11 +121,11 @@ public class Auth_Access{
         postData.put("password", password);
         postData.put("phone", phone);
         postData.put("region", region);
+        postData.put("province", province);
         postData.put("organization", organization);
         postData.put("department", department);
         postData.put("health_professional", health_professional);
         String responce = makePost(IP+"/PHR_AUTH/health_professional_registration.php", postData);
-        System.out.println(responce);
         if (responce.equals("true"))
             success=true;
         return success;
@@ -186,7 +185,6 @@ public class Auth_Access{
         postData.put("user_id", uid+"");
         postData.put("health_professional_id", hpid+"");
         String responce = makePost(IP+"/PHR_AUTH/insert_into_notes.php", postData);
-        System.out.println(responce);
         if(responce.equals("true"))
             result=true;
         return result;
@@ -214,7 +212,6 @@ public class Auth_Access{
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         String responce = makePost(IP+"/PHR_AUTH/get_record_perms.php", postData);
-        System.out.println("Responce11: "+responce);
         if(!responce.equals("error")){
             result = responce;
         }
@@ -317,10 +314,13 @@ public class Auth_Access{
         return result;
     }
     //serach for a health professional using they attributes.
-    protected static String searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
+    protected static String searchHealthProfessionals(String region, String province, String organization, String department, String healthProfessional){
         HashMap<String, String> postData = new HashMap<>();
         if(!region.equals("Any")){
             postData.put("region", region);
+        }
+        if(!province.equals("Any")){
+            postData.put("province", province);
         }
         if(!organization.equals("Any")){
             postData.put("organization", organization);
@@ -332,7 +332,6 @@ public class Auth_Access{
             postData.put("healthProfessional", healthProfessional);
         }
         String responce = makePost(IP+"/PHR_AUTH/get_health_professional_by_search.php", postData);
-        System.out.println(responce);
         if(responce.equals("error"))
            return null;
         return responce;
@@ -380,7 +379,7 @@ public class Auth_Access{
         return result;
     }
     //update the health professional information give the known unique health professional id
-    protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
+    protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, String province, String organization, String department, String healthprofessinalProfession, int id){
         boolean result = false;
         email=email.toUpperCase();
         name=name.toUpperCase();
@@ -389,11 +388,20 @@ public class Auth_Access{
         postData.put("name", name);
         postData.put("phone", phone);
         postData.put("region", region);
+        postData.put("province", province);
+        postData.put("organization", organization);
+        postData.put("department", department);
+        postData.put("health_professional", healthprofessinalProfession);
         postData.put("id",id+"");
         String responce = makePost(IP+"/PHR_AUTH/health_professional_update.php", postData);
         if(responce.equals("true"))
             result=true;
         return result;
+    }
+    //get server time, used to ensure the time the app uses when sending to the server is the same.
+    protected static String getServerTime(){
+        String responce = makeGet(IP+"/PHR_AUTH/get_time_now_server.php");
+        return responce;
     }
 
     //last two can only be used from this library

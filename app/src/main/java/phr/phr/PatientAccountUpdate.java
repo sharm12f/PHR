@@ -128,6 +128,12 @@ public class PatientAccountUpdate extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
     // retrieve the spinner data from the database, and set the edit text of with user data
     private void setFields(){
         name_input.setText(patient.getName());

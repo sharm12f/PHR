@@ -20,7 +20,7 @@ import phr.lib.User;
 /**
  * Created by Anupam on 26-Feb-18.
  *
- * This page shows the user list of all the records they have access to.
+ * This page shows the user dbRegions of all the records they have access to.
  *
  * The user can select a record to view it in detail and/or leave a note regarding the record.
  *
@@ -31,16 +31,12 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
     HealthProfessional healthProfessional;
     ListView record_list_view;
     ArrayList<String[]> rcs;
-    ArrayList<Record> list;
-    ArrayList<User> list2;
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.healthprofessional_view_all_records);
         record_list_view = findViewById(R.id.records_list_view);
 
         rcs = new ArrayList<String[]>();
-        list2 = new ArrayList<User>();
-        list = new ArrayList<Record>();
 
 
         //get the user object
@@ -56,6 +52,8 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 int i = Integer.parseInt(rcs.get(+position)[2]);
                 int j = Integer.parseInt(rcs.get(+position)[3]);
+                ArrayList<Record> list = new ArrayList<Record>();
+                ArrayList<User> list2 = new ArrayList<User>();
                 Record Slecteditem= healthProfessional.getPatient().get(i).getRecords().get(j);
                 Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
                 list2.add(healthProfessional.getPatient().get(i));
@@ -83,11 +81,11 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
         finish();
     }
 
-    //ensure the list only has records they have access to, if access was revoked during their session.
+    //ensure the dbRegions only has records they have access to, if access was revoked during their session.
     @Override
     protected void onResume() {
         super.onResume();
-        //pull the latest patient list, ensures that if access is revoked during an active session, then they wont be able to interact with it.
+        //pull the latest patient dbRegions, ensures that if access is revoked during an active session, then they wont be able to interact with it.
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(HealthProfessionalViewAllRecords.this);
@@ -112,10 +110,11 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
         }catch(Exception e){e.printStackTrace();}
     }
 
-    //show the list in the list view.
+
+    //show the dbRegions in the dbRegions view.
     private void setPatientListView(){
-        // this a rcs list is used for the list view to show patient name and note name. (easiest way i could think of doing it)
-        // i and j in this list represent Ith patient's Jth record.
+        // this a rcs dbRegions is used for the dbRegions view to show patient name and note name. (easiest way i could think of doing it)
+        // i and j in this dbRegions represent Ith patient's Jth record.
         ArrayList<Patient> temp = healthProfessional.getPatient();
         for (int i=0; i<temp.size();i++){
             Patient p = temp.get(i);

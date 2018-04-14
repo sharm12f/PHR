@@ -58,6 +58,7 @@ public class Lib {
                 Timestamp login = getTimestampNow();
                 Auth_Access.setLoginUser(patient.getId(),login);
                 patient.setLogin(login);
+                patient.setLogout(getLogoutUser(patient.getId()));
             }
             else{
                 return null;
@@ -71,6 +72,7 @@ public class Lib {
                 Timestamp login = getTimestampNow();
                 Auth_Access.setLoginHealthProfessional(healthProfessional.getId(),login);
                 healthProfessional.setLogin(login);
+                healthProfessional.setLogout(getLogoutHealthProfessional(healthProfessional.getId()));
             }
             else{
                 return null;
@@ -126,7 +128,7 @@ public class Lib {
             return null;
 
         HealthProfessional healthProfessional = null;
-        String db_email, db_role, db_create, db_name, db_phone, db_region, db_organization, db_department, db_health;
+        String db_email, db_role, db_create, db_name, db_phone, db_region,db_province, db_organization, db_department, db_health;
         int db_id;
         String responce = Auth_Access.getHealthProfessionalUsersByEmail(email);
         if(responce=="error"){
@@ -140,6 +142,7 @@ public class Lib {
         db_name = obj.getString("name");
         db_phone = obj.getString("phone");
         db_region = obj.getString("region");
+        db_province = obj.getString("province");
         db_organization = obj.getString("organization");
         db_department = obj.getString("department");
         db_health = obj.getString("health_professional");
@@ -148,6 +151,7 @@ public class Lib {
         healthProfessional.setId(db_id);
         healthProfessional.setPhone(db_phone);
         healthProfessional.setRegion(db_region);
+        healthProfessional.setProvince(db_province);
         healthProfessional.setOrganization(db_organization);
         healthProfessional.setDepartment(db_department);
         healthProfessional.setHealthProfessional(db_health);
@@ -228,19 +232,21 @@ public class Lib {
         String responce = Auth_Access.getNotesForPatient(patient_id);
         if(responce.equals(""))
             return null;
-        System.out.println(responce);
         JSONArray str = new JSONArray(responce);
         for (int i=0;i<str.length(); i++) {
             int id, uid, hpid;
             String name, desc, hpname;
+            Timestamp create;
             JSONObject result = str.getJSONObject(i);
             id = result.getInt("id");
+            create = stringToTimestamp(result.getString("create_time"));
             uid = result.getInt("user_id");
             hpid = result.getInt("health_professional_id");
             name = result.getString("name");
             desc = result.getString("description");
             hpname = result.getString("health_professional_name");
             Note n = new Note(id,uid,hpid,name,desc,hpname);
+            n.setCreateTime(create);
             notes.add(n);
         }
         return notes;
@@ -330,22 +336,24 @@ public class Lib {
             JSONObject obj = array.getJSONObject(i);
             int r_id, hp_id, pid;
             String r_name, hp_name;
+            Timestamp create = stringToTimestamp(obj.getString("create_time"));
             r_id = Integer.parseInt(obj.getString("rid"));
             hp_id = Integer.parseInt(obj.getString("hpid"));
             pid = Integer.parseInt(obj.getString("pid"));
             r_name = obj.getString("rname");
             hp_name = obj.getString("hpname");
             RecordPermission perm = new RecordPermission(hp_id, hp_name,r_id,r_name,pid);
+            perm.setCreate(create);
             result.add(perm);
         }
 
         return result;
     }
     //creates and returns a list of health professionals based on the search parameters
-    public static ArrayList<HealthProfessional> searchHealthProfessionals(String region, String organization, String department, String healthProfessional){
+    public static ArrayList<HealthProfessional> searchHealthProfessionals(String region, String province, String organization, String department, String healthProfessional){
         ArrayList<HealthProfessional> healthProfessionalArrayList = new ArrayList<>();
 
-        String responce = Auth_Access.searchHealthProfessionals(region, organization, department, healthProfessional);
+        String responce = Auth_Access.searchHealthProfessionals(region, province, organization, department, healthProfessional);
 
         if(responce == null){
             healthProfessionalArrayList = null;
@@ -427,7 +435,6 @@ public class Lib {
             formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             Date date = (Date) formatter.parse(string);
             java.sql.Timestamp timeStampDate = new Timestamp(date.getTime());
-
             return timeStampDate;
         } catch (Exception e) {
             e.printStackTrace();
@@ -436,8 +443,7 @@ public class Lib {
     }
     //creates the current time stamp
     public static Timestamp getTimestampNow(){
-        Date date = new Date();
-        return new Timestamp(date.getTime());
+        return stringToTimestamp(Auth_Access.getServerTime());
     }
     //registers a new patient
     public static boolean PatientRegister(String name, String email, String password, String re_password, String phone, String region, String province){
@@ -470,7 +476,7 @@ public class Lib {
         return false;
     }
     //registers a new health professional
-    public static boolean healthProfessionalRegister(String name, String email, String password, String re_password, String phone, String region, String organization, String department, String health_professional){
+    public static boolean healthProfessionalRegister(String name, String email, String password, String re_password, String phone, String region, String province, String organization, String department, String health_professional){
 
         boolean checkName = checkStringName(name);
         boolean checkEmail = checkStringEmail(email);
@@ -478,6 +484,7 @@ public class Lib {
         boolean checkRePassword = checkStringName(re_password);
         boolean checkPhone = checkPhone(phone);
         boolean checkRegion = checkStringName(region);
+        boolean checkProvince = checkStringName(province);
         boolean checkOrganization = checkStringName(organization);
         boolean checkDepartment = checkStringName(department);
         boolean checkHealthProfessional = checkStringName(health_professional);
@@ -486,13 +493,13 @@ public class Lib {
         if(checkPassword || checkRePassword)
             passwordMatch = password.equals(re_password);
 
-        if(!checkName || !checkEmail || !passwordMatch || !checkPhone || !checkRegion || !checkOrganization || !checkDepartment || !checkHealthProfessional)
+        if(!checkName || !checkEmail || !passwordMatch || !checkPhone || !checkRegion || !checkProvince || !checkOrganization || !checkDepartment || !checkHealthProfessional)
             return false;
 
         try{
             if(Auth_Access.healthUserExists(email))
                 return false;
-            if(Auth_Access.insertIntoHealthProfessional(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, organization, department, health_professional))
+            if(Auth_Access.insertIntoHealthProfessional(name.toUpperCase(), email.toUpperCase(), password,  phone.toUpperCase(), region, province, organization, department, health_professional))
                 return true;
             else
                 return false;
@@ -518,25 +525,22 @@ public class Lib {
         boolean checkName = checkStringName(name);
         boolean checkDesc = checkStringZero(description);
         if(!checkName || !checkDesc || uid < 0 || hpid < 0) {
-            System.out.println("Not pass");
             return false;
         }
         responce = Auth_Access.insertIntoNotes(name,description,uid,hpid);
         return responce;
     }
     // allows the health professional to update their account information given the known unique health professional id
-    public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, int id){
+    public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, String province, String organization, String department, String healthprofessinalProfession, int id){
 
         boolean checkName = checkStringName(name);
         boolean checkEmail = checkStringEmail(email);
         boolean checkPhone = checkPhone(phone);
-        boolean checkRegion = checkStringName(region);
 
-
-        if(!checkName || !checkEmail || !checkPhone || !checkRegion || id < 0)
+        if(!checkName || !checkEmail || !checkPhone || id < 0)
             return false;
 
-        return Auth_Access.HealthProfessionalUpdate(name,email,phone,region,id);
+        return Auth_Access.HealthProfessionalUpdate(name,email,phone,region,province,organization,department,healthprofessinalProfession,id);
 
     }
     //gets the login time for a user given the known unique user id
@@ -552,6 +556,19 @@ public class Lib {
         }
         return login;
     }
+    //gets the logout time for a user given the known unique user id
+    public static Timestamp getLogoutUser(int id){
+        Timestamp logout = null;
+        String responce = Auth_Access.getLoginLogoutUser(id);
+        if(!responce.equals("")){
+            JSONArray array = new JSONArray(responce);
+            for(int i=0; i<array.length(); i++){
+                JSONObject obj = array.getJSONObject(i);
+                logout = stringToTimestamp(obj.getString("logout"));
+            }
+        }
+        return logout;
+    }
     //gets the login time for a user given the known unique health professional id
     public static Timestamp getLoginHealthProfessional(int id){
         Timestamp login = null;
@@ -564,6 +581,19 @@ public class Lib {
             }
         }
         return login;
+    }
+    //gets the logout time for a user given the known unique health professional id
+    public static Timestamp getLogoutHealthProfessional(int id){
+        Timestamp logout = null;
+        String responce = Auth_Access.getLoginLogoutHealthProfessional(id);
+        if(!responce.equals("")){
+            JSONArray array = new JSONArray(responce);
+            for(int i=0; i<array.length(); i++){
+                JSONObject obj = array.getJSONObject(i);
+                logout = stringToTimestamp(obj.getString("logout"));
+            }
+        }
+        return logout;
     }
     //returns true if the session should time out given the session start time
     public static boolean timeOut(Timestamp session){

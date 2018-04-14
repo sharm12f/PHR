@@ -40,6 +40,15 @@ public class Record implements Serializable{
         return this.record;
     }
     public String getName(){return this.name;}
+
+    public Timestamp getCreate() {
+        return create;
+    }
+
+    public void setCreate(Timestamp create) {
+        this.create = create;
+    }
+
     public String toString(){
         return "name: "+this.name+"user_id: " + this.user_id + " record: " + this.record + " ID: " + this.id;
     }

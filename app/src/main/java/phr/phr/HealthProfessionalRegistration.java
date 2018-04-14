@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,12 +32,14 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
 
     //These ar the drop down options for the various sub-section that the HP belongs to. This will help narrow the search for the HP when the patient is looking to give them permissions
     Spinner Sregion;
+    Spinner Sprovince;
     Spinner Sorganization;
     Spinner Sdepartment;
     Spinner Shealthprofessional;
 
-    // These lists are created after the list of avalible sub-section is retrieved from the database, the spinner adapters get these lists
+    // These lists are created after the dbRegions of avalible sub-section is retrieved from the database, the spinner adapters get these lists
     ArrayList<String> r;
+    ArrayList<String> pro;
     ArrayList<String> o;
     ArrayList<String> d;
     ArrayList<String> h;
@@ -56,6 +59,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         final EditText Ere_password = findViewById(R.id.re_pass_input);
         final Button create = findViewById(R.id.create_button);
         Sregion = findViewById(R.id.region_spinner);
+        Sprovince = findViewById(R.id.province_spinner);
         Sorganization = findViewById(R.id.organization_spinner);
         Sdepartment = findViewById(R.id.department_spinner);
         Shealthprofessional = findViewById(R.id.healthprofessional_spinner);
@@ -75,6 +79,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                 final String password = Epassword.getText().toString();
                 final String re_password = Ere_password.getText().toString();
                 final String region = Sregion.getSelectedItem().toString();
+                final String province = Sprovince.getSelectedItem().toString();
                 final String organization = Sorganization.getSelectedItem().toString();
                 final String department = Sdepartment.getSelectedItem().toString();
                 final String healthprofessional = Shealthprofessional.getSelectedItem().toString();
@@ -91,7 +96,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
                             p.show();
                         }
                         protected Boolean doInBackground(Void... progress) {
-                            return Lib.healthProfessionalRegister(name , email, password, re_password, phone, region, organization, department, healthprofessional);
+                            return Lib.healthProfessionalRegister(name , email, password, re_password, phone, region, province, organization, department, healthprofessional);
                         }
                         protected void onPostExecute(Boolean result){
                             super.onPostExecute(result);
@@ -126,12 +131,17 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
     }
 
     // set the spinners with the values retrieved from the database
-    private void loadSpinners(ArrayList<String> r, ArrayList<String> o, ArrayList<String> d, ArrayList<String>h){
+    private void loadSpinners(ArrayList<String> r, ArrayList<String> p, ArrayList<String> o, ArrayList<String> d, ArrayList<String>h){
 
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, r);
         adr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Sregion.setAdapter(adr);
+
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, p);
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Sprovince.setAdapter(adp);
 
 
         ArrayAdapter<String> ado = new ArrayAdapter<String>(this,
@@ -152,7 +162,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
         Shealthprofessional.setAdapter(adh);
     }
 
-    // get a list for all the spinners from the database
+    // get a dbRegions for all the spinners from the database
     private void setFields(){
         new AsyncTask<Void, Void, Void>(){
             private ProgressDialog p = new ProgressDialog(HealthProfessionalRegistration.this);
@@ -165,6 +175,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
             }
             protected Void doInBackground(Void... progress){
                 r = Lib.getRegions();
+                pro = Lib.getProvinces();
                 o = Lib.getOrganization();
                 d = Lib.getDepartment();
                 h = Lib.getHealthProfessional();
@@ -173,7 +184,7 @@ public class HealthProfessionalRegistration extends AppCompatActivity {
             protected void onPostExecute(Void Void) {
                 super.onPostExecute(Void);
                 p.dismiss();
-                loadSpinners(r,o,d,h);
+                loadSpinners(r,pro,o,d,h);
             }
         }.execute();
 

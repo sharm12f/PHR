@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import phr.lib.Lib;
+import phr.lib.Note;
 import phr.lib.Patient;
 import phr.lib.User;
 
@@ -45,25 +45,10 @@ public class PatientView extends AppCompatActivity {
         ArrayList<User> list = (ArrayList<User>)getIntent().getExtras().get("USER");
         patient = (Patient)list.get(0);
 
-        // check if the app should timeout
-        /*
-        boolean timeout = Lib.timeOut(patient.getSession());
-        if(timeout){
-            Intent intent = new Intent (getApplicationContext(), LogIn.class);
-            intent.putExtra("TIMEOUT", true);
-            startActivity(intent);
-            finish();
-        }
-        else{
-            patient.setSession(Lib.getTimestampNow());
-        }
-        */
-
         // set any notes the user may have gotten
-        NoteListViewAdapter adapter = new NoteListViewAdapter(this, patient.getNotes());
-        notes_list_view.setAdapter(adapter);
+        setUpdateNotes();
 
-        //gonna hide this for now, you can re-enable it and list all history notes
+        //gonna hide this for now, you can re-enable it and dbRegions all history notes
         notes = findViewById(R.id.button2);
         notes.setVisibility(View.GONE);
         notes.setClickable(false);
@@ -82,7 +67,7 @@ public class PatientView extends AppCompatActivity {
             }
         });
 
-        // list of notes address to the user.
+        // dbRegions of notes address to the user.
         notes_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,5 +89,28 @@ public class PatientView extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), LogIn.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void setUpdateNotes(){
+
+        ArrayList<Note> notes = new ArrayList<>();
+        ArrayList<Note> temp = patient.getNotes();
+
+        //check to make sure the notes are only the latest ones.
+        for(int i=0;i<temp.size();i++){
+            Note n = temp.get(i);
+            long diff = patient.getLogout().getTime()- n.getCreateTime().getTime();
+            if(diff<=0){
+                notes.add(n);
+            }
+        }
+
+        NoteListViewAdapter adapter = new NoteListViewAdapter(this, notes);
+        notes_list_view.setAdapter(adapter);
     }
 }

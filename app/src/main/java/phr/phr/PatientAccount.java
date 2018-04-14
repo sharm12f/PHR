@@ -27,7 +27,7 @@ import phr.lib.User;
  *
  * At the top the user is shows their name and email as a confermation of the account they are logged in as
  *
- * All of the users records are listed in the list view.
+ * All of the users records are listed in the dbRegions view.
  *
  * Add record button allows the user to add a new record
  *
@@ -147,6 +147,10 @@ public class PatientAccount extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+
+
+
+
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(PatientAccount.this);

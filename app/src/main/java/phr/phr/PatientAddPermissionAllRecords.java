@@ -33,23 +33,24 @@ import phr.lib.User;
  *
  * The spinners to filter the health professional are provided. Any is select by default
  *
- * The list view is populated once the user clicks the search button
+ * The dbRegions view is populated once the user clicks the search button
  *
  * After searching for the health professional
- *      they user can select one from the list, and add permission to grand them access
+ *      they user can select one from the dbRegions, and add permission to grand them access
  *      or
- *      they can select give to all and grant everyone on the list access
+ *      they can select give to all and grant everyone on the dbRegions access
  *
  */
 
 public class PatientAddPermissionAllRecords extends AppCompatActivity {
     TextView record_name_text_view;
-    Spinner region_spinner, organization_spinner, department_spinner, health_professional_spinner;
+    Spinner region_spinner, province_spinner, organization_spinner, department_spinner, health_professional_spinner;
     Button search_button, add_perms_button, add_perms_all_button;
     ListView health_professional_list_view;
 
     //used for spinners
     ArrayList<String> r;
+    ArrayList<String> pro;
     ArrayList<String> o;
     ArrayList<String> d;
     ArrayList<String> h;
@@ -67,6 +68,7 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
         setContentView(R.layout.patient_add_permission);
         record_name_text_view = findViewById(R.id.textView2);
         region_spinner = findViewById(R.id.region_spinner);
+        province_spinner = findViewById(R.id.province_spinner);
         organization_spinner = findViewById(R.id.organization_spinner);
         department_spinner = findViewById(R.id.department_spinner);
         health_professional_spinner = findViewById(R.id.healthprofessional_spinner);
@@ -75,7 +77,7 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
         add_perms_all_button = findViewById(R.id.add_perms_all_button);
         health_professional_list_view = findViewById(R.id.health_professional_list_view);
 
-        //set the health professional list view to only one choice selection
+        //set the health professional dbRegions view to only one choice selection
         health_professional_list_view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         health_professional_list_view.setSelector(R.color.darkGray);
 
@@ -93,7 +95,7 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean set = false;
-                //ensure a health professional is selected from the list
+                //ensure a health professional is selected from the dbRegions
                 if(health_professional_list_view.getCheckedItemPosition() != -1)
                     set=true;
                 if(set) {
@@ -239,10 +241,11 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
 
                         protected Void doInBackground(Void... progress) {
                             String region = region_spinner.getSelectedItem().toString();
+                            String province = province_spinner.getSelectedItem().toString();
                             String organization = organization_spinner.getSelectedItem().toString();
                             String department = department_spinner.getSelectedItem().toString();
                             String healthProfessional = health_professional_spinner.getSelectedItem().toString();
-                            healthProfessionalsList = Lib.searchHealthProfessionals(region, organization, department, healthProfessional);
+                            healthProfessionalsList = Lib.searchHealthProfessionals(region, province, organization, department, healthProfessional);
                             return null;
                         }
 
@@ -260,19 +263,24 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
 
     }
 
-    //set the search list view with the health professionals
+    //set the search dbRegions view with the health professionals
     private void setSearchListView() {
         HealthProfessionalListViewAdapter adapter = new HealthProfessionalListViewAdapter(this, healthProfessionalsList);
         health_professional_list_view.setAdapter(adapter);
     }
 
     // set all the spinners
-    private void loadSpinners(ArrayList<String> r, ArrayList<String> o, ArrayList<String> d, ArrayList<String> h) {
+    private void loadSpinners() {
 
         ArrayAdapter<String> adr = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, r);
         adr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         region_spinner.setAdapter(adr);
+
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, pro);
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        province_spinner.setAdapter(adp);
 
 
         ArrayAdapter<String> ado = new ArrayAdapter<String>(this,
@@ -293,7 +301,7 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
         health_professional_spinner.setAdapter(adh);
     }
 
-    // get a list for all the spinners from the database
+    // get a dbRegions for all the spinners from the database
     private void setSpinnes() {
         try {
             new AsyncTask<Void, Void, Void>() {
@@ -309,11 +317,13 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
 
                 protected Void doInBackground(Void... progress) {
                     r = Lib.getRegions();
+                    pro = Lib.getProvinces();
                     o = Lib.getOrganization();
                     d = Lib.getDepartment();
                     h = Lib.getHealthProfessional();
                     //insert and empty entry into all array lists
                     r.add(0, "Any");
+                    pro.add(0,"Any");
                     o.add(0, "Any");
                     d.add(0, "Any");
                     h.add(0, "Any");
@@ -324,7 +334,7 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
                 protected void onPostExecute(Void Void) {
                     super.onPostExecute(Void);
                     p.dismiss();
-                    loadSpinners(r, o, d, h);
+                    loadSpinners();
                 }
             }.execute();
         } catch (Exception e) {
@@ -341,5 +351,11 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
         intent.putExtra("USER",list);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 }

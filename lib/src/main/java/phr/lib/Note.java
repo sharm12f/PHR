@@ -1,6 +1,8 @@
 package phr.lib;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 /**
  * Created by Anupam on 28-Mar-18.
@@ -14,6 +16,8 @@ import java.io.Serializable;
 public class Note implements Serializable {
     private int id, user_id, health_professional_id;
     private String name, description, health_professional_name;
+
+    private Timestamp createTime;
 
     public Note(int id, int user_id, int health_professional_id, String name, String description, String health_professional_name){
         this.id=id;
@@ -41,6 +45,14 @@ public class Note implements Serializable {
     }
     public String getHealth_professional_name() {
         return this.health_professional_name;
+    }
+
+    public Timestamp getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public void setId(int id) {
