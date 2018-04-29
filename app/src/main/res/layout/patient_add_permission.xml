@@ -182,7 +182,7 @@
         android:layout_height="47dp"
         android:layout_gravity="center"
         android:layout_margin="4dp"
-        android:text="Give to all"
+        android:text="Permit all"
         android:theme="@style/myButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

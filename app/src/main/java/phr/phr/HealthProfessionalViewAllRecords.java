@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +34,9 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
     ArrayList<String[]> rcs;
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        ActionBar actionbar = getSupportActionBar();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.healthprofessional_view_all_records);
         record_list_view = findViewById(R.id.records_list_view);
 
