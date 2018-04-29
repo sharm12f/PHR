@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.User;

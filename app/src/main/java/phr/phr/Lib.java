@@ -1,5 +1,8 @@
-package phr.lib;
+package phr.phr;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.security.spec.ECField;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,6 +13,15 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.json.*;
+import android.os.*;
+
+import phr.lib.Auth_Access;
+import phr.lib.HealthProfessional;
+import phr.lib.Note;
+import phr.lib.Patient;
+import phr.lib.Record;
+import phr.lib.RecordPermission;
+import phr.lib.User;
 
 /**
  * Created by Anupam on 28-Mar-18.
@@ -83,7 +95,6 @@ public class Lib {
     }
     //Creates and returns Patient object given the email
     public static Patient makeUser (String email){
-
         boolean checkEmail = checkStringEmail(email);
         if(!checkEmail)
             return null;
@@ -95,29 +106,26 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONObject obj = new JSONObject(responce);
-        db_id = obj.getInt("id");
-        db_create = obj.getString("create_time");
-        db_email = obj.getString("email");
-        db_role = obj.getString("user_role");
-        db_name = obj.getString("name");
-        db_phone = obj.getString("phone");
-        db_region = obj.getString("region");
-        db_province = obj.getString("province");
-        Timestamp creattime = stringToTimestamp(db_create);
-        patient = new Patient(db_name, db_email, creattime, db_role);
-        patient.setId(db_id);
-        patient.setPhone(db_phone);
-        patient.setRegion(db_region);
-        patient.setProvince(db_province);
-
-
-        patient.setRecords(getPatientRecords(db_email));
-
-
-        ArrayList<Note> notes = makePatientNotes(patient.getId());
-        patient.setNotes(notes);
-
+        try {
+            JSONObject obj = new JSONObject(responce);
+            db_id = obj.getInt("id");
+            db_create = obj.getString("create_time");
+            db_email = obj.getString("email");
+            db_role = obj.getString("user_role");
+            db_name = obj.getString("name");
+            db_phone = obj.getString("phone");
+            db_region = obj.getString("region");
+            db_province = obj.getString("province");
+            Timestamp creattime = stringToTimestamp(db_create);
+            patient = new Patient(db_name, db_email, creattime, db_role);
+            patient.setId(db_id);
+            patient.setPhone(db_phone);
+            patient.setRegion(db_region);
+            patient.setProvince(db_province);
+            patient.setRecords(getPatientRecords(db_email));
+            ArrayList<Note> notes = makePatientNotes(patient.getId());
+            patient.setNotes(notes);
+        }catch (Exception e){e.printStackTrace();}
         return patient;
     }
     //Creates and returns Health Professional object given the email
@@ -134,30 +142,31 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONObject obj = new JSONObject(responce);
-        db_id = obj.getInt("id");
-        db_create = obj.getString("create_time");
-        db_email = obj.getString("email");
-        db_role = obj.getString("user_role");
-        db_name = obj.getString("name");
-        db_phone = obj.getString("phone");
-        db_region = obj.getString("region");
-        db_province = obj.getString("province");
-        db_organization = obj.getString("organization");
-        db_department = obj.getString("department");
-        db_health = obj.getString("health_professional");
-        Timestamp creattime = stringToTimestamp(db_create);
-        healthProfessional = new HealthProfessional(db_name, db_email, creattime, db_role);
-        healthProfessional.setId(db_id);
-        healthProfessional.setPhone(db_phone);
-        healthProfessional.setRegion(db_region);
-        healthProfessional.setProvince(db_province);
-        healthProfessional.setOrganization(db_organization);
-        healthProfessional.setDepartment(db_department);
-        healthProfessional.setHealthProfessional(db_health);
+        try{
+            JSONObject obj = new JSONObject(responce);
+            db_id = obj.getInt("id");
+            db_create = obj.getString("create_time");
+            db_email = obj.getString("email");
+            db_role = obj.getString("user_role");
+            db_name = obj.getString("name");
+            db_phone = obj.getString("phone");
+            db_region = obj.getString("region");
+            db_province = obj.getString("province");
+            db_organization = obj.getString("organization");
+            db_department = obj.getString("department");
+            db_health = obj.getString("health_professional");
+            Timestamp creattime = stringToTimestamp(db_create);
+            healthProfessional = new HealthProfessional(db_name, db_email, creattime, db_role);
+            healthProfessional.setId(db_id);
+            healthProfessional.setPhone(db_phone);
+            healthProfessional.setRegion(db_region);
+            healthProfessional.setProvince(db_province);
+            healthProfessional.setOrganization(db_organization);
+            healthProfessional.setDepartment(db_department);
+            healthProfessional.setHealthProfessional(db_health);
 
-        healthProfessional.setPatient(makeHealthProfessionalPatientsList(db_id));
-
+            healthProfessional.setPatient(makeHealthProfessionalPatientsList(db_id));
+        }catch (Exception e){e.printStackTrace();}
         return healthProfessional;
     }
     //Creates and returns a list of patients given the known unique health professional id. These patients have given access to the health professional to one or more records.
@@ -168,32 +177,34 @@ public class Lib {
         if(records=="error"){
             return null;
         }
-        JSONArray str = new JSONArray(records);
-        for (int i=0;i<str.length(); i++) {
-            int rid;
-            JSONObject result = str.getJSONObject(i);
-            rid = result.getInt("rid");
-            Record r = makeRecordByUserId(rid);
-            if(healthProfessionalPatientRecordOnly.containsKey(r.getUser_id())) {
-                ArrayList<Record> tmp = healthProfessionalPatientRecordOnly.get(r.getUser_id());
-                tmp.add(r);
-                healthProfessionalPatientRecordOnly.put(r.getUser_id(), tmp);
+        try{
+            JSONArray str = new JSONArray(records);
+            for (int i=0;i<str.length(); i++) {
+                int rid;
+                JSONObject result = str.getJSONObject(i);
+                rid = result.getInt("rid");
+                Record r = makeRecordByRecordId(rid);
+                if(healthProfessionalPatientRecordOnly.containsKey(r.getUser_id())) {
+                    ArrayList<Record> tmp = healthProfessionalPatientRecordOnly.get(r.getUser_id());
+                    tmp.add(r);
+                    healthProfessionalPatientRecordOnly.put(r.getUser_id(), tmp);
+                }
+                else{
+                    ArrayList<Record> tmp = new ArrayList<Record>();
+                    tmp.add(r);
+                    healthProfessionalPatientRecordOnly.put(r.getUser_id(), tmp);
+                }
             }
-            else{
-                ArrayList<Record> tmp = new ArrayList<Record>();
-                tmp.add(r);
-                healthProfessionalPatientRecordOnly.put(r.getUser_id(), tmp);
+            Iterator<Map.Entry<Integer, ArrayList<Record>>> it = healthProfessionalPatientRecordOnly.entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry<Integer, ArrayList<Record>> entry = it.next();
+                int uid = entry.getKey();
+                ArrayList<Record> rcs = entry.getValue();
+                Patient p = makeHealthProfessionalPatient(uid);
+                p.setRecords(rcs);
+                list.add(p);
             }
-        }
-        Iterator<Map.Entry<Integer, ArrayList<Record>>> it = healthProfessionalPatientRecordOnly.entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<Integer, ArrayList<Record>> entry = it.next();
-            int uid = entry.getKey();
-            ArrayList<Record> rcs = entry.getValue();
-            Patient p = makeHealthProfessionalPatient(uid);
-            p.setRecords(rcs);
-            list.add(p);
-        }
+        }catch (Exception e){e.printStackTrace();}
         return list;
     }
     //Creates and returns a patient given the known unique user id. This does not contain the records of the patient, just patient information, the records are populated when the health professional is made.
@@ -209,21 +220,23 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONObject obj = new JSONObject(responce);
-        db_id = obj.getInt("id");
-        db_create = obj.getString("create_time");
-        db_email = obj.getString("email");
-        db_role = obj.getString("user_role");
-        db_name = obj.getString("name");
-        db_phone = obj.getString("phone");
-        db_region = obj.getString("region");
-        db_province = obj.getString("province");
-        Timestamp creattime = stringToTimestamp(db_create);
-        patient = new Patient(db_name, db_email, creattime, db_role);
-        patient.setId(db_id);
-        patient.setPhone(db_phone);
-        patient.setRegion(db_region);
-        patient.setProvince(db_province);
+        try{
+            JSONObject obj = new JSONObject(responce);
+            db_id = obj.getInt("id");
+            db_create = obj.getString("create_time");
+            db_email = obj.getString("email");
+            db_role = obj.getString("user_role");
+            db_name = obj.getString("name");
+            db_phone = obj.getString("phone");
+            db_region = obj.getString("region");
+            db_province = obj.getString("province");
+            Timestamp creattime = stringToTimestamp(db_create);
+            patient = new Patient(db_name, db_email, creattime, db_role);
+            patient.setId(db_id);
+            patient.setPhone(db_phone);
+            patient.setRegion(db_region);
+            patient.setProvince(db_province);
+        }catch (Exception e){e.printStackTrace();}
         return patient;
     }
     //creates and returns a list of notes address to a patient given the known unique user id.
@@ -232,27 +245,29 @@ public class Lib {
         String responce = Auth_Access.getNotesForPatient(patient_id);
         if(responce.equals(""))
             return null;
-        JSONArray str = new JSONArray(responce);
-        for (int i=0;i<str.length(); i++) {
-            int id, uid, hpid;
-            String name, desc, hpname;
-            Timestamp create;
-            JSONObject result = str.getJSONObject(i);
-            id = result.getInt("id");
-            create = stringToTimestamp(result.getString("create_time"));
-            uid = result.getInt("user_id");
-            hpid = result.getInt("health_professional_id");
-            name = result.getString("name");
-            desc = result.getString("description");
-            hpname = result.getString("health_professional_name");
-            Note n = new Note(id,uid,hpid,name,desc,hpname);
-            n.setCreateTime(create);
-            notes.add(n);
-        }
+        try{
+            JSONArray str = new JSONArray(responce);
+            for (int i=0;i<str.length(); i++) {
+                int id, uid, hpid;
+                String name, desc, hpname;
+                Timestamp create;
+                JSONObject result = str.getJSONObject(i);
+                id = result.getInt("id");
+                create = stringToTimestamp(result.getString("create_time"));
+                uid = result.getInt("user_id");
+                hpid = result.getInt("health_professional_id");
+                name = result.getString("name");
+                desc = result.getString("description");
+                hpname = result.getString("health_professional_name");
+                Note n = new Note(id,uid,hpid,name,desc,hpname);
+                n.setCreateTime(create);
+                notes.add(n);
+            }
+        }catch (Exception e){e.printStackTrace();}
         return notes;
     }
-    //creates and returns a record given the known and unique user id.
-    public static Record makeRecordByUserId(int id){
+    //creates and returns a record given the known and unique record id.
+    public static Record makeRecordByRecordId(int id){
 
         if(id < 0)
             return null;
@@ -262,20 +277,24 @@ public class Lib {
         if(records=="error") {
             return null;
         }
-        JSONArray str = new JSONArray(records);
-        for (int i=0;i<str.length(); i++) {
-            int rid, uid;
-            String record, name;
-            Timestamp create_time;
-            JSONObject result = str.getJSONObject(i);
-            create_time = stringToTimestamp(result.getString("create_time"));
-            rid = result.getInt("rid");
-            uid = result.getInt("uid");
-            name = result.getString("name");
-            record = result.getString("record");
-            r = new Record(name, record, uid, create_time);
-            r.setId(rid);
-        }
+        try{
+            JSONArray str = new JSONArray(records);
+            for (int i=0;i<str.length(); i++) {
+                int rid, uid;
+                String record, name, filename;
+                Timestamp create_time;
+                JSONObject result = str.getJSONObject(i);
+                create_time = stringToTimestamp(result.getString("create_time"));
+                rid = result.getInt("rid");
+                uid = result.getInt("uid");
+                name = result.getString("name");
+                record = result.getString("record");
+                filename = result.getString("filename");
+                r = new Record(name, record, uid, create_time);
+                r.setFilename(filename);
+                r.setId(rid);
+            }
+        }catch (Exception e){e.printStackTrace();}
         return r;
     }
     //checks and returns true if the email string meets requirements
@@ -315,6 +334,15 @@ public class Lib {
         }
         return Auth_Access.updateRecord(name, description, rid);
     }
+    //updates the users record given the known unique record id also adds filename if one is attached.
+    public static boolean PatientUpdateRecord(String name, String description, int rid, String fileName){
+        boolean checkName = checkStringName(name);
+        boolean checkDescription = checkStringZero(description);
+        if(rid < 0 || !checkDescription || !checkName) {
+            return false;
+        }
+        return Auth_Access.updateRecord(name, description, rid, fileName);
+    }
     //deletes a record given its known unique record id
     public static boolean deleteRecord(int id){
         if(id < 0){
@@ -331,22 +359,23 @@ public class Lib {
         String responce = Auth_Access.getRecordPerms(id);
         if(responce.equals(""))
             return null;
-        JSONArray array = new JSONArray(responce);
-        for(int i=0;i<array.length();i++){
-            JSONObject obj = array.getJSONObject(i);
-            int r_id, hp_id, pid;
-            String r_name, hp_name;
-            Timestamp create = stringToTimestamp(obj.getString("create_time"));
-            r_id = Integer.parseInt(obj.getString("rid"));
-            hp_id = Integer.parseInt(obj.getString("hpid"));
-            pid = Integer.parseInt(obj.getString("pid"));
-            r_name = obj.getString("rname");
-            hp_name = obj.getString("hpname");
-            RecordPermission perm = new RecordPermission(hp_id, hp_name,r_id,r_name,pid);
-            perm.setCreate(create);
-            result.add(perm);
-        }
-
+        try{
+            JSONArray array = new JSONArray(responce);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj = array.getJSONObject(i);
+                int r_id, hp_id, pid;
+                String r_name, hp_name;
+                Timestamp create = stringToTimestamp(obj.getString("create_time"));
+                r_id = Integer.parseInt(obj.getString("rid"));
+                hp_id = Integer.parseInt(obj.getString("hpid"));
+                pid = Integer.parseInt(obj.getString("pid"));
+                r_name = obj.getString("rname");
+                hp_name = obj.getString("hpname");
+                RecordPermission perm = new RecordPermission(hp_id, hp_name,r_id,r_name,pid);
+                perm.setCreate(create);
+                result.add(perm);
+            }
+        }catch (Exception e){e.printStackTrace();}
         return result;
     }
     //creates and returns a list of health professionals based on the search parameters
@@ -359,14 +388,16 @@ public class Lib {
             healthProfessionalArrayList = null;
         }
         else{
-            JSONArray str = new JSONArray(responce);
-            for (int i=0;i<str.length(); i++) {
-                String email;
-                JSONObject result = str.getJSONObject(i);
-                email = result.getString("email");
-                HealthProfessional hp = Lib.makeHealthProfessional(email);
-                healthProfessionalArrayList.add(hp);
-            }
+            try{
+                JSONArray str = new JSONArray(responce);
+                for (int i=0;i<str.length(); i++) {
+                    String email;
+                    JSONObject result = str.getJSONObject(i);
+                    email = result.getString("email");
+                    HealthProfessional hp = Lib.makeHealthProfessional(email);
+                    healthProfessionalArrayList.add(hp);
+                }
+            }catch (Exception e){e.printStackTrace();}
         }
         return healthProfessionalArrayList;
     }
@@ -400,22 +431,28 @@ public class Lib {
             return null;
         }
         records = new ArrayList<>();
-        JSONArray str = new JSONArray(responce);
-        for (int i=0;i<str.length(); i++) {
-            int rid, uid;
-            String record, name;
-            Timestamp create_time;
-            JSONObject result = str.getJSONObject(i);
-            create_time = stringToTimestamp(result.getString("create_time"));
-            rid = result.getInt("rid");
-            uid = result.getInt("uid");
-            name = result.getString("name");
-            record = result.getString("record");
-            Record r = new Record(name, record, uid, create_time);
-            r.setId(rid);
-            records.add(r);
-        }
-
+        try{
+            JSONArray str = new JSONArray(responce);
+            for (int i=0;i<str.length(); i++) {
+                int rid, uid;
+                String record, name, filename;
+                Timestamp create_time;
+                JSONObject result = str.getJSONObject(i);
+                create_time = stringToTimestamp(result.getString("create_time"));
+                rid = result.getInt("rid");
+                uid = result.getInt("uid");
+                name = result.getString("name");
+                record = result.getString("record");
+                filename = result.getString("filename");
+                if(!filename.equals("null")){
+                    getFile(email,filename);
+                }
+                Record r = new Record(name, record, uid, create_time);
+                r.setFilename(filename);
+                r.setId(rid);
+                records.add(r);
+            }
+        }catch (Exception e){e.printStackTrace();}
         return records;
     }
     //inserts into records a new record given the known unique user id
@@ -426,6 +463,16 @@ public class Lib {
             return false;
         }
         boolean result  = Auth_Access.insertIntoRecord(name, description, uid);
+        return  result;
+    }
+    //inserts into records a new record given the known unique user id, also adds the file name if one is attached
+    public static boolean insertIntoRecord(String name, String description, int uid, String fileName){
+        boolean checkName = checkStringName(name);
+        boolean checkDescription = checkStringZero(description);
+        if(uid < 0 || !checkDescription || !checkName) {
+            return false;
+        }
+        boolean result  = Auth_Access.insertIntoRecord(name, description, uid, fileName);
         return  result;
     }
     //is used to convers the db time stamp into time stamp since it is returned as a sting
@@ -548,11 +595,13 @@ public class Lib {
         Timestamp login = null;
         String responce = Auth_Access.getLoginLogoutUser(id);
         if(!responce.equals("")){
-            JSONArray array = new JSONArray(responce);
-            for(int i=0; i<array.length(); i++){
-                JSONObject obj = array.getJSONObject(i);
-                login = stringToTimestamp(obj.getString("login"));
-            }
+            try{
+                JSONArray array = new JSONArray(responce);
+                for(int i=0; i<array.length(); i++){
+                    JSONObject obj = array.getJSONObject(i);
+                    login = stringToTimestamp(obj.getString("login"));
+                }
+            }catch (Exception e){e.printStackTrace();}
         }
         return login;
     }
@@ -561,11 +610,13 @@ public class Lib {
         Timestamp logout = null;
         String responce = Auth_Access.getLoginLogoutUser(id);
         if(!responce.equals("")){
-            JSONArray array = new JSONArray(responce);
-            for(int i=0; i<array.length(); i++){
-                JSONObject obj = array.getJSONObject(i);
-                logout = stringToTimestamp(obj.getString("logout"));
-            }
+            try{
+                JSONArray array = new JSONArray(responce);
+                for(int i=0; i<array.length(); i++){
+                    JSONObject obj = array.getJSONObject(i);
+                    logout = stringToTimestamp(obj.getString("logout"));
+                }
+            }catch (Exception e){e.printStackTrace();}
         }
         return logout;
     }
@@ -574,11 +625,13 @@ public class Lib {
         Timestamp login = null;
         String responce = Auth_Access.getLoginLogoutHealthProfessional(id);
         if(!responce.equals("")){
-            JSONArray array = new JSONArray(responce);
-            for(int i=0; i<array.length(); i++){
-                JSONObject obj = array.getJSONObject(i);
-                login = stringToTimestamp(obj.getString("login"));
-            }
+            try{
+                JSONArray array = new JSONArray(responce);
+                for(int i=0; i<array.length(); i++){
+                    JSONObject obj = array.getJSONObject(i);
+                    login = stringToTimestamp(obj.getString("login"));
+                }
+            }catch (Exception e){e.printStackTrace();}
         }
         return login;
     }
@@ -587,11 +640,13 @@ public class Lib {
         Timestamp logout = null;
         String responce = Auth_Access.getLoginLogoutHealthProfessional(id);
         if(!responce.equals("")){
-            JSONArray array = new JSONArray(responce);
-            for(int i=0; i<array.length(); i++){
-                JSONObject obj = array.getJSONObject(i);
-                logout = stringToTimestamp(obj.getString("logout"));
-            }
+            try{
+                JSONArray array = new JSONArray(responce);
+                for(int i=0; i<array.length(); i++){
+                    JSONObject obj = array.getJSONObject(i);
+                    logout = stringToTimestamp(obj.getString("logout"));
+                }
+            }catch (Exception e){e.printStackTrace();}
         }
         return logout;
     }
@@ -606,6 +661,32 @@ public class Lib {
         return result;
     }
 
+
+    public static boolean sendFile(File file, User user){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("user_name",user.getEmail());
+        String responce = Auth_Access.sendFile(file,postData);
+        if (responce.equals("complete")){
+            result = true;
+        }
+        return result;
+    }
+
+    public static void getFile(String email, String fileName){
+        try {
+            String path = "/PHR_AUTH/uploads/"+email+"/"+fileName;
+            String root = Environment.getExternalStorageDirectory().toString();
+            File myDir = new File(root + "/phr_saved_data");
+            myDir.mkdirs();
+            File file = new File(myDir, fileName);
+            FileOutputStream fos = new FileOutputStream(file);
+            Auth_Access.getFile(path, fos);
+            fos.flush();
+            fos.close();
+        }catch (Exception e){e.printStackTrace();}
+    }
+
     //the following return a list of their respective attributes.
     public static ArrayList<String> getRegions(){
         ArrayList<String> list = new ArrayList<String>();
@@ -613,11 +694,13 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONArray array = new JSONArray(responce);
-        for(int i=0;i<array.length();i++){
-            JSONObject obj = array.getJSONObject(i);
-            list.add(obj.getString("name"));
-        }
+        try{
+            JSONArray array = new JSONArray(responce);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj = array.getJSONObject(i);
+                list.add(obj.getString("name"));
+            }
+        }catch (Exception e){e.printStackTrace();}
         return list;
     }
     public static ArrayList<String> getProvinces(){
@@ -626,11 +709,13 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONArray array = new JSONArray(responce);
-        for(int i=0;i<array.length();i++){
-            JSONObject obj = array.getJSONObject(i);
-            list.add(obj.getString("name"));
-        }
+        try{
+            JSONArray array = new JSONArray(responce);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj = array.getJSONObject(i);
+                list.add(obj.getString("name"));
+            }
+        }catch (Exception e){e.printStackTrace();}
         return list;
     }
     public static ArrayList<String> getOrganization(){
@@ -639,11 +724,13 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONArray array = new JSONArray(responce);
-        for(int i=0;i<array.length();i++){
-            JSONObject obj = array.getJSONObject(i);
-            list.add(obj.getString("name"));
-        }
+        try{
+            JSONArray array = new JSONArray(responce);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj = array.getJSONObject(i);
+                list.add(obj.getString("name"));
+            }
+        }catch (Exception e){e.printStackTrace();}
         return list;
     }
     public static ArrayList<String> getDepartment(){
@@ -652,11 +739,13 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONArray array = new JSONArray(responce);
-        for(int i=0;i<array.length();i++){
-            JSONObject obj = array.getJSONObject(i);
-            list.add(obj.getString("name"));
-        }
+        try{
+            JSONArray array = new JSONArray(responce);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj = array.getJSONObject(i);
+                list.add(obj.getString("name"));
+            }
+        }catch (Exception e){e.printStackTrace();}
         return list;
     }
     public static ArrayList<String> getHealthProfessional(){
@@ -665,11 +754,13 @@ public class Lib {
         if(responce=="error"){
             return null;
         }
-        JSONArray array = new JSONArray(responce);
-        for(int i=0;i<array.length();i++){
-            JSONObject obj = array.getJSONObject(i);
-            list.add(obj.getString("name"));
-        }
+        try{
+            JSONArray array = new JSONArray(responce);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj = array.getJSONObject(i);
+                list.add(obj.getString("name"));
+            }
+        }catch (Exception e){e.printStackTrace();}
         return list;
     }
 }

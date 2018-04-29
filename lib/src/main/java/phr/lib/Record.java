@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class Record implements Serializable{
     private int id, user_id;
-    private String record, name;
+    private String record, name, filename;
     private Timestamp create;
     public Record(String name, String record, int user_id, Timestamp create){
         this.user_id = user_id;
@@ -40,6 +40,10 @@ public class Record implements Serializable{
         return this.record;
     }
     public String getName(){return this.name;}
+
+    public String getFilename(){return this.filename;}
+
+    public void setFilename(String filename){this.filename = filename;}
 
     public Timestamp getCreate() {
         return create;

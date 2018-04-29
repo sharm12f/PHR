@@ -10,15 +10,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
-import phr.lib.HealthProfessional;
-import phr.lib.Lib;
-import phr.lib.User;
 
 /**
  * Created by Anupam on 28-Jan-18.

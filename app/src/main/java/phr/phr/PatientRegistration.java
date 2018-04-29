@@ -15,11 +15,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import phr.lib.HealthProfessional;
-import phr.lib.Lib;
-import phr.lib.Patient;
-import phr.lib.User;
-
 /**
  * Created by Anupam on 26-Jan-18.
  */

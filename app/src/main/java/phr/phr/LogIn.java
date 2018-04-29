@@ -1,9 +1,13 @@
 package phr.phr;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +19,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import phr.lib.HealthProfessional;
-import phr.lib.Lib;
-import phr.lib.Record;
 import phr.lib.User;
 
 /**
@@ -38,6 +39,19 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //check user permissions
+        if (ContextCompat.checkSelfPermission(LogIn.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(LogIn.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            } else {
+                ActivityCompat.requestPermissions(LogIn.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},0x4);
+            }
+        }
 
         // if they press the back button on the login page, the stack is going to be cleared and the app will exit. (i do this, because previously the app would go back on the last activity on the stack)
         if(getIntent().getExtras()!=null){
@@ -90,10 +104,10 @@ public class LogIn extends AppCompatActivity {
                         protected Void doInBackground(Void... progress) {
                             // get the users credentials and try to login them in
 
-                            if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
-                                return null;
-                            user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
-                            //user = Lib.login("app@app.com", "p");
+                            //if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
+                            //    return null;
+                            //user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            user = Lib.login("app@app.com", "p");
                             user.setSession(Lib.getTimestampNow());
                             return null;
                         }

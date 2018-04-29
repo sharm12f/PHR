@@ -9,12 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.SQLOutput;
+import com.codekidlabs.storagechooser.StorageChooser;
+
+import java.io.File;
 import java.util.ArrayList;
 
-import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.User;
@@ -46,8 +48,10 @@ import phr.lib.User;
 
 public class PatientRecordView extends AppCompatActivity {
     EditText name_input, description_input;
+    TextView file_name;
     Button add_update_button, browse_button, delete_record, edit_permissions;
     Record record;
+    String fileSelected, fileName;
     boolean update=false;
     int id;
 
@@ -65,10 +69,7 @@ public class PatientRecordView extends AppCompatActivity {
         delete_record = findViewById(R.id.delete_record_button);
         edit_permissions = findViewById(R.id.edit_permissions_button);
         browse_button = findViewById(R.id.browse_button);
-
-        // not gonna use this button for now, its so that that the user can attach files
-        browse_button.setClickable(false);
-        browse_button.setVisibility(View.GONE);
+        file_name = findViewById(R.id.file_name);
 
         // get the user object should always be passed from activity to activity
         ArrayList<User> u = (ArrayList<User>) getIntent().getExtras().get("USER");
@@ -165,7 +166,22 @@ public class PatientRecordView extends AppCompatActivity {
                                 p.show();
                             }
                             protected Boolean doInBackground(Void... progress) {
-                                return Lib.PatientUpdateRecord(name, description, record.getId());
+                                Boolean result = false;
+                                if(fileSelected!=null){
+                                    if(fileSelected.equals("delete")){
+                                        fileName = "null";
+                                    }
+                                    result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
+                                }
+                                else{
+                                    result = Lib.PatientUpdateRecord(name, description, record.getId());
+                                }
+                                if(fileSelected!=null && result){
+                                    if(!fileSelected.equals("delete")){
+                                        Lib.sendFile(new File(fileSelected),patient);
+                                    }
+                                }
+                                return result;
                             }
                             protected void onPostExecute(Boolean result){
                                 super.onPostExecute(result);
@@ -202,7 +218,15 @@ public class PatientRecordView extends AppCompatActivity {
                             }
                             protected Boolean doInBackground(Void... progress) {
                                 Boolean result = false;
-                                result = Lib.insertIntoRecord(name, description, id);
+                                if(fileSelected!=null){
+                                    result = Lib.insertIntoRecord(name, description, id, fileName);
+                                }
+                                else{
+                                    result = Lib.insertIntoRecord(name, description, id);
+                                }
+                                if(fileSelected!=null & result){
+                                    Lib.sendFile(new File(fileSelected),patient);
+                                }
                                 return result;
                             }
                             protected void onPostExecute(Boolean result){
@@ -227,12 +251,60 @@ public class PatientRecordView extends AppCompatActivity {
                 }
             }
         });
+
+
+        browse_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String button_name = browse_button.getText().toString();
+                if(button_name.equals("Browse")) {
+                    try {
+                        StorageChooser chooser = new StorageChooser.Builder()
+                                .withActivity(PatientRecordView.this)
+                                .withFragmentManager(getFragmentManager())
+                                .withPredefinedPath(getFilesDir().getPath())
+                                .withMemoryBar(true)
+                                .allowCustomPath(true)
+                                .setType(StorageChooser.FILE_PICKER)
+                                .build();
+                        chooser.show();
+
+                        chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
+                            @Override
+                            public void onSelect(String path) {
+                                fileSelected = path;
+                                String[] temp = path.split("/");
+                                fileName = temp[temp.length - 1];
+                                file_name.setText("File Name: " + fileName);
+                            }
+                        });
+                        chooser.setOnCancelListener(new StorageChooser.OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+                                fileSelected = null;
+                                file_name.setText("File Name: ");
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(button_name.equals("Delete Attachment")){
+                    fileSelected = "delete";
+                    file_name.setText("File Name: ");
+                }
+            }
+        });
     }
 
     // set the fields of all the edit text if the thats whats happening.
     private void edit_record(Record r){
             name_input.setText(r.getName());
             description_input.setText(r.getRecord());
+            if(!r.getFilename().equals("null")){
+                file_name.setText("File Name: " + r.getFilename());
+                browse_button.setText("Delete Attachment");
+            }
             add_update_button.setText("Update Record");
             update=true;
     }

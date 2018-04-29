@@ -7,17 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 
-import phr.lib.HealthProfessional;
-import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.Record;
 import phr.lib.RecordPermission;

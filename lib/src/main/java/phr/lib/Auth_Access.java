@@ -2,19 +2,31 @@ package phr.lib;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
 
+import org.omg.CORBA.Environment;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+
 /**
  * Created by Anupam on 28-Mar-18.
  *
@@ -25,50 +37,50 @@ import java.util.Map;
 
 public class Auth_Access{
 
-    private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
-    //private static final String IP = "http://10.0.2.2";
+    //private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
+    private static final String IP = "http://10.0.2.2";
 
     //get the users information using an email address
-    protected static String getUsersByEmail(String email){
+    public static String getUsersByEmail(String email){
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         return makePost(IP+"/PHR_AUTH/get_user_by_email.php", postData);
     }
     // get the user information using a known unique id for the user.
-    protected static String getUsersById(int id){
+    public static String getUsersById(int id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         return makePost(IP+"/PHR_AUTH/get_user_by_id.php", postData);
     }
     //get the health professional using an email address
-    protected static String getHealthProfessionalUsersByEmail(String email){
+    public static String getHealthProfessionalUsersByEmail(String email){
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         return makePost(IP+"/PHR_AUTH/get_health_professional_by_email.php", postData);
     }
     //get all the records for a user using their email
-    protected static String getUserHealthRecordByEmail(String email){
+    public static String getUserHealthRecordByEmail(String email){
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
         postData.put("email", email);
         return makePost(IP+"/PHR_AUTH/get_user_health_record_by_email.php", postData);
     }
     //get all the records for a user using their known unique id
-    protected static String getUserHealthRecordById(int id){
+    public static String getUserHealthRecordById(int id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         return makePost(IP+"/PHR_AUTH/get_user_health_record_by_id.php", postData);
     }
     //get all the recirds a health professional has access to given the health professional known unique id
-    protected static String getHealthProfessionalRecordsById(int id){
+    public static String getHealthProfessionalRecordsById(int id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
         return makePost(IP+"/PHR_AUTH/get_health_professional_records_by_id.php", postData);
     }
     //authenticates the user given their email and password (used for login)
-    protected static boolean isUser(String email, String password){
+    public static boolean isUser(String email, String password){
         boolean is_user=false;
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
@@ -80,7 +92,7 @@ public class Auth_Access{
         return is_user;
     }
     //authenticate the health professional give then email and password (used for login)
-    protected static boolean isHealthProfessional(String email, String password){
+    public static boolean isHealthProfessional(String email, String password){
         boolean is_user=false;
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
@@ -92,7 +104,7 @@ public class Auth_Access{
         return is_user;
     }
     //add a new user into the database (used for patient registration)
-    protected static boolean insertIntoUsers(String name,  String email, String password, String phone, String region, String province){
+    public static boolean insertIntoUsers(String name,  String email, String password, String phone, String region, String province){
         boolean success=false;
         email = email.toUpperCase();
         if(userExists(email) || healthUserExists(email))
@@ -110,7 +122,7 @@ public class Auth_Access{
         return success;
     }
     //add a new health professional into the database (used for health professional registration)
-    protected static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String province, String organization, String department, String health_professional){
+    public static boolean insertIntoHealthProfessional(String name,  String email, String password, String phone, String region, String province, String organization, String department, String health_professional){
         boolean success=false;
         email = email.toUpperCase();
         if(userExists(email) || healthUserExists(email))
@@ -131,7 +143,7 @@ public class Auth_Access{
         return success;
     }
     //return true if the user email provided exists in the database.
-    protected static boolean userExists(String email) {
+    public static boolean userExists(String email) {
         boolean success=false;
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
@@ -142,7 +154,7 @@ public class Auth_Access{
         return success;
     }
     //return true if the health professional email provided exists in the database.
-    protected static boolean healthUserExists(String email) {
+    public static boolean healthUserExists(String email) {
         boolean success=false;
         email = email.toUpperCase();
         HashMap<String, String> postData = new HashMap<>();
@@ -153,7 +165,7 @@ public class Auth_Access{
         return success;
     }
     //update a user record given the known unique record id
-    protected static boolean updateRecord(String name, String description, int rid){
+    public static boolean updateRecord(String name, String description, int rid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("name", name);
@@ -164,8 +176,21 @@ public class Auth_Access{
             result=true;
         return result;
     }
+    //update a user record given the known unique record id
+    public static boolean updateRecord(String name, String description, int rid, String fileName){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("name", name);
+        postData.put("description", description);
+        postData.put("rid", rid+"");
+        postData.put("filename", fileName);
+        String responce = makePost(IP+"/PHR_AUTH/update_record.php", postData);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
     //insert a new record given the known unique user id
-    protected static boolean insertIntoRecord(String name, String description, int uid){
+    public static boolean insertIntoRecord(String name, String description, int uid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("name", name);
@@ -176,8 +201,21 @@ public class Auth_Access{
             result=true;
         return result;
     }
+    //insert a new record given the known unique user id also adds filename
+    public static boolean insertIntoRecord(String name, String description, int uid, String fileName){
+        boolean result = false;
+        HashMap<String, String> postData = new HashMap<>();
+        postData.put("name", name);
+        postData.put("description", description);
+        postData.put("uid", uid+"");
+        postData.put("filename", fileName);
+        String responce = makePost(IP+"/PHR_AUTH/insert_into_record.php", postData);
+        if(responce.equals("true"))
+            result=true;
+        return result;
+    }
     //insert a new note given the known unique user and health professional id
-    protected static boolean insertIntoNotes(String name, String description, int uid, int hpid){
+    public static boolean insertIntoNotes(String name, String description, int uid, int hpid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("name", name);
@@ -190,14 +228,14 @@ public class Auth_Access{
         return result;
     }
     //get all notes addressed to a user given the known unique user id
-    protected static String getNotesForPatient(int user_id){
+    public static String getNotesForPatient(int user_id){
         HashMap<String, String> postData = new HashMap<>();
         postData.put("user_id", user_id+"");
         String responce = makePost(IP+"/PHR_AUTH/get_notes.php", postData);
         return responce;
     }
     //remove a record give the known unique record id
-    protected static boolean deleteRecord(int id){
+    public static boolean deleteRecord(int id){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -207,7 +245,7 @@ public class Auth_Access{
         return result;
     }
     //get the permissions for all the record for a user given the known unique user id
-    protected static String getRecordPerms(int id){
+    public static String getRecordPerms(int id){
         String result = "";
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -218,7 +256,7 @@ public class Auth_Access{
         return result;
     }
     //insert new permission for a record give the known unique health professional and record id.
-    protected static boolean givePermission(int hpid, int rid){
+    public static boolean givePermission(int hpid, int rid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("hpid", hpid+"");
@@ -229,7 +267,7 @@ public class Auth_Access{
         return result;
     }
     //remove permission for a record given the known unique permission id (the permissions themselves also have unique id's)
-    protected static boolean revokePermission(int id){
+    public static boolean revokePermission(int id){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -239,7 +277,7 @@ public class Auth_Access{
         return result;
     }
     //return true if the permissions already exists in the database given the known unique health professional and record id's.
-    protected static boolean permissionsExist(int hpid, int rid){
+    public static boolean permissionsExist(int hpid, int rid){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("hpid", hpid+"");
@@ -250,7 +288,7 @@ public class Auth_Access{
         return result;
     }
     //set the login time stamp for a user given the known unique user id.
-    protected static boolean setLoginUser(int id, Timestamp login){
+    public static boolean setLoginUser(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -261,7 +299,7 @@ public class Auth_Access{
         return result;
     }
     //set the logout time stamp for a user given the known unique user id.
-    protected static boolean setLogoutUser(int id, Timestamp login){
+    public static boolean setLogoutUser(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -272,7 +310,7 @@ public class Auth_Access{
         return result;
     }
     //set the login time stamp for a health professional given the known unique health professional id.
-    protected static boolean setLoginHealthProfessional(int id, Timestamp login){
+    public static boolean setLoginHealthProfessional(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -283,7 +321,7 @@ public class Auth_Access{
         return result;
     }
     //set the logout time stamp for a healthprofessional given the known unique health professional id.
-    protected static boolean setLogoutHealthProfessional(int id, Timestamp login){
+    public static boolean setLogoutHealthProfessional(int id, Timestamp login){
         boolean result = false;
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -294,7 +332,7 @@ public class Auth_Access{
         return result;
     }
     //get the login and logout time of a user give the known unique user id
-    protected static String getLoginLogoutUser(int id){
+    public static String getLoginLogoutUser(int id){
         String result = "";
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -304,7 +342,7 @@ public class Auth_Access{
         return result;
     }
     //get the login and logout time of a health professional give the known unique health professional id
-    protected static String getLoginLogoutHealthProfessional(int id){
+    public static String getLoginLogoutHealthProfessional(int id){
         String result = "";
         HashMap<String, String> postData = new HashMap<>();
         postData.put("id", id+"");
@@ -314,7 +352,7 @@ public class Auth_Access{
         return result;
     }
     //serach for a health professional using they attributes.
-    protected static String searchHealthProfessionals(String region, String province, String organization, String department, String healthProfessional){
+    public static String searchHealthProfessionals(String region, String province, String organization, String department, String healthProfessional){
         HashMap<String, String> postData = new HashMap<>();
         if(!region.equals("Any")){
             postData.put("region", region);
@@ -337,32 +375,32 @@ public class Auth_Access{
         return responce;
     }
     //get all the regions in the database.
-    protected static String getRegions(){
+    public static String getRegions(){
         String responce = makeGet(IP+"/PHR_AUTH/get_regions.php");
         return responce;
     }
     //get all the provinces in the database.
-    protected static String getProvinces(){
+    public static String getProvinces(){
         String responce = makeGet(IP+"/PHR_AUTH/get_provinces.php");
         return responce;
     }
     //get all the organizations in the database.
-    protected static String getOrganization(){
+    public static String getOrganization(){
         String responce = makeGet(IP+"/PHR_AUTH/get_organization.php");
         return responce;
     }
     //get all the departments in the database.
-    protected static String getDepartment(){
+    public static String getDepartment(){
         String responce = makeGet(IP+"/PHR_AUTH/get_department.php");
         return responce;
     }
     //get all the health professional attributes in the databse (this is they perticular profession)
-    protected static String getHealthProfessional(){
+    public static String getHealthProfessional(){
         String responce = makeGet(IP+"/PHR_AUTH/get_health_professional.php");
         return responce;
     }
     //update the patient information given the known unique user id
-    protected static boolean PatientUpdate(String name, String email, String phone, String region, String province, int id){
+    public static boolean PatientUpdate(String name, String email, String phone, String region, String province, int id){
         boolean result = false;
         email=email.toUpperCase();
         name=name.toUpperCase();
@@ -379,7 +417,7 @@ public class Auth_Access{
         return result;
     }
     //update the health professional information give the known unique health professional id
-    protected static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, String province, String organization, String department, String healthprofessinalProfession, int id){
+    public static boolean HealthProfessionalUpdate(String name, String email, String phone, String region, String province, String organization, String department, String healthprofessinalProfession, int id){
         boolean result = false;
         email=email.toUpperCase();
         name=name.toUpperCase();
@@ -399,10 +437,127 @@ public class Auth_Access{
         return result;
     }
     //get server time, used to ensure the time the app uses when sending to the server is the same.
-    protected static String getServerTime(){
+    public static String getServerTime(){
         String responce = makeGet(IP+"/PHR_AUTH/get_time_now_server.php");
         return responce;
     }
+
+
+    public static String sendFile(File sourceFile, HashMap<String, String> postData){
+        String responce = "";
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        String fileName = sourceFile.getName();
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        try {
+            // open a URL connection to the Servlet
+            FileInputStream fileInputStream = new FileInputStream(sourceFile);
+            URL url = new URL(IP+"/PHR_AUTH/send_file.php");
+
+            // Open a HTTP  connection to  the URL
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true); // Allow Inputs
+            conn.setDoOutput(true); // Allow Outputs
+            conn.setUseCaches(false); // Don't use a Cached Copy
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+
+            Iterator it = postData.entrySet().iterator();
+            while(it.hasNext()) {
+                Map.Entry<String, String> entry = (Map.Entry) it.next();
+                String key = entry.getKey();
+                String value = entry.getValue();
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
+                dos.writeBytes("Content-Type: text/plain" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(value);
+                dos.writeBytes(lineEnd);
+            }
+
+
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\"" + fileName + "\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+
+            // create a buffer of  maximum size
+            bytesAvailable = fileInputStream.available();
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            buffer = new byte[bufferSize];
+
+            // read file and write it into form...
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+            while (bytesRead > 0) {
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+            }
+
+            // send multipart form data necesssary after file data...
+            dos.writeBytes(lineEnd);
+
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+
+            InputStream in = conn.getInputStream();
+            InputStreamReader isw = new InputStreamReader(in);
+            int data = isw.read();
+            String ss="";
+            while (data != -1) {
+                char current = (char) data;
+                data = isw.read();
+                ss+=current;
+            }
+            System.out.println("ss out: "+ss);
+
+            // Responses from the server (code and message)
+            int serverResponseCode = conn.getResponseCode();
+            String serverResponseMessage = conn.getResponseMessage();
+            System.out.println("Responce Message: " + serverResponseMessage);
+
+            if(serverResponseCode == 200){
+                responce = "complete";
+            }
+
+            //close the streams //
+            fileInputStream.close();
+            dos.flush();
+            dos.close();
+
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Responce: "+responce);
+        return responce;
+    }
+
+
+    public static void getFile(String path, FileOutputStream fos) {
+        try {
+            URL url = new URL (IP+path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            InputStream is = conn.getInputStream();
+            int data = -1;
+            byte[] buffer = new byte[1024];
+            while((data = is.read(buffer)) != -1){
+                fos.write(buffer,0,data);
+            }
+            is.close();
+        }catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     //last two can only be used from this library
     //i would like to make these two use HTTPS for added security.
@@ -467,7 +622,6 @@ public class Auth_Access{
             DataOutputStream outputPost = new DataOutputStream(urlConnection.getOutputStream());
             outputPost.writeBytes(urlParamaters);
             outputPost.flush();
-
             InputStream in = urlConnection.getInputStream();
             InputStreamReader isw = new InputStreamReader(in);
             int data = isw.read();

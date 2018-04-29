@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import phr.lib.Lib;
 import phr.lib.Patient;
 import phr.lib.User;
 

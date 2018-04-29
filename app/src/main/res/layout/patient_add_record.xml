@@ -132,10 +132,12 @@
             android:padding="12dp"
             android:textSize="16dp" />
 
-        <EditText
+        <TextView
+            android:id="@+id/file_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10" />
+            android:ems="10"
+            android:text="File Name: " />
 
         <Button
             android:id="@+id/browse_button"
@@ -143,7 +145,7 @@
             android:layout_width="116dp"
             android:layout_height="42dp"
             android:layout_gravity="right"
-            android:text="Browse..."
+            android:text="Browse"
             android:textSize="12dp"
             android:theme="@style/myButtonTheme" />
 
