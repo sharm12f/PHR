@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -31,8 +32,9 @@ import phr.lib.User;
 public class HealthProfessionalRecordView extends AppCompatActivity {
 
 
-    TextView record_name_text, record_description_text, patient_name;
-    Button leave_note_button;
+    TextView record_name_text, record_description_text, patient_name, attachment_name;
+    TableRow attachment_row;
+    Button leave_note_button, view_attachment_button;
     Record record;
     Patient patient;
     HealthProfessional healthProfessional;
@@ -48,7 +50,10 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
         record_name_text = findViewById(R.id.record_name_text);
         record_description_text = findViewById(R.id.record_decription_text);
         leave_note_button = findViewById(R.id.leave_note_button);
+        view_attachment_button=findViewById(R.id.view_attachment_button);
         patient_name=findViewById(R.id.patient_name_text);
+        attachment_name = findViewById(R.id.attachment_textview);
+        attachment_row = findViewById(R.id.attachment_row);
 
         // this is used to desicide which page the user arrived here from, and will send them back to that page. (there are 2 - 3 pages that can come here from)
         GOTO = (String)getIntent().getExtras().get("GOTO");
@@ -63,6 +68,39 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
         patient_name.setText(patient.getName());
         record_name_text.setText(record.getName());
         record_description_text.setText(record.getRecord());
+
+        //check to see if there is an attachment to this record
+        if(record.getFilename().equals("null")){
+            //remove the row with the attachment name and view button if it does not
+           attachment_row.setVisibility(View.GONE);
+           view_attachment_button.setClickable(false);
+        }
+        else{
+            //set the name of the attachment if it does
+            String name = record.getFilename();
+            if(record.getFilename().length()>12){
+                name = name.substring(0,12)+"...";
+            }
+            attachment_name.setText(name);
+        }
+
+        // Allow the user to view the attachment
+        view_attachment_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), OpenRecord.class);
+                ArrayList<Record> list = new ArrayList<Record>();
+                list.add(record);
+                ArrayList<User> list2 = new ArrayList<User>();
+                list2.add(patient);
+                list2.add(healthProfessional);
+                intent.putExtra("RECORD",list);
+                intent.putExtra("USER",list2);
+                intent.putExtra("GOTO", GOTO);
+                intent.putExtra("POS",position);
+                startActivity(intent);
+            }
+        });
 
         // Allows the user to leave a note for the patient regarding the record
         leave_note_button.setOnClickListener(new View.OnClickListener() {

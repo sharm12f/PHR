@@ -35,6 +35,7 @@
         <activity android:name=".HealthProfessionalRecordView"></activity>
         <activity android:name=".HealthProfessionalSinglePatient"></activity>
         <activity android:name=".HealthProfessionalLeaveNote"></activity>
+        <activity android:name=".OpenRecord"></activity>
     </application>
 
 </manifest>

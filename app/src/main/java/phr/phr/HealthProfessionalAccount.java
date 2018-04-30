@@ -47,7 +47,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
         name_text = findViewById(R.id.name_text);
         email_text = findViewById(R.id.email_text);
         edit_button = findViewById(R.id.edit_button);
-        view_all_records = findViewById(R.id.button2);
+        view_all_records = findViewById(R.id.view_all_records_button);
         patients_listview = findViewById(R.id.patients_list_view);
 
         //ensure that you get a valid healthProfessional object when this activity is called, go back to login activity if not
@@ -136,6 +136,7 @@ public class HealthProfessionalAccount extends AppCompatActivity {
                 private ProgressDialog p = new ProgressDialog(HealthProfessionalAccount.this);
                 protected void onPreExecute(){
                     super.onPreExecute();
+                    p.setCancelable(false);
                     p.setMessage("Loading");
                     p.setIndeterminate(false);
                     p.setProgressStyle(ProgressDialog.STYLE_SPINNER);

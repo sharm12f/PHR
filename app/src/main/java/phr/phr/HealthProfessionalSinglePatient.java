@@ -54,7 +54,7 @@ public class HealthProfessionalSinglePatient extends AppCompatActivity {
         records_list_view = findViewById(R.id.records_list_view);
 
         //may add generic note feature. (not gonna be hard to do, the already existing activity can be used for this)
-        add_note_button = findViewById(R.id.button2);
+        add_note_button = findViewById(R.id.view_all_records_button);
         add_note_button.setClickable(false);
         add_note_button.setVisibility(View.GONE);
 
@@ -119,6 +119,7 @@ public class HealthProfessionalSinglePatient extends AppCompatActivity {
                 protected void onPreExecute(){
                     super.onPreExecute();
                     p.setMessage("Loading");
+                    p.setCancelable(false);
                     p.setIndeterminate(false);
                     p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     p.show();

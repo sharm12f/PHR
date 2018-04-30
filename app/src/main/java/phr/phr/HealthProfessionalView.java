@@ -40,10 +40,6 @@ public class HealthProfessionalView extends AppCompatActivity {
         view_all_record_button = findViewById(R.id.all_records_button);
         record_list_view = findViewById(R.id.records_list_view);
 
-        //not sure if this button is need at all so its hidden for now.
-        view_all_record_button.setVisibility(View.GONE);
-        view_all_record_button.setClickable(false);
-
         //get he user object
         ArrayList<HealthProfessional> list = (ArrayList<HealthProfessional>)getIntent().getExtras().get("USER");
         healthProfessional = list.get(0);

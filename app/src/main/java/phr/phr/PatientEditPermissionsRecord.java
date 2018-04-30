@@ -38,7 +38,7 @@ import phr.lib.User;
 
 public class PatientEditPermissionsRecord extends AppCompatActivity {
     TextView record_name, health_professionla_list_text_view;
-    Button select, add_perms, revoke_perms;
+    Button select, add_perms, revoke_perms, revoke_all;
     ListView perms_list_view;
     Record record;
     ArrayList<RecordPermission> perms_list;
@@ -58,8 +58,9 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
 
         record_name = findViewById(R.id.title_text_view);
         select = findViewById(R.id.button1);
-        add_perms = findViewById(R.id.button2);
+        add_perms = findViewById(R.id.add_perms_button);
         revoke_perms = findViewById(R.id.button3);
+        revoke_all = findViewById(R.id.view_all_records_button);
         perms_list_view = findViewById(R.id.perms_list_view);
         health_professionla_list_text_view = findViewById(R.id.text_view1);
 
@@ -96,6 +97,53 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
             }
         });
 
+        //revoke permissions from everyone who has access to this record.
+        revoke_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
+                    private ProgressDialog p = new ProgressDialog(PatientEditPermissionsRecord.this);
+                    protected void onPreExecute(){
+                        super.onPreExecute();
+                        p.setMessage("Loading");
+                        p.setCancelable(false);
+                        p.setIndeterminate(false);
+                        p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        p.show();
+                    }
+                    protected Boolean doInBackground(Void... progress) {
+                        boolean result = false;
+                        boolean noError = true;
+                        int length = perms_list.size();
+                        for(int i = 0; i<length ; i++){
+                            RecordPermission recordPermission = perms_list.get(i);
+                            boolean permsExist = Lib.permsExist(recordPermission);
+                            if(permsExist)
+                                result=Lib.revokePermission(recordPermission);
+                            if(!result)
+                                noError=false;
+                        }
+                        if(noError)
+                            return true;
+                        else
+                            return false;
+                    }
+                    protected void onPostExecute(Boolean result){
+                        super.onPostExecute(result);
+                        p.dismiss();
+                        // reload the dbRegions view after the permissions have been revoked.
+                        if(result){
+                            setPermsListView();
+                            Toast toast = Toast.makeText(getApplicationContext(), "All Permission Revoked", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+
+                    }
+                };
+                asyncTask.execute();
+            }
+        });
+
 
         // revoke the permission from the health professional selected from the dbRegions.
         revoke_perms.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +157,7 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
                         protected void onPreExecute(){
                             super.onPreExecute();
                             p.setMessage("Loading");
+                            p.setCancelable(false);
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
@@ -161,6 +210,7 @@ public class PatientEditPermissionsRecord extends AppCompatActivity {
                 protected void onPreExecute(){
                     super.onPreExecute();
                     p.setMessage("Loading");
+                    p.setCancelable(false);
                     p.setIndeterminate(false);
                     p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     p.show();

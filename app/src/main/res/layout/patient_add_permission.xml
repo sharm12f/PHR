@@ -155,7 +155,7 @@
         <ListView
             android:id="@+id/health_professional_list_view"
             android:layout_width="match_parent"
-            android:layout_height="186dp" />
+            android:layout_height="145dp" />
 
 
     </LinearLayout>

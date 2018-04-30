@@ -95,6 +95,7 @@ public class HealthProfessionalViewAllRecords extends AppCompatActivity {
                 protected void onPreExecute(){
                     super.onPreExecute();
                     p.setMessage("Loading");
+                    p.setCancelable(false);
                     p.setIndeterminate(false);
                     p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     p.show();

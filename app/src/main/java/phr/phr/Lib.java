@@ -50,6 +50,10 @@ public class Lib {
     //private static final long SESSION_TIMEOUT = 120000;
     private static final long SESSION_TIMEOUT = 5000;
 
+    public static final String[] IMAGE_EXT = {"jpg","jpeg","png"};
+    public static final String[] FILE_EXT = {"doc","docx","pdf"};
+
+
 
     // creates and returns a user object if login is success full given the correct email and password for the user
     //(can log in both patients and health professionals)
@@ -444,9 +448,13 @@ public class Lib {
                 name = result.getString("name");
                 record = result.getString("record");
                 filename = result.getString("filename");
+
+                /*
                 if(!filename.equals("null")){
                     getFile(email,filename);
                 }
+                */
+
                 Record r = new Record(name, record, uid, create_time);
                 r.setFilename(filename);
                 r.setId(rid);

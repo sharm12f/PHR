@@ -49,7 +49,7 @@ public class PatientView extends AppCompatActivity {
         setUpdateNotes();
 
         //gonna hide this for now, you can re-enable it and dbRegions all history notes
-        notes = findViewById(R.id.button2);
+        notes = findViewById(R.id.view_all_records_button);
         notes.setVisibility(View.GONE);
         notes.setClickable(false);
 

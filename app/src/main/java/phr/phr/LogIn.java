@@ -97,17 +97,17 @@ public class LogIn extends AppCompatActivity {
                         protected void onPreExecute(){
                             super.onPreExecute();
                             p.setMessage("Loading");
+                            p.setCancelable(false);
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
                         }
                         protected Void doInBackground(Void... progress) {
                             // get the users credentials and try to login them in
-
-                            //if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
-                            //    return null;
-                            //user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
-                            user = Lib.login("app@app.com", "p");
+                            if(email_input.getText().toString().equals("") || password_input.getText().toString().equals(""))
+                                return null;
+                            user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
+                            //user = Lib.login("app@app.com", "p");
                             user.setSession(Lib.getTimestampNow());
                             return null;
                         }
@@ -177,12 +177,15 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View v) {
                 Toast toast = Toast.makeText(LogIn.this, "Under Construction", Toast.LENGTH_SHORT);
                 toast.show();
-                /*try {
+
+                /*
+                try {
                     AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                         private ProgressDialog p = new ProgressDialog(LogIn.this);
                         protected void onPreExecute(){
                             super.onPreExecute();
                             p.setMessage("Loading");
+                            p.setCancelable(false);
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
@@ -220,7 +223,8 @@ public class LogIn extends AppCompatActivity {
                         }
                     };
                     asyncTask.execute();
-                }catch (Exception e){e.printStackTrace();}*/
+                }catch (Exception e){e.printStackTrace();}
+                */
             }
         });
     }

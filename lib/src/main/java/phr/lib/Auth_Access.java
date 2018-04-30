@@ -37,8 +37,8 @@ import java.util.Map;
 
 public class Auth_Access{
 
-    //private static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
-    private static final String IP = "http://10.0.2.2";
+    public static final String IP = "http://sharm12f.myweb.cs.uwindsor.ca";
+    //public static final String IP = "http://10.0.2.2";
 
     //get the users information using an email address
     public static String getUsersByEmail(String email){

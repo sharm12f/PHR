@@ -1,10 +1,12 @@
 package phr.phr;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -119,6 +121,7 @@ public class PatientRecordView extends AppCompatActivity {
                         protected void onPreExecute(){
                             super.onPreExecute();
                             p.setMessage("Loading");
+                            p.setCancelable(false);
                             p.setIndeterminate(false);
                             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             p.show();
@@ -161,6 +164,7 @@ public class PatientRecordView extends AppCompatActivity {
                             protected void onPreExecute(){
                                 super.onPreExecute();
                                 p.setMessage("Loading");
+                                p.setCancelable(false);
                                 p.setIndeterminate(false);
                                 p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 p.show();
@@ -212,6 +216,7 @@ public class PatientRecordView extends AppCompatActivity {
                             protected void onPreExecute(){
                                 super.onPreExecute();
                                 p.setMessage("Loading");
+                                p.setCancelable(false);
                                 p.setIndeterminate(false);
                                 p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 p.show();
@@ -275,7 +280,53 @@ public class PatientRecordView extends AppCompatActivity {
                                 fileSelected = path;
                                 String[] temp = path.split("/");
                                 fileName = temp[temp.length - 1];
-                                file_name.setText("File Name: " + fileName);
+                                boolean supportedType = false;
+                                String[] split = fileName.split("\\.");
+                                String extension = split[split.length-1];
+                                for(String e:Lib.IMAGE_EXT){
+                                    if(extension.equals(e))
+                                        supportedType=true;
+                                }
+                                for(String e:Lib.FILE_EXT){
+                                    if(extension.equals(e))
+                                        supportedType=true;
+                                }
+                                if(supportedType) {
+                                    boolean nameCheck = false;
+                                    for(Record r:patient.getRecords()){
+                                        if(!r.getFilename().equals("null")){
+                                            if(fileName.equals(r.getFilename())){
+                                                nameCheck=true;
+                                            }
+                                        }
+                                    }
+                                    if(!nameCheck)
+                                        file_name.setText("File Name: " + fileName);
+                                    else{
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(PatientRecordView.this);
+                                        builder.setMessage("File with the same name already in database, this will override the old file.\n\nSelect 'Yes' if it is the same file.")
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        file_name.setText("File Name: " + fileName);
+                                                    }
+                                                })
+                                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        fileSelected = null;
+                                                        file_name.setText("File Name: ");
+                                                    }
+                                                });
+                                        AlertDialog dialog = builder.create();
+                                        dialog.setCancelable(false);
+                                        dialog.show();
+                                    }
+                                }
+                                else{
+                                    Toast toast = Toast.makeText(getApplicationContext(), "File Type Not Supported", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    fileSelected = null;
+                                    file_name.setText("File Name: ");
+                                }
                             }
                         });
                         chooser.setOnCancelListener(new StorageChooser.OnCancelListener() {
