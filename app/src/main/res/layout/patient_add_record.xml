@@ -141,7 +141,7 @@
             android:id="@+id/browse_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="116dp"
-            android:layout_height="42dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="Browse"
             android:textSize="12dp"
