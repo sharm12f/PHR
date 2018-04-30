@@ -1,21 +1,12 @@
 package phr.phr;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Path;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import phr.lib.Auth_Access;
@@ -31,11 +22,11 @@ import phr.lib.User;
  *
  */
 
-public class OpenRecord extends AppCompatActivity {
+public class OpenAttachment extends AppCompatActivity {
     WebView webView;
 
     //These are used when the user needs to go back
-    String GOTO, url;
+    String GOTO, url, from;
     int position;
     Record record;
     Patient patient;
@@ -44,21 +35,27 @@ public class OpenRecord extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.open_record);
+        setContentView(R.layout.open_attachment);
         webView = findViewById(R.id.webView);
 
         // this is used to desicide which page the user arrived here from, and will send them back to that page. (there are 2 - 3 pages that can come here from)
-        GOTO = (String)getIntent().getExtras().get("GOTO");
-
-
-        //get the nessasry data from the previous activity
-        ArrayList<Record> list = (ArrayList<Record>)getIntent().getExtras().get("RECORD");
-        ArrayList<User> list2 = (ArrayList<User>)getIntent().getExtras().get("USER");
-        position = (int)getIntent().getExtras().get("POS");
-        record = list.get(0);
-        patient = (Patient)list2.get(0);
-        healthProfessional = (HealthProfessional)list2.get(1);
-
+        from = getIntent().getExtras().getString("FROM");
+        if(from.equals("PATIENT")){
+            ArrayList<Record> list = (ArrayList<Record>) getIntent().getExtras().get("RECORD");
+            ArrayList<User> list2 = (ArrayList<User>) getIntent().getExtras().get("USER");
+            record = list.get(0);
+            patient = (Patient) list2.get(0);
+        }
+        else if(from.equals("HEALTHPROFESSIONALS")) {
+            GOTO = (String) getIntent().getExtras().get("GOTO");
+            //get the nessasry data from the previous activity
+            ArrayList<Record> list = (ArrayList<Record>) getIntent().getExtras().get("RECORD");
+            ArrayList<User> list2 = (ArrayList<User>) getIntent().getExtras().get("USER");
+            position = (int) getIntent().getExtras().get("POS");
+            record = list.get(0);
+            patient = (Patient) list2.get(0);
+            healthProfessional = (HealthProfessional) list2.get(1);
+        }
         //used to check what type of file is being recieved
         boolean isImage=false, isFile=false;
 
@@ -99,7 +96,7 @@ public class OpenRecord extends AppCompatActivity {
             webView.loadUrl(url);
         }
         else{
-            Toast toast = Toast.makeText(OpenRecord.this, "File Type Error", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(OpenAttachment.this, "File Type Error", Toast.LENGTH_SHORT);
             toast.show();
         }
 
@@ -112,16 +109,30 @@ public class OpenRecord extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         //control the flow of the app
-        Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
-        ArrayList<Record> list = new ArrayList<Record>();
-        list.add(record);
-        ArrayList<User> list2 = new ArrayList<User>();
-        list2.add(patient);
-        list2.add(healthProfessional);
-        intent.putExtra("RECORD",list);
-        intent.putExtra("USER",list2);
-        intent.putExtra("GOTO", GOTO);
-        intent.putExtra("POS",position);
-        startActivity(intent);
+        if(from.equals("PATIENT")){
+            Intent intent = new Intent(getApplicationContext(), PatientRecordView.class);
+            ArrayList<Record> list = new ArrayList<Record>();
+            list.add(record);
+            ArrayList<User> list2 = new ArrayList<User>();
+            list2.add(patient);
+            intent.putExtra("RECORD",list);
+            intent.putExtra("USER",list2);
+            startActivity(intent);
+            finish();
+        }
+        else if(from.equals("HEALTHPROFESSIONALS")) {
+            Intent intent = new Intent(getApplicationContext(), HealthProfessionalRecordView.class);
+            ArrayList<Record> list = new ArrayList<Record>();
+            list.add(record);
+            ArrayList<User> list2 = new ArrayList<User>();
+            list2.add(patient);
+            list2.add(healthProfessional);
+            intent.putExtra("RECORD",list);
+            intent.putExtra("USER",list2);
+            intent.putExtra("GOTO", GOTO);
+            intent.putExtra("POS",position);
+            startActivity(intent);
+            finish();
+        }
     }
 }

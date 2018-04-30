@@ -88,7 +88,7 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
         view_attachment_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), OpenRecord.class);
+                Intent intent = new Intent(getApplicationContext(), OpenAttachment.class);
                 ArrayList<Record> list = new ArrayList<Record>();
                 list.add(record);
                 ArrayList<User> list2 = new ArrayList<User>();
@@ -98,7 +98,9 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
                 intent.putExtra("USER",list2);
                 intent.putExtra("GOTO", GOTO);
                 intent.putExtra("POS",position);
+                intent.putExtra("FROM","HEALTHPROFESSIONALS");
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -117,6 +119,7 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
                 intent.putExtra("GOTO", GOTO);
                 intent.putExtra("POS",position);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -131,6 +134,7 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
             list.add(healthProfessional);
             intent.putExtra("USER",list);
             startActivity(intent);
+            finish();
         }
         // the user arriaved  at this page from the single patients page
         else if(GOTO.equals("SinglePatient")){
@@ -140,6 +144,7 @@ public class HealthProfessionalRecordView extends AppCompatActivity {
             intent.putExtra("USER",list);
             intent.putExtra("POS",position);
             startActivity(intent);
+            finish();
         }
         else if(GOTO.equals("HealthProfessionalView")){
             Intent intent = new Intent(getApplicationContext(), HealthProfessionalView.class);

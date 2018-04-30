@@ -80,11 +80,14 @@
             tools:layout_editor_absoluteY="264sp" />
 
         <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
 
             <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:padding="5dp">
 
                 <TextView
@@ -102,16 +105,97 @@
             </TableRow>
 
             <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:padding="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:text="Description:"
                     android:gravity="center"
+                    android:text="Description:"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/description_input"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/my_border"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:padding="12dp"
+                    android:textSize="16dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="19dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".2"
+                        android:text="File Name: " />
+
+                    <TextView
+                        android:id="@+id/file_name"
+                        android:layout_width="26dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/browse_button"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="29dp"
+                        android:layout_weight="1"
+                        android:text="Browse"
+                        android:textSize="12dp"
+                        android:theme="@style/myButtonTheme" />
+
+                    <Button
+                        android:id="@+id/view_attachment_button"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="17dp"
+                        android:layout_weight="1"
+                        android:text="View"
+                        android:textSize="12dp"
+                        android:theme="@style/myButtonTheme" />
+                </RelativeLayout>
 
             </TableRow>
 
@@ -119,33 +203,7 @@
         </TableLayout>
 
 
-        <EditText
-            android:id="@+id/description_input"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/my_border"
-            android:ems="10"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:padding="12dp"
-            android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/file_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:text="File Name: " />
-
-        <Button
-            android:id="@+id/browse_button"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="116dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Browse"
-            android:textSize="12dp"
-            android:theme="@style/myButtonTheme" />
 
     </LinearLayout>
 

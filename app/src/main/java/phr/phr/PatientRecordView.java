@@ -51,9 +51,9 @@ import phr.lib.User;
 public class PatientRecordView extends AppCompatActivity {
     EditText name_input, description_input;
     TextView file_name;
-    Button add_update_button, browse_button, delete_record, edit_permissions;
+    Button add_update_button, browse_button, delete_record, edit_permissions, view_attachment;
     Record record;
-    String fileSelected, fileName;
+    String fileSelected="", fileName;
     boolean update=false;
     int id;
 
@@ -71,7 +71,12 @@ public class PatientRecordView extends AppCompatActivity {
         delete_record = findViewById(R.id.delete_record_button);
         edit_permissions = findViewById(R.id.edit_permissions_button);
         browse_button = findViewById(R.id.browse_button);
+        view_attachment = findViewById(R.id.view_attachment_button);
         file_name = findViewById(R.id.file_name);
+
+        //only show this button if there is an attachment
+        view_attachment.setClickable(false);
+        view_attachment.setVisibility(View.GONE);
 
         // get the user object should always be passed from activity to activity
         ArrayList<User> u = (ArrayList<User>) getIntent().getExtras().get("USER");
@@ -171,19 +176,15 @@ public class PatientRecordView extends AppCompatActivity {
                             }
                             protected Boolean doInBackground(Void... progress) {
                                 Boolean result = false;
-                                if(fileSelected!=null){
-                                    if(fileSelected.equals("delete")){
-                                        fileName = "null";
-                                    }
+                                if(fileSelected.equals("")){
+                                    fileName = "null";
                                     result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
                                 }
                                 else{
-                                    result = Lib.PatientUpdateRecord(name, description, record.getId());
+                                    result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
                                 }
-                                if(fileSelected!=null && result){
-                                    if(!fileSelected.equals("delete")){
-                                        Lib.sendFile(new File(fileSelected),patient);
-                                    }
+                                if(!fileSelected.equals("") && result){
+                                    Lib.sendFile(new File(fileSelected),patient);
                                 }
                                 return result;
                             }
@@ -258,12 +259,15 @@ public class PatientRecordView extends AppCompatActivity {
         });
 
 
+        //the browse button also acts the delete attachment button
         browse_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String button_name = browse_button.getText().toString();
                 if(button_name.equals("Browse")) {
+                    //start the chooser, this is a dependency to a chooser i found on git: https://github.com/codekidX/storage-chooser
                     try {
+                        //create a file picker and show it too the user
                         StorageChooser chooser = new StorageChooser.Builder()
                                 .withActivity(PatientRecordView.this)
                                 .withFragmentManager(getFragmentManager())
@@ -274,6 +278,7 @@ public class PatientRecordView extends AppCompatActivity {
                                 .build();
                         chooser.show();
 
+                        //the listener for the file selection
                         chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
                             @Override
                             public void onSelect(String path) {
@@ -282,17 +287,22 @@ public class PatientRecordView extends AppCompatActivity {
                                 fileName = temp[temp.length - 1];
                                 boolean supportedType = false;
                                 String[] split = fileName.split("\\.");
+                                //get the extension of the file
                                 String extension = split[split.length-1];
+                                //check if its an image file
                                 for(String e:Lib.IMAGE_EXT){
                                     if(extension.equals(e))
                                         supportedType=true;
                                 }
+                                //check if its a file
                                 for(String e:Lib.FILE_EXT){
                                     if(extension.equals(e))
                                         supportedType=true;
                                 }
                                 if(supportedType) {
                                     boolean nameCheck = false;
+                                    //make sure a file with the same name does not already exist under this users account. Otherwise the new one will overide the old file.
+                                    //this will also popup if they try to attach the same file to multiple records.
                                     for(Record r:patient.getRecords()){
                                         if(!r.getFilename().equals("null")){
                                             if(fileName.equals(r.getFilename())){
@@ -300,20 +310,21 @@ public class PatientRecordView extends AppCompatActivity {
                                             }
                                         }
                                     }
-                                    if(!nameCheck)
-                                        file_name.setText("File Name: " + fileName);
+                                    if(!nameCheck) {
+                                        fileSelected();
+                                    }
                                     else{
+                                        // this alert tells the user they are trying to upload a file with the same name as a file in the database
                                         AlertDialog.Builder builder = new AlertDialog.Builder(PatientRecordView.this);
                                         builder.setMessage("File with the same name already in database, this will override the old file.\n\nSelect 'Yes' if it is the same file.")
                                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int id) {
-                                                        file_name.setText("File Name: " + fileName);
+                                                        fileSelected();
                                                     }
                                                 })
                                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int id) {
-                                                        fileSelected = null;
-                                                        file_name.setText("File Name: ");
+                                                        fileNotSelected();
                                                     }
                                                 });
                                         AlertDialog dialog = builder.create();
@@ -324,16 +335,14 @@ public class PatientRecordView extends AppCompatActivity {
                                 else{
                                     Toast toast = Toast.makeText(getApplicationContext(), "File Type Not Supported", Toast.LENGTH_SHORT);
                                     toast.show();
-                                    fileSelected = null;
-                                    file_name.setText("File Name: ");
+                                    fileNotSelected();
                                 }
                             }
                         });
                         chooser.setOnCancelListener(new StorageChooser.OnCancelListener() {
                             @Override
                             public void onCancel() {
-                                fileSelected = null;
-                                file_name.setText("File Name: ");
+                                fileNotSelected();
                             }
                         });
                     } catch (Exception e) {
@@ -341,9 +350,24 @@ public class PatientRecordView extends AppCompatActivity {
                     }
                 }
                 else if(button_name.equals("Delete Attachment")){
-                    fileSelected = "delete";
-                    file_name.setText("File Name: ");
+                    fileNotSelected();
                 }
+            }
+        });
+
+        view_attachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), OpenAttachment.class);
+                ArrayList<Record> list = new ArrayList<Record>();
+                list.add(record);
+                ArrayList<User> list2 = new ArrayList<User>();
+                list2.add(patient);
+                intent.putExtra("RECORD",list);
+                intent.putExtra("USER",list2);
+                intent.putExtra("FROM","PATIENT");
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -353,12 +377,33 @@ public class PatientRecordView extends AppCompatActivity {
             name_input.setText(r.getName());
             description_input.setText(r.getRecord());
             if(!r.getFilename().equals("null")){
-                file_name.setText("File Name: " + r.getFilename());
+                file_name.setText(r.getFilename());
                 browse_button.setText("Delete Attachment");
+                view_attachment.setClickable(true);
+                view_attachment.setVisibility(View.VISIBLE);
             }
             add_update_button.setText("Update Record");
             update=true;
     }
+
+
+    //sets the appropriate fields if there is an attachment
+    private void fileSelected(){
+        file_name.setText(fileName);
+        view_attachment.setClickable(true);
+        view_attachment.setVisibility(View.VISIBLE);
+        browse_button.setText("Delete Attachment");
+    }
+
+    //sets the appropriate fields if there is no attachment
+    private void fileNotSelected(){
+        fileSelected = "";
+        file_name.setText("");
+        view_attachment.setClickable(false);
+        view_attachment.setVisibility(View.GONE);
+        browse_button.setText("Browse");
+    }
+
 
     // controls the flow of the application regarless of the stack.
     @Override
