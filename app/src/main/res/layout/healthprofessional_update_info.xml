@@ -114,11 +114,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Region:"
+                    android:text="Province:"
                     android:textSize="16sp" />
 
                 <Spinner
-                    android:id="@+id/region_spinner"
+                    android:id="@+id/province_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
@@ -133,11 +133,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Province:"
+                    android:text="City:"
                     android:textSize="16sp" />
 
                 <Spinner
-                    android:id="@+id/province_spinner"
+                    android:id="@+id/region_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
