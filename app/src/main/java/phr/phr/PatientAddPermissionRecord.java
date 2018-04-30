@@ -164,7 +164,9 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // ensure the dbRegions is not empty
-                int len = healthProfessionalsList.size();
+                int len = 0;
+                if(healthProfessionalsList!=null)
+                    len = healthProfessionalsList.size();
                 if(len >= 1) {
                     try {
                         new AsyncTask<Void, Void, Boolean>() {
