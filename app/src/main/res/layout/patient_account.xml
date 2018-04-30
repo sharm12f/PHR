@@ -89,7 +89,6 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/my_border"
                     android:padding="2dp"
                     android:text="My Records"
                     android:textSize="20dp"
