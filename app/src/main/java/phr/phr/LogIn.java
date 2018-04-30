@@ -108,7 +108,8 @@ public class LogIn extends AppCompatActivity {
                                 return null;
                             user = Lib.login(email_input.getText().toString(), password_input.getText().toString());
                             //user = Lib.login("app@app.com", "p");
-                            user.setSession(Lib.getTimestampNow());
+                            if(user!=null)
+                                user.setSession(Lib.getTimestampNow());
                             return null;
                         }
                         protected void onPostExecute(Void Void){
