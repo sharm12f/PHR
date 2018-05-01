@@ -98,12 +98,19 @@ public class PatientAccount extends AppCompatActivity {
             edit_perms_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), PatientAddPermissionAllRecords.class);
-                    ArrayList<User> list = new ArrayList<>();
-                    list.add(patient);
-                    intent.putExtra("USER",list);
-                    startActivity(intent);
-                    finish();
+                    int recordsLength = patient.getRecords().size();
+                    if(recordsLength<1){
+                        Toast toast = Toast.makeText(getApplicationContext(), "You have no Records", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    else {
+                        Intent intent = new Intent(getApplicationContext(), PatientAddPermissionAllRecords.class);
+                        ArrayList<User> list = new ArrayList<>();
+                        list.add(patient);
+                        intent.putExtra("USER", list);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             });
 
@@ -146,10 +153,6 @@ public class PatientAccount extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
-
-
-
         try{
             AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 private ProgressDialog p = new ProgressDialog(PatientAccount.this);
