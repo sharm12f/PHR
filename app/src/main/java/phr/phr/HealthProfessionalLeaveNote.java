@@ -164,7 +164,7 @@ public class HealthProfessionalLeaveNote extends AppCompatActivity {
         note_to_from_name_text.setText(patient.getName());
 
         //insert into the the note the record name it refers to
-        note_description.setText("Refering to note: " + record.getName());
+        note_description.setText("In reference to Record: " + record.getName());
 
     }
 }
