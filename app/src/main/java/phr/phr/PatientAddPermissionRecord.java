@@ -226,6 +226,10 @@ public class PatientAddPermissionRecord extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                else{
+                    Toast toast = Toast.makeText(getApplicationContext(), "No Health Professionals to give Permissions", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
 

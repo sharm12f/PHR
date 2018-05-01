@@ -164,63 +164,71 @@ public class PatientAddPermissionAllRecords extends AppCompatActivity {
         add_perms_all_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    new AsyncTask<Void, Void, Boolean>() {
-                        private ProgressDialog p = new ProgressDialog(PatientAddPermissionAllRecords.this);
+                int len = 0;
+                if(healthProfessionalsList!=null)
+                    len = healthProfessionalsList.size();
+                if(len >= 1) {
+                    try {
+                        new AsyncTask<Void, Void, Boolean>() {
+                            private ProgressDialog p = new ProgressDialog(PatientAddPermissionAllRecords.this);
 
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                            p.setMessage("Loading");
-                            p.setCancelable(false);
-                            p.setIndeterminate(false);
-                            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            p.show();
-                        }
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                p.setMessage("Loading");
+                                p.setCancelable(false);
+                                p.setIndeterminate(false);
+                                p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                p.show();
+                            }
 
-                        protected Boolean doInBackground(Void... progress) {
-                            boolean allSet = true;
-                            ArrayList<Record> records = patient.getRecords();
-                            for(int j=0; j<records.size(); j++) {
-                                for (int i = 0; i < healthProfessionalsList.size(); i++) {
-                                    boolean result = false;
-                                    HealthProfessional hp = healthProfessionalsList.get(i);
-                                    Record record = records.get(j);
-                                    recordPermission = new RecordPermission(hp.getId(), hp.getName(), record.getId(), record.getName());
-                                    boolean permsExist = Lib.permsExist(recordPermission);
+                            protected Boolean doInBackground(Void... progress) {
+                                boolean allSet = true;
+                                ArrayList<Record> records = patient.getRecords();
+                                for (int j = 0; j < records.size(); j++) {
+                                    for (int i = 0; i < healthProfessionalsList.size(); i++) {
+                                        boolean result = false;
+                                        HealthProfessional hp = healthProfessionalsList.get(i);
+                                        Record record = records.get(j);
+                                        recordPermission = new RecordPermission(hp.getId(), hp.getName(), record.getId(), record.getName());
+                                        boolean permsExist = Lib.permsExist(recordPermission);
 
-                                    if (!permsExist)
-                                        result = Lib.givePermission(recordPermission);
+                                        if (!permsExist)
+                                            result = Lib.givePermission(recordPermission);
 
-                                    if (!result && !permsExist)
-                                        allSet = false;
+                                        if (!result && !permsExist)
+                                            allSet = false;
 
+                                    }
                                 }
-                            }
-                            return allSet;
-                        }
-
-                        protected void onPostExecute(Boolean result) {
-                            super.onPostExecute(result);
-                            p.dismiss();
-                            if(result){
-                                Toast toast = Toast.makeText(getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT);
-                                toast.show();
-                                Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
-                                ArrayList<User> list = new ArrayList<User>();
-                                list.add(patient);
-                                intent.putExtra("USER",list);
-                                startActivity(intent);
-                                finish();
-                            }
-                            else{
-                                Toast toast = Toast.makeText(getApplicationContext(), "Error, NO Permissions Granted or Partial Permissions Granted", Toast.LENGTH_SHORT);
-                                toast.show();
+                                return allSet;
                             }
 
-                        }
-                    }.execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                            protected void onPostExecute(Boolean result) {
+                                super.onPostExecute(result);
+                                p.dismiss();
+                                if (result) {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Permissions Granted", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    Intent intent = new Intent(getApplicationContext(), PatientAccount.class);
+                                    ArrayList<User> list = new ArrayList<User>();
+                                    list.add(patient);
+                                    intent.putExtra("USER", list);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Error, NO Permissions Granted or Partial Permissions Granted", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+
+                            }
+                        }.execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    Toast toast = Toast.makeText(getApplicationContext(), "No Health Professionals to give Permissions", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });

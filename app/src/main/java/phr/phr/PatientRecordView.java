@@ -53,7 +53,7 @@ public class PatientRecordView extends AppCompatActivity {
     TextView file_name;
     Button add_update_button, browse_button, delete_record, edit_permissions, view_attachment;
     Record record;
-    String fileSelected="", fileName;
+    String fileSelected="", fileName="null";
     boolean update=false;
     int id;
 
@@ -177,8 +177,13 @@ public class PatientRecordView extends AppCompatActivity {
                             protected Boolean doInBackground(Void... progress) {
                                 Boolean result = false;
                                 if(fileSelected.equals("")){
-                                    fileName = "null";
-                                    result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
+                                    if(!fileName.equals("null")){
+                                        result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
+                                    }
+                                    else {
+                                        fileName = "null";
+                                        result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
+                                    }
                                 }
                                 else{
                                     result = Lib.PatientUpdateRecord(name, description, record.getId(), fileName);
@@ -311,7 +316,7 @@ public class PatientRecordView extends AppCompatActivity {
                                         }
                                     }
                                     if(!nameCheck) {
-                                        fileSelected();
+                                        fileJustAttached();
                                     }
                                     else{
                                         // this alert tells the user they are trying to upload a file with the same name as a file in the database
@@ -319,7 +324,7 @@ public class PatientRecordView extends AppCompatActivity {
                                         builder.setMessage("File with the same name already in database, this will override the old file.\n\nSelect 'Yes' if it is the same file.")
                                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int id) {
-                                                        fileSelected();
+                                                        fileJustAttached();
                                                     }
                                                 })
                                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -378,6 +383,7 @@ public class PatientRecordView extends AppCompatActivity {
             description_input.setText(r.getRecord());
             if(!r.getFilename().equals("null")){
                 file_name.setText(r.getFilename());
+                fileName=r.getFilename();
                 browse_button.setText("Delete Attachment");
                 view_attachment.setClickable(true);
                 view_attachment.setVisibility(View.VISIBLE);
@@ -399,9 +405,17 @@ public class PatientRecordView extends AppCompatActivity {
     private void fileNotSelected(){
         fileSelected = "";
         file_name.setText("");
+        fileName="null";
         view_attachment.setClickable(false);
         view_attachment.setVisibility(View.GONE);
         browse_button.setText("Browse");
+    }
+
+    private void fileJustAttached(){
+            file_name.setText(fileName);
+            view_attachment.setClickable(false);
+            view_attachment.setVisibility(View.GONE);
+            browse_button.setText("Delete Attachment");
     }
 
 
