@@ -24,7 +24,7 @@ import phr.lib.User;
  */
 
 public class HealthProfessionalView extends AppCompatActivity {
-    Button my_account_button, view_all_record_button;
+    Button my_account_button;
     ListView record_list_view;
     HealthProfessional healthProfessional;
 
@@ -37,7 +37,6 @@ public class HealthProfessionalView extends AppCompatActivity {
         getSupportActionBar().setIcon(R.mipmap.p3hr_launcher);
         setContentView(R.layout.healthprofessional_view);
         my_account_button = findViewById(R.id.myaccount_button);
-        view_all_record_button = findViewById(R.id.all_records_button);
         record_list_view = findViewById(R.id.records_list_view);
 
         //get he user object
@@ -59,18 +58,6 @@ public class HealthProfessionalView extends AppCompatActivity {
             }
         });
 
-        //this button is not used on this screen since there is a redundent button on the account screen
-        view_all_record_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), HealthProfessionalViewAllRecords.class);
-                ArrayList<HealthProfessional> list = new ArrayList<HealthProfessional>();
-                list.add(healthProfessional);
-                intent.putExtra("USER",list);
-                startActivity(intent);
-                finish();
-            }
-        });
 
 
         //opens the selected record.
